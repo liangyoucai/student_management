@@ -73,5 +73,6 @@ export default {
 .personal-summary-form{
     width: 80%;
     margin: 0 auto;
+    height: 100vh;
 }
 </style>

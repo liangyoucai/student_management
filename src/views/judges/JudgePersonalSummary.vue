@@ -18,15 +18,22 @@
         <div v-if="isReviewing">
             <div class="review-card">
                 <el-form label-width="120px">
-                    <el-form-item label="学号">
-                        <el-input v-model="currentStudent.id" :readonly=true></el-input>
-                    </el-form-item>
-                    <el-form-item label="姓名">
-                        <el-input v-model="currentStudent.name" :readonly=true></el-input>
-                    </el-form-item>
-                    <el-form-item label="学苑">
-                        <el-input v-model="currentStudent.class" :readonly=true></el-input>
-                    </el-form-item>
+                    <el-col :span="8">
+                        <el-form-item label="学号">
+                            <el-input v-model="currentStudent.id" :readonly=true></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="姓名">
+                            <el-input v-model="currentStudent.name" :readonly=true></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="学苑">
+                            <el-input v-model="currentStudent.class" :readonly=true></el-input>
+                        </el-form-item>
+                    </el-col>
+
                     <el-form-item label="学习情况总结">
                         <el-input type="textarea" autosize v-model="currentStudent.studySummary" :readonly=true></el-input>
                     </el-form-item>
@@ -75,7 +82,7 @@
 
         </div> -->
         <br>
-        <div class="score-table" v-if="waitingStudents.length>0">
+        <div class="score-table" v-if="waitingStudents.length > 0">
             <h3>评分标准</h3>
             <table>
                 <thead>
@@ -113,7 +120,7 @@
             </table>
         </div>
 
-        <el-empty v-if="waitingStudents.length==0" description="暂无需要评分的学生"></el-empty>
+        <el-empty v-if="waitingStudents.length == 0" description="暂无需要评分的学生"></el-empty>
     </div>
 </template>
 
@@ -169,14 +176,19 @@ export default {
 
 <style scoped>
 .container {
-    margin: 50px auto;
+    margin: 10px auto;
     max-width: 900px;
+    height: 100vh;
 }
 
 .title {
     font-size: 28px;
     text-align: center;
     margin-bottom: 30px;
+}
+
+.studentInfo {
+    margin: 0 auto;
 }
 
 .info-row {
@@ -228,9 +240,11 @@ export default {
 .review-btn {
     width: 120px;
 }
-.submitSocre-btn{
+
+.submitSocre-btn {
     margin-top: 50px;
 }
+
 .info-btn {
     margin-left: 30px;
 }
@@ -265,4 +279,5 @@ th {
 
 .empty {
     color: #999;
-}</style>
+}
+</style>

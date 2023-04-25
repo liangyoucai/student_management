@@ -16,7 +16,7 @@
         <!-- v-if="waitingStudents.length == 0" -->
         <div>
 
-            <el-table :data="allStudents" class="socreTable">
+            <el-table :data="allStudents" class="socreTable" stripe>
                 <el-table-column label="学号" prop="id"></el-table-column>
                 <el-table-column label="姓名" prop="name"></el-table-column>
                 <el-table-column label="班级" prop="class"></el-table-column>
@@ -79,8 +79,9 @@ export default {
 
 <style scoped>
 .container {
-    margin: 50px auto;
+    margin: 10px auto;
     max-width: 900px;
+    height: 100%;
 }
 
 .title {
