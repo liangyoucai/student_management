@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <h1 class="title">学生个人学年总结 - 在线评审</h1>
-        <div class="info-row" v-if="waitingStudents.length !== 0">
+        <div class="info-row">
             <div class="info-item">
                 <span>待评分学生个数：</span>
                 {{ waitingStudents.length }}
@@ -10,12 +10,15 @@
                 <span>已完成评分个数：</span>
                 {{ finishedStudents.length }}
             </div>
+            <div class="info-item">
+                <el-button type='text' style="font-size: 1rem;" @click="startOverview">{{isOverviewing ? '返回评分': '评分总览'}}</el-button>
+            </div>
         </div>
         <el-divider></el-divider>
-        <div v-if="!isReviewing && waitingStudents.length !== 0">
+        <div v-if="!isReviewing && !isOverviewing && waitingStudents.length !== 0">
             <el-button type="primary" class="review-btn" @click="startReview">开始评审</el-button>
         </div>
-        <div v-if="isReviewing">
+        <div v-if="isReviewing && !isOverviewing">
             <div class="review-card">
                 <el-form label-width="120px">
                     <el-col :span="8">
@@ -56,33 +59,7 @@
                 <el-button class="review-btn" @click="cancelReview">返回</el-button>
             </el-button-group>
         </div>
-        <div v-if="waitingStudents.length == 0">
-
-        </div>
-        <!-- <el-divider></el-divider> -->
-        <!-- <div v-if="waitingStudents.length == 0">
-            
-            <el-table :data="allStudents" class="socreTable">
-                <el-table-column label="学号" prop="id"></el-table-column>
-                <el-table-column label="姓名" prop="name"></el-table-column>
-                <el-table-column label="班级" prop="class"></el-table-column>
-                <el-table-column label="学习情况总结" prop="studySummary">
-                  
-                </el-table-column>
-                <el-table-column label="社会实践总结" prop="practiceSummary">
-                    
-                </el-table-column>
-                <el-table-column label="自我评价" prop="selfEvaluation">
-                    
-                </el-table-column>
-                <el-table-column label="总分" prop="score"></el-table-column>
-            </el-table>
-
-            <el-button type="primary" class="submitSocre-btn">确认提交</el-button>
-
-        </div> -->
-        <br>
-        <div class="score-table" v-if="waitingStudents.length > 0">
+        <div class="score-table" v-if="waitingStudents.length > 0 && !isOverviewing">
             <h3>评分标准</h3>
             <table>
                 <thead>
@@ -120,12 +97,18 @@
             </table>
         </div>
 
-        <el-empty v-if="waitingStudents.length == 0" description="暂无需要评分的学生" style="height:70vh;"></el-empty>
+        <el-empty v-if="waitingStudents.length == 0 && !isOverviewing" description="暂无需要评分的学生" style="height:70vh;"></el-empty>
+        
+        <overview-table :allStudents="allStudents" v-if="isOverviewing"></overview-table>
     </div>
 </template>
 
 <script>
+import OverviewTable from '@/components/OverviewTable.vue';
 export default {
+    components: {
+        OverviewTable
+    },
     data() {
         return {
             waitingStudents: [
@@ -135,19 +118,24 @@ export default {
             ],
             finishedStudents: [],
             isReviewing: false,
+            isOverviewing: false,
             currentStudent: null,
             currentScore: null,
         };
     },
     computed: {
         allStudents() {
-            return [...this.waitingStudents, ...this.finishedStudents];
+            return [...this.finishedStudents, ...this.waitingStudents];
         }
     },
     methods: {
         startReview() {
             this.isReviewing = true;
             this.showNextStudent();
+        },
+        startOverview() {
+            this.isReviewing = false;
+            this.isOverviewing = !this.isOverviewing;
         },
         showNextStudent() {
             if (this.waitingStudents.length > 0) {
@@ -184,7 +172,7 @@ export default {
 .title {
     font-size: 28px;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .studentInfo {
@@ -194,14 +182,16 @@ export default {
 .info-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    align-items: center;
 }
 
 .info-item {
     font-size: 16px;
     color: #666;
 }
-
+.el-divider--horizontal{
+    margin-top: 3px;
+}
 .review-card {
     border: 1px solid #ccc;
     padding: 20px;

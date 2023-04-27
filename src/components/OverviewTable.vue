@@ -1,21 +1,6 @@
 <template>
     <div class="container">
-        <h1 class="title">学生个人学年总结 - 在线评审</h1>
-        <div class="info-row" v-if="waitingStudents.length !== 0">
-            <div class="info-item">
-                <span>待评分学生个数：</span>
-                {{ waitingStudents.length }}
-            </div>
-            <div class="info-item">
-                <span>已完成评分个数：</span>
-                {{ finishedStudents.length }}
-            </div>
-        </div>
-        <el-divider></el-divider>
-        <!-- <el-divider></el-divider> -->
-        <!-- v-if="waitingStudents.length == 0" -->
-        <div>
-
+        
             <el-table :data="allStudents" class="socreTable" stripe>
                 <el-table-column label="学号" prop="id"></el-table-column>
                 <el-table-column label="姓名" prop="name"></el-table-column>
@@ -47,33 +32,11 @@
 
         </div>
 
-    </div>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            waitingStudents: [
-                { id: 1, name: '张三', class: '一班', studySummary: '本人认真学习，成绩优秀，本人认真学习，成绩优秀，本人认真学习，成绩优秀', practiceSummary: '本人积极参加各种实践活动，表现良好,本人积极参加各种实践活动，表现良好,本人积极参加各种实践活动，表现良好', selfEvaluation: '本人对自己的表现非常满意，但还有提升空间,本人对自己的表现非常满意，但还有提升空间', score: 0 },
-                { id: 2, name: '李四', class: '二班', studySummary: '本人学习主动性不够，需要改进，本人学习主动性不够，需要改进，本人学习主动性不够，需要改进', practiceSummary: '本人参加的社会实践活动较少，需要加强,本人参加的社会实践活动较少，需要加强,本人参加的社会实践活动较少，需要加强', selfEvaluation: '本人对自己的表现有些不满意，但会继续努力,本人对自己的表现有些不满意，但会继续努力', score: 0 },
-                { id: 3, name: '王五', class: '三班', studySummary: '本人学习成绩中等，需要加强复习和提高学习效率,本人学习成绩中等，需要加强复习和提高学习效率,本人学习成绩中等，需要加强复习和提高学习效率', practiceSummary: '本人参加的社会实践活动表现一般', selfEvaluation: '本人对自己的表现有些不满意，需要更多的努力,本人对自己的表现有些不满意，需要更多的努力', score: 0 },
-            ],
-            finishedStudents: [],
-            isReviewing: false,
-            currentStudent: null,
-            currentScore: null,
-        };
-    },
-    computed: {
-        allStudents() {
-            return [...this.waitingStudents, ...this.finishedStudents];
-        }
-    },
-    methods: {
-        
-
-    }
+    props:['allStudents']
 };
 </script>
 
