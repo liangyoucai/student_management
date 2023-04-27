@@ -120,7 +120,7 @@
             </table>
         </div>
 
-        <el-empty v-if="waitingStudents.length == 0" description="暂无需要评分的学生"></el-empty>
+        <el-empty v-if="waitingStudents.length == 0" description="暂无需要评分的学生" style="height:70vh;"></el-empty>
     </div>
 </template>
 
@@ -178,7 +178,7 @@ export default {
 .container {
     margin: 10px auto;
     max-width: 900px;
-    height: 100vh;
+    height: 100%;
 }
 
 .title {

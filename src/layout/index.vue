@@ -87,7 +87,7 @@
 }
 
 .el-menu-vertical-demo {
-    min-width: 12%;
+    min-width: 14%;
 }
 
 .main-content {
