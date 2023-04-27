@@ -1,42 +1,33 @@
 <template>
     <div class="container">
-        
-            <el-table :data="allStudents" class="socreTable" stripe>
-                <el-table-column label="学号" prop="id"></el-table-column>
-                <el-table-column label="姓名" prop="name"></el-table-column>
-                <el-table-column label="班级" prop="class"></el-table-column>
-                <el-table-column label="学习情况总结" prop="studySummary">
-                    <!-- <template slot-scope="scope">
-                        <p v-for="(item, index) in scope.row.studySummary.split(',')" :key="index">{{ item }}</p>
-                    </template> -->
-                </el-table-column>
-                <el-table-column label="社会实践总结" prop="practiceSummary">
-                    <!-- <template slot-scope="scope">
-                        <p v-for="(item, index) in scope.row.practiceSummary.split(',')" :key="index">{{ item }}</p>
-                    </template> -->
-                </el-table-column>
-                <el-table-column label="自我评价" prop="selfEvaluation">
-                    <!-- <template slot-scope="scope">
-                        <p v-for="(item, index) in scope.row.selfEvaluation.split(',')" :key="index">{{ item }}</p>
-                    </template> -->
-                </el-table-column>
-                <el-table-column label="总分" prop="score"></el-table-column>
-                <el-table-column>
-                    <template slot-scope="scope">
-                        <el-button size="mini" type="danger" @click="handleEdit(scope.$index, scope.row)">打分</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
 
-            <el-button type="primary" class="submitSocre-btn">确认提交</el-button>
+        <el-table :data="allStudents" class="socreTable" stripe>
+            <el-table-column label="学号" prop="id"></el-table-column>
+            <el-table-column label="姓名" prop="name"></el-table-column>
+            <el-table-column label="班级" prop="class"></el-table-column>
+            <!-- <el-table-column label="学习情况总结" prop="studySummary">
+            </el-table-column>
+            <el-table-column label="社会实践总结" prop="practiceSummary">
+            </el-table-column>
+            <el-table-column label="自我评价" prop="selfEvaluation">
+            </el-table-column> -->
+            <slot></slot>
+            <el-table-column label="总分" prop="score"></el-table-column>
+            <el-table-column>
+                <template slot-scope="scope">
+                    <el-button size="mini" type="danger" @click="handleEdit(scope.$index, scope.row)">评分</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
 
-        </div>
+        <el-button type="primary" class="submitSocre-btn">确认提交</el-button>
 
+    </div>
 </template>
 
 <script>
 export default {
-    props:['allStudents']
+    props: ['allStudents']
 };
 </script>
 
@@ -44,7 +35,6 @@ export default {
 .container {
     margin: 10px auto;
     max-width: 900px;
-    height: 100%;
 }
 
 .title {

@@ -59,55 +59,28 @@
                 <el-button class="review-btn" @click="cancelReview">返回</el-button>
             </el-button-group>
         </div>
-        <div class="score-table" v-if="waitingStudents.length > 0 && !isOverviewing">
-            <h3>评分标准</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>分数</th>
-                        <th>评价</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>10</td>
-                        <td>服务优异，认真负责，信誉卓著，表现突出。</td>
-                    </tr>
-                    <tr>
-                        <td>9</td>
-                        <td>服务良好，工作勤奋，业务熟练，态度端正。</td>
-                    </tr>
-                    <tr>
-                        <td>8</td>
-                        <td>服务较好，工作认真，具备普通水平。</td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td>一般评价，存在服务行为上的不足或失误。</td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td>服务差，工作不认真，存在严重失误或不规范问题。</td>
-                    </tr>
-                    <tr>
-                        <td>5及以下</td>
-                        <td>服务极差，表现不合格，失职渎职。</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
+        
+        <score-table v-if="waitingStudents.length > 0 && !isOverviewing" :items="scoreStandard"></score-table>
         <el-empty v-if="waitingStudents.length == 0 && !isOverviewing" description="暂无需要评分的学生" style="height:70vh;"></el-empty>
         
-        <overview-table :allStudents="allStudents" v-if="isOverviewing"></overview-table>
+        <overview-table :allStudents="allStudents" v-if="isOverviewing">
+            <el-table-column label="学习情况总结" prop="studySummary">
+                </el-table-column>
+                <el-table-column label="社会实践总结" prop="practiceSummary">
+                </el-table-column>
+                <el-table-column label="自我评价" prop="selfEvaluation">
+                </el-table-column>
+        </overview-table>
     </div>
 </template>
 
 <script>
 import OverviewTable from '@/components/OverviewTable.vue';
+import ScoreTable from '@/components/ScoreTable.vue'
 export default {
     components: {
-        OverviewTable
+        OverviewTable,
+        ScoreTable
     },
     data() {
         return {
@@ -210,15 +183,6 @@ export default {
     margin-right: 20px;
 }
 
-.score-row {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.score-item {
-    font-size: 16px;
-    color: #666;
-}
 
 
 
@@ -239,33 +203,7 @@ export default {
     margin-left: 30px;
 }
 
-.score-table {
-    max-width: 500px;
-    margin: 0 auto;
-}
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-td,
-th {
-    padding: 10px;
-    border: 1px solid #ccc;
-}
-
-th {
-    background-color: #f8f8f8;
-    font-weight: normal;
-    text-align: left;
-}
-
-.score {
-    font-weight: bold;
-    color: #ff9900;
-}
 
 .empty {
     color: #999;
