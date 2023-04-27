@@ -29,7 +29,6 @@
                     <el-submenu index="2-1">
                         <template slot="title"><i class="el-icon-edit-outline"></i>个人成绩</template>
                         <el-menu-item index="2-1-1">个人成绩审核</el-menu-item>
-                        <el-menu-item index="2-1-2">个人成绩审核情况</el-menu-item>
                     </el-submenu>
                     <el-submenu index="2-2">
                         <template slot="title"><i class="el-icon-edit-outline"></i>志愿服务</template>
@@ -39,22 +38,18 @@
                     <el-submenu index="2-3">
                         <template slot="title"><i class="el-icon-edit-outline"></i>科研情况</template>
                         <el-menu-item index="2-3-1">科研情况打分</el-menu-item>
-                        <el-menu-item index="2-3-2">科研情况打分情况</el-menu-item>
                     </el-submenu>
                     <el-submenu index="2-4">
                         <template slot="title"><i class="el-icon-edit-outline"></i>社会实践</template>
                         <el-menu-item index="2-4-1">社会实践打分</el-menu-item>
-                        <el-menu-item index="2-4-2">社会实践打分情况</el-menu-item>
                     </el-submenu>
                     <el-submenu index="2-5">
                         <template slot="title"><i class="el-icon-edit-outline"></i>学生骨干服务岗位</template>
                         <el-menu-item index="2-5-1">学生骨干服务岗位打分</el-menu-item>
-                        <el-menu-item index="2-5-2">学生骨干服务岗位打分情况</el-menu-item>
                     </el-submenu>
                     <el-submenu index="2-6">
                         <template slot="title"><i class="el-icon-edit-outline"></i>个人学年总结</template>
                         <el-menu-item index="2-6-1">个人学年总结打分</el-menu-item>
-                        <el-menu-item index="2-6-2">个人学年总结打分情况</el-menu-item>
                     </el-submenu>
                 </el-submenu>
                 <el-submenu index="3">

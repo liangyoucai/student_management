@@ -9,7 +9,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in items" :key="item.score">
+                <tr v-for="item in scoreStandard" :key="item.score">
                     <td>{{ item.score }}</td>
                     <td>{{ item.comment }}</td>
                 </tr>
@@ -20,7 +20,7 @@
 
 <script>
 export default {
-    props:[score, comment]
+    props:['scoreStandard']
 }
 </script>
 

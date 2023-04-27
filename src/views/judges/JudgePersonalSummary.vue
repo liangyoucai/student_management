@@ -11,7 +11,7 @@
                 {{ finishedStudents.length }}
             </div>
             <div class="info-item">
-                <el-button type='text' style="font-size: 1rem;" @click="startOverview">{{isOverviewing ? '返回评分': '评分总览'}}</el-button>
+                <el-button type='text' style="font-size: 1rem;" @click="startOverview">{{ isOverviewing ? '返回评分' : '评分总览' }}</el-button>
             </div>
         </div>
         <el-divider></el-divider>
@@ -59,17 +59,17 @@
                 <el-button class="review-btn" @click="cancelReview">返回</el-button>
             </el-button-group>
         </div>
-        
-        <score-table v-if="waitingStudents.length > 0 && !isOverviewing" :items="scoreStandard"></score-table>
+
+        <score-table v-if="waitingStudents.length > 0 && !isOverviewing" :scoreStandard="scoreStandard"></score-table>
         <el-empty v-if="waitingStudents.length == 0 && !isOverviewing" description="暂无需要评分的学生" style="height:70vh;"></el-empty>
-        
+
         <overview-table :allStudents="allStudents" v-if="isOverviewing">
             <el-table-column label="学习情况总结" prop="studySummary">
-                </el-table-column>
-                <el-table-column label="社会实践总结" prop="practiceSummary">
-                </el-table-column>
-                <el-table-column label="自我评价" prop="selfEvaluation">
-                </el-table-column>
+            </el-table-column>
+            <el-table-column label="社会实践总结" prop="practiceSummary">
+            </el-table-column>
+            <el-table-column label="自我评价" prop="selfEvaluation">
+            </el-table-column>
         </overview-table>
     </div>
 </template>
@@ -94,6 +94,14 @@ export default {
             isOverviewing: false,
             currentStudent: null,
             currentScore: null,
+            scoreStandard: [
+                { score: '10', comment: '表现突出，得到满分评价' },
+                { score: '9', comment: '态度端正，工作勤奋' },
+                { score: '8', comment: '工作认真，具备普通水平' },
+                { score: '7', comment: '存在服务行为上的不足或失误' },
+                { score: '6', comment: '工作不认真，存在严重失误或不规范问题' },
+                { score: '5及以下', comment: '表现不合格，失职渎职' }
+            ],
         };
     },
     computed: {
@@ -139,7 +147,6 @@ export default {
 .container {
     margin: 10px auto;
     max-width: 900px;
-    height: 100%;
 }
 
 .title {
@@ -162,9 +169,11 @@ export default {
     font-size: 16px;
     color: #666;
 }
-.el-divider--horizontal{
+
+.el-divider--horizontal {
     margin-top: 3px;
 }
+
 .review-card {
     border: 1px solid #ccc;
     padding: 20px;
