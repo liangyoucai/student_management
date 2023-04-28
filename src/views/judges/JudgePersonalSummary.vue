@@ -72,6 +72,21 @@
             <el-table-column label="自我评价" prop="selfEvaluation">
             </el-table-column>
         </overview-table>
+        <el-button v-if="isOverviewing" type="primary" class="submitSocre-btn" @click="submitAllScores">确认提交</el-button>
+        <el-dialog title="提示" :visible.sync="dialog1Visible" width="30%" :before-close="handleClose">
+            <span>还有{{ waitingStudents.length }}名学生未评分，请评分后再提交！</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialog1Visible = false">取 消</el-button>
+                <el-button type="primary" @click="dialog1Visible = false">确 定</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog title="提示" :visible.sync="dialog2Visible" width="30%" :before-close="handleClose">
+            <span>确认提交？一经提交评分不可撤回。</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialog2Visible = false">取 消</el-button>
+                <el-button type="primary" @click="dialog2Visible = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -88,9 +103,9 @@ export default {
     data() {
         return {
             waitingStudents: [
-                { id: 1, name: '张三', class: '一班', studySummary: '本人认真学习，成绩优秀，本人认真学习，成绩优秀，本人认真学习，成绩优秀', practiceSummary: '本人积极参加各种实践活动，表现良好,本人积极参加各种实践活动，表现良好,本人积极参加各种实践活动，表现良好', selfEvaluation: '本人对自己的表现非常满意，但还有提升空间,本人对自己的表现非常满意，但还有提升空间', score: 0 },
-                { id: 2, name: '李四', class: '二班', studySummary: '本人学习主动性不够，需要改进，本人学习主动性不够，需要改进，本人学习主动性不够，需要改进', practiceSummary: '本人参加的社会实践活动较少，需要加强,本人参加的社会实践活动较少，需要加强,本人参加的社会实践活动较少，需要加强', selfEvaluation: '本人对自己的表现有些不满意，但会继续努力,本人对自己的表现有些不满意，但会继续努力', score: 0 },
-                { id: 3, name: '王五', class: '三班', studySummary: '本人学习成绩中等，需要加强复习和提高学习效率,本人学习成绩中等，需要加强复习和提高学习效率,本人学习成绩中等，需要加强复习和提高学习效率', practiceSummary: '本人参加的社会实践活动表现一般', selfEvaluation: '本人对自己的表现有些不满意，需要更多的努力,本人对自己的表现有些不满意，需要更多的努力', score: 0 },
+                { id: 1, name: '张三', class: '一班', studySummary: '本人认真学习，成绩优秀，本人认真学习，成绩优秀，本人认真学习，成绩优秀', practiceSummary: '本人积极参加各种实践活动，表现良好,本人积极参加各种实践活动，表现良好,本人积极参加各种实践活动，表现良好', selfEvaluation: '本人对自己的表现非常满意，但还有提升空间,本人对自己的表现非常满意，但还有提升空间', score: null },
+                { id: 2, name: '李四', class: '二班', studySummary: '本人学习主动性不够，需要改进，本人学习主动性不够，需要改进，本人学习主动性不够，需要改进', practiceSummary: '本人参加的社会实践活动较少，需要加强,本人参加的社会实践活动较少，需要加强,本人参加的社会实践活动较少，需要加强', selfEvaluation: '本人对自己的表现有些不满意，但会继续努力,本人对自己的表现有些不满意，但会继续努力', score: null },
+                { id: 3, name: '王五', class: '三班', studySummary: '本人学习成绩中等，需要加强复习和提高学习效率,本人学习成绩中等，需要加强复习和提高学习效率,本人学习成绩中等，需要加强复习和提高学习效率', practiceSummary: '本人参加的社会实践活动表现一般', selfEvaluation: '本人对自己的表现有些不满意，需要更多的努力,本人对自己的表现有些不满意，需要更多的努力', score: null },
             ],
             finishedStudents: [],
             isReviewing: false,
@@ -105,6 +120,9 @@ export default {
                 { score: '6', comment: '工作不认真，存在严重失误或不规范问题' },
                 { score: '5及以下', comment: '表现不合格，失职渎职' }
             ],
+            dialog1Visible: false,
+            dialog2Visible: false,
+
         };
     },
     computed: {
@@ -145,7 +163,13 @@ export default {
             this.currentStudent = null;
             this.isReviewing = false;
         },
-
+        submitAllScores() {
+            if (this.waitingStudents.length > 0) {
+                this.dialog1Visible = true;
+            } else {
+                this.dialog2Visible = true;
+            }
+        }
     }
 };
 </script>
@@ -200,6 +224,9 @@ export default {
     margin-right: 20px;
 }
 
+.submitSocre-btn {
+    margin-top: 50px;
+}
 
 
 

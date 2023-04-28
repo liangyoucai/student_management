@@ -5,22 +5,21 @@
             <el-table-column label="学号" prop="id"></el-table-column>
             <el-table-column label="姓名" prop="name"></el-table-column>
             <el-table-column label="班级" prop="class"></el-table-column>
-            <!-- <el-table-column label="学习情况总结" prop="studySummary">
-            </el-table-column>
-            <el-table-column label="社会实践总结" prop="practiceSummary">
-            </el-table-column>
-            <el-table-column label="自我评价" prop="selfEvaluation">
-            </el-table-column> -->
+
             <slot></slot>
-            <el-table-column label="总分" prop="score"></el-table-column>
-            <el-table-column>
+
+            <el-table-column label="得分" prop="score">
+                <template slot-scope="{ row }">
+                    {{ row.score === null ? '未评分' : row.score }}
+                </template>
+            </el-table-column>
+            <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini" type="danger" @click="handleEdit(scope.$index, scope.row)">评分</el-button>
                 </template>
             </el-table-column>
         </el-table>
 
-        <el-button type="primary" class="submitSocre-btn">确认提交</el-button>
 
     </div>
 </template>
@@ -37,99 +36,4 @@ export default {
     max-width: 900px;
 }
 
-.title {
-    font-size: 28px;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.info-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.info-item {
-    font-size: 16px;
-    color: #666;
-}
-
-.review-card {
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin-bottom: 30px;
-}
-
-.card-row {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 15px;
-}
-
-.card-item {
-    font-size: 16px;
-    color: #666;
-    margin-right: 20px;
-}
-
-.score-row {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.score-item {
-    font-size: 16px;
-    color: #666;
-}
-
-
-
-.el-button-group {
-    margin-top: 30px;
-    text-align: center;
-}
-
-.review-btn {
-    width: 120px;
-}
-
-.submitSocre-btn {
-    margin-top: 50px;
-}
-
-.info-btn {
-    margin-left: 30px;
-}
-
-.score-table {
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-td,
-th {
-    padding: 10px;
-    border: 1px solid #ccc;
-}
-
-th {
-    background-color: #f8f8f8;
-    font-weight: normal;
-    text-align: left;
-}
-
-.score {
-    font-weight: bold;
-    color: #ff9900;
-}
-
-.empty {
-    color: #999;
-}
 </style>
