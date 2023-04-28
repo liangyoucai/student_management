@@ -29,6 +29,8 @@ export default {
     max-width: 500px;
     margin: 20px auto;
     margin-top: 40px;
+    margin-bottom: 40px;
+
 }
 
 table {

@@ -50,8 +50,9 @@
                 <el-divider></el-divider>
                 <div class="block">
                     <span class="demonstration">评分:{{ currentScore }}</span>
-                    <el-slider v-model="currentScore" :step="1" :max=10 show-stops>
-                    </el-slider>
+                    <!-- <el-slider v-model="currentScore" :step="1" :max=10 show-stops>
+                    </el-slider> -->
+                    <rating-list @score-selected="onScoreSelected"></rating-list>
                 </div>
             </div>
             <el-button-group>
@@ -77,10 +78,12 @@
 <script>
 import OverviewTable from '@/components/OverviewTable.vue';
 import ScoreTable from '@/components/ScoreTable.vue'
+import RatingList from '@/components/RatingList.vue';
 export default {
     components: {
         OverviewTable,
-        ScoreTable
+        ScoreTable,
+        RatingList
     },
     data() {
         return {
@@ -121,11 +124,15 @@ export default {
         showNextStudent() {
             if (this.waitingStudents.length > 0) {
                 this.currentStudent = this.waitingStudents[0];
-                this.currentScore = 5;
+                this.currentScore = 0;
             } else {
                 this.$message.success('评审完成！');
                 this.isReviewing = false;
             }
+        },
+        onScoreSelected(score) {
+            this.currentScore = score;
+            console.log('获取到rating-list组件传递的分数值：', score);
         },
         submitScore() {
             this.currentStudent.score = this.currentScore;
@@ -147,6 +154,7 @@ export default {
 .container {
     margin: 10px auto;
     max-width: 900px;
+    /* height: 100%; */
 }
 
 .title {
@@ -202,6 +210,7 @@ export default {
 
 .review-btn {
     width: 120px;
+
 }
 
 .submitSocre-btn {
