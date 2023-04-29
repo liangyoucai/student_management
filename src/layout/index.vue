@@ -17,7 +17,7 @@
                     <el-menu-item index="1-3"><i class="el-icon-edit-outline"></i>科研情况</el-menu-item>
                     <el-menu-item index="1-4"><i class="el-icon-edit-outline"></i>社会实践</el-menu-item>
                     <el-menu-item index="1-5"><i class="el-icon-edit-outline"></i>学生骨干服务岗位</el-menu-item>
-                    <el-menu-item index="1-6"><i class="el-icon-edit-outline"></i>个人学年总结</el-menu-item>
+                    <el-menu-item index="1-6" @click="$router.push('/student/personal-summary')"><i class="el-icon-edit-outline"></i>个人学年总结</el-menu-item>
 
                 </el-submenu>
                 <el-submenu index="2">
@@ -49,7 +49,7 @@
                     </el-submenu>
                     <el-submenu index="2-6">
                         <template slot="title"><i class="el-icon-edit-outline"></i>个人学年总结</template>
-                        <el-menu-item index="2-6-1">个人学年总结打分</el-menu-item>
+                        <el-menu-item index="2-6-1" @click="$router.push('/judge/personal-summary')">个人学年总结打分</el-menu-item>
                     </el-submenu>
                 </el-submenu>
                 <el-submenu index="3">

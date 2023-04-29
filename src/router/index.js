@@ -15,12 +15,11 @@ const routes = [
         name: "JudgePersonalSummary",
         component: () => import("../views/judges/JudgePersonalSummary.vue"),
       },
-      // {
-      //   path: "judge/personal-summary/situation",
-      //   name: "JudgePersonalSummarySituaion",
-      //   component: () =>
-      //     import("../views/judges/JudgePersonalSummarySituation.vue"),
-      // },
+      {
+        path: "judge/research",
+        name: "JudgeResearch",
+        component: () => import("../views/judges/JudgeResearch.vue"),
+      },
       {
         path: "student/personal-summary",
         name: "StudentPersonalSummary",

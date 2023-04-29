@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <!-- 标题栏 -->
-        <h1 class="title">学生个人学年总结 - 在线评审</h1>
+        <h1 class="title">学生科研情况 - 在线评审</h1>
         <div class="info-row">
             <div class="info-item">
                 <span>待评分学生个数：</span>
@@ -11,12 +11,12 @@
                 <span>已完成评分个数：</span>
                 {{ finishedStudents.length }}
             </div>
-            <div class="info-item" v-if="waitingStudents.length>0">
+            <div class="info-item" v-if="waitingStudents.length > 0">
                 <el-button type='text' style="font-size: 1rem;" @click="startOverview">{{ isOverviewing ? '返回评分' : '评分总览' }}</el-button>
             </div>
         </div>
         <el-divider></el-divider>
-        
+
         <!-- 开始评审按钮 -->
         <div v-if="!isReviewing && !isOverviewing && waitingStudents.length !== 0">
             <el-button type="primary" class="review-btn" @click="startReview">开始评审</el-button>
@@ -62,20 +62,20 @@
                 <el-button class="review-btn" @click="cancelReview">返回</el-button>
             </el-button-group>
         </div>
-        
+
         <!-- 评分标准 -->
         <score-table v-if="waitingStudents.length > 0 && !isOverviewing" :scoreStandard="scoreStandard"></score-table>
-        
+
         <!-- 待评分人数为0时出现的画面 -->
         <!-- <el-empty v-if="waitingStudents.length == 0 && !isOverviewing" description="暂无需要评分的学生" style="height:70vh;"></el-empty> -->
 
         <!-- 评分总览表 -->
-        <overview-table :allStudents="allStudents.sort((a,b)=> a.id - b.id)" v-if="isOverviewing" @review-from-overview="startReviewFromOverview">
-            <el-table-column label="学习情况总结" prop="studySummary" :show-overflow-tooltip="true">
+        <overview-table :allStudents="allStudents.sort((a, b) => a.id - b.id)" v-if="isOverviewing" @review-from-overview="startReviewFromOverview">
+            <el-table-column label="学习情况总结" prop="research.name" :show-overflow-tooltip="true">
             </el-table-column>
-            <el-table-column label="社会实践总结" prop="practiceSummary" :show-overflow-tooltip="true">
+            <el-table-column label="社会实践总结" prop="research.name" :show-overflow-tooltip="true">
             </el-table-column>
-            <el-table-column label="自我评价" prop="selfEvaluation" :show-overflow-tooltip="true">
+            <el-table-column label="自我评价" prop="research.name" :show-overflow-tooltip="true">
             </el-table-column>
         </overview-table>
 
@@ -112,10 +112,45 @@ export default {
     data() {
         return {
             waitingStudents: [
-                { id: 1, name: '张三', class: '一班', studySummary: '本人认真学习，成绩优秀，本人认真学习，成绩优秀，本人认真学习，成绩优秀', practiceSummary: '本人积极参加各种实践活动，表现良好,本人积极参加各种实践活动，表现良好,本人积极参加各种实践活动，表现良好', selfEvaluation: '本人对自己的表现非常满意，但还有提升空间,本人对自己的表现非常满意，但还有提升空间', score: null },
-                { id: 2, name: '李四', class: '二班', studySummary: '本人学习主动性不够，需要改进，本人学习主动性不够，需要改进，本人学习主动性不够，需要改进', practiceSummary: '本人参加的社会实践活动较少，需要加强,本人参加的社会实践活动较少，需要加强,本人参加的社会实践活动较少，需要加强', selfEvaluation: '本人对自己的表现有些不满意，但会继续努力,本人对自己的表现有些不满意，但会继续努力', score: null },
-                { id: 3, name: '王五', class: '三班', studySummary: '本人学习成绩中等，需要加强复习和提高学习效率,本人学习成绩中等，需要加强复习和提高学习效率,本人学习成绩中等，需要加强复习和提高学习效率', practiceSummary: '本人参加的社会实践活动表现一般', selfEvaluation: '本人对自己的表现有些不满意，需要更多的努力,本人对自己的表现有些不满意，需要更多的努力', score: null },
-            ],
+                {
+                    id: 1,
+                    name: '张三',
+                    class: '一班',
+                    research: {
+                        name: '人工智能应用于智慧医疗研究',
+                        manager: '李华',
+                        organization: '清华大学',
+                        level: '国家级',
+                        time: '2019年-2020年',
+                        achievement: '发表SCI论文两篇'
+                    }
+                },
+                {
+                    id: 2,
+                    name: '李四',
+                    class: '二班',
+                    research: {
+                        name: '物联网在智慧城市中的应用研究',
+                        manager: '王明',
+                        organization: '北京大学',
+                        level: '省级',
+                        time: '2018年-2019年',
+                        achievement: '获得省级科研创新资助'
+                    }
+                },
+                {
+                    id: 3,
+                    name: '王五',
+                    class: '三班',
+                    research: {
+                        name: '区块链技术在供应链金融中的应用研究',
+                        manager: '张三丰',
+                        organization: '复旦大学',
+                        level: '校级',
+                        time: '2020年-2021年',
+                        achievement: '获得校内科研成果奖'
+                    }
+                }],
             finishedStudents: [],
             isReviewing: false,
             isOverviewing: false,

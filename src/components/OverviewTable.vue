@@ -4,7 +4,7 @@
         <el-table :data="allStudents" class="socreTable" stripe>
             <el-table-column label="学号" prop="id"></el-table-column>
             <el-table-column label="姓名" prop="name"></el-table-column>
-            <el-table-column label="班级" prop="class"></el-table-column>
+            <el-table-column label="学苑" prop="class"></el-table-column>
 
             <slot></slot>
 
@@ -15,7 +15,7 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="danger" @click="handleEdit(scope.$index, scope.row)">评分</el-button>
+                    <el-button size="mini" type="danger" @click="goReview(scope.$index, scope.row)">评分</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -26,7 +26,14 @@
 
 <script>
 export default {
-    props: ['allStudents']
+    props: ['allStudents'],
+    methods: {
+        goReview(_, row) {
+            console.log(row.id);
+            this.$emit('review-from-overview', row.id)
+        }
+    }
+    
 };
 </script>
 
@@ -34,6 +41,7 @@ export default {
 .container {
     margin: 10px auto;
     max-width: 900px;
+    min-height: 60vh;
 }
 
 </style>

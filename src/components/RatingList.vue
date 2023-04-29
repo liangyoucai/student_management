@@ -6,14 +6,9 @@
 
 <script>
 export default {
-    data() {
-        return {
-            currentScore: 0
-        }
-    },
+    props:['currentScore'],
     methods: {
         selectScore(score) {
-            this.currentScore = score;
             this.$emit('score-selected', score)
         }
     }
