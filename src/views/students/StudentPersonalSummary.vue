@@ -1,6 +1,7 @@
 <template>
-    <div class="personal-summary-form">
+    <div class="my-form">
         <h1 class="title">学生个人学年总结 - 在线填写</h1>
+        <el-divider style="margin-bottom: 0;"></el-divider>
         <el-form :model="form" label-width="120px" ref="form" :rules="rules">
             <el-form-item label="学习情况总结" prop="studySummary">
                 <el-input type="textarea" :rows="4" placeholder="请输入学习情况总结" v-model="form.studySummary"></el-input>
@@ -70,9 +71,11 @@ export default {
     text-align: center;
     margin-bottom: 30px;
 }
-.personal-summary-form{
+.my-form{
     width: 80%;
     margin: 0 auto;
-    height: 100vh;
+    min-height: 100vh;
 }
+
+
 </style>

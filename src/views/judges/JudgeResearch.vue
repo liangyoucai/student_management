@@ -158,7 +158,7 @@ export default {
                             manager: '李华',
                             organization: '北京大学',
                             level: '国家级',
-                            time: '2019年-2020年',
+                            time: '2019年1月-2020年3月',
                             achievement: '发表在 IEEE Transactions on Medical Imaging 上的一篇论文;开发了一套基于深度学习的医疗影像智能诊断系统;探索了疾病预测的可解释性与通用性'
                         },
                         {
@@ -166,7 +166,7 @@ export default {
                             manager: '王刚',
                             organization: '中央财经大学',
                             level: '省级',
-                            time: '2020年-2021年',
+                            time: '2020年3月-2021年9月',
                             achievement: '提出一种基于更安全的加密算法的银行信用风险识别方法，相较于传统方法精度提高10个百分点;在美国顶尖金融机构担任数据科学家实习生，积累了非常丰富的项目经验'
                         }
                     ],
@@ -182,7 +182,7 @@ export default {
                             manager: '王明',
                             organization: '北京大学',
                             level: '国家级',
-                            time: '2018年-2019年',
+                            time: '2018年2月-2019年8月',
                             achievement: '提出一套采用区块链技术解决智慧城市设施信任问题的方案;开发了一种基于物联网的智能城市路灯系统;应用实践探讨了智慧城市中个人数据隐私保护的方案'
                         }
                     ],
@@ -198,7 +198,7 @@ export default {
                             manager: '张三丰',
                             organization: '复旦大学',
                             level: '校级',
-                            time: '2020年-2021年',
+                            time: '2020年9月-2021年12月',
                             achievement: '提出一套区块链智能化供应链金融管理平台;成功开展区块链供应链金融的试点项目;担任南京银行区块链金融部门实习生，积累了丰富的从业经验'
                         },
                         {
@@ -206,7 +206,7 @@ export default {
                             manager: '李丹',
                             organization: '上海交通大学',
                             level: '国家级',
-                            time: '2019年-2021年',
+                            time: '2019年6月-2021年3月',
                             achievement: '发现城市中心区域与发展趋势之间的关系;制定了合理的城市空间规划，推动了城市的经济繁荣;参加国际学术会议并发表论文'
                         }
                     ],
