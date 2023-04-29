@@ -1,24 +1,37 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Layout from "@/layout";
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: "/",
+    component: Layout, // 修改为 Layout 组件
+    children: [
+      {
+        path: "judge/personal-summary",
+        name: "JudgePersonalSummary",
+        component: () => import("../views/judges/JudgePersonalSummary.vue"),
+      },
+      {
+        path: "judge/research",
+        name: "JudgeResearch",
+        component: () => import("../views/judges/JudgeResearch.vue"),
+      },
+      {
+        path: "student/personal-summary",
+        name: "StudentPersonalSummary",
+        component: () => import("../views/students/StudentPersonalSummary.vue"),
+      },
+      {
+        path: "student/research",
+        name: "StudentResearch",
+        component: () => import("../views/students/StudentResearch.vue"),
+      },
+    ],
   }
-]
+];
 
 const router = new VueRouter({
   mode: 'history',
