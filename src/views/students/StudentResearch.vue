@@ -16,20 +16,20 @@
                 <el-row>
                     <el-col :span="16">
                         <el-form-item label="名称">
-                            <el-input placeholder="请输入项目名称"></el-input>
+                            <el-input placeholder="请输入项目名称" v-model="form.research[index].name">
+                            </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="负责人">
-                            <el-input placeholder="请输入项目负责人"></el-input>
+                            <el-input placeholder="请输入项目负责人" v-model="form.research[index].manager"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="8">
-
                         <el-form-item label="组织机构">
-                            <el-input placeholder="请输入项目组织机构"></el-input>
+                            <el-input placeholder="请输入项目组织机构" v-model="form.research[index].organization"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
@@ -37,7 +37,7 @@
                             <el-select v-model="form.research[index].level" placeholder="请选择项目级别" style="width: 100%;">
                                 <el-option label="国家级" value="国家级"></el-option>
                                 <el-option label="省级" value="省级"></el-option>
-                                <el-option label="市级" value="省级"></el-option>
+                                <el-option label="市级" value="市级"></el-option>
                                 <el-option label="校级" value="校级"></el-option>
                             </el-select>
                         </el-form-item>
@@ -50,10 +50,10 @@
                     </el-col>
                 </el-row>
                 <el-form-item label="项目成果">
-                    <el-input type="textarea" :rows="4" placeholder="请输入项目成果"></el-input>
+                    <el-input type="textarea" :rows="4" placeholder="请输入项目成果" v-model="form.research[index].achievements"></el-input>
                 </el-form-item>
             </div>
-            <el-form-item>
+            <el-form-item style="margin-top: 20px">
                 <el-button type="warning" @click="addProject">增加项目</el-button>
                 <el-button type="primary" @click="submitForm">提交</el-button>
                 <el-button @click="clearForm">重置</el-button>
