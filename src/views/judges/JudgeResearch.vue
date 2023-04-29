@@ -45,8 +45,10 @@
                     </el-row>
 
                     <template v-for="(project, index) in waitingStudents[currentIndex].research">
-                        
-                        <div v-if="index >= 0"><h4>参与的科研项目{{ index + 1 }}</h4></div>
+
+                        <div v-if="index >= 0">
+                            <h4>参与的科研项目{{ index + 1 }}</h4>
+                        </div>
                         <el-row>
                             <el-col :span="16">
                                 <el-form-item label="名称">
@@ -62,7 +64,7 @@
 
 
                         <el-row>
-                            <el-col :span="8">
+                            <el-col :span="16">
                                 <el-form-item label="组织机构">
                                     <el-input v-model="project.organization" :readonly=true></el-input>
                                 </el-form-item>
@@ -72,7 +74,9 @@
                                     <el-input v-model="project.level" :readonly=true></el-input>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span="8">
+                        </el-row>
+                        <el-row>
+                            <el-col :span="10">
                                 <el-form-item label="参与时间">
                                     <el-input v-model="project.time" :readonly=true></el-input>
                                 </el-form-item>
@@ -170,7 +174,7 @@ export default {
                             achievement: '提出一种基于更安全的加密算法的银行信用风险识别方法，相较于传统方法精度提高10个百分点;在美国顶尖金融机构担任数据科学家实习生，积累了非常丰富的项目经验'
                         }
                     ],
-                    score:null
+                    score: null
                 },
                 {
                     id: 2,
@@ -186,7 +190,7 @@ export default {
                             achievement: '提出一套采用区块链技术解决智慧城市设施信任问题的方案;开发了一种基于物联网的智能城市路灯系统;应用实践探讨了智慧城市中个人数据隐私保护的方案'
                         }
                     ],
-                    score:null
+                    score: null
                 },
                 {
                     id: 3,
@@ -210,7 +214,7 @@ export default {
                             achievement: '发现城市中心区域与发展趋势之间的关系;制定了合理的城市空间规划，推动了城市的经济繁荣;参加国际学术会议并发表论文'
                         }
                     ],
-                    score:null
+                    score: null
                 }],
             finishedStudents: [],
             isReviewing: false,
