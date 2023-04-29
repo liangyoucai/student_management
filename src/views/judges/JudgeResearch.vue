@@ -26,31 +26,62 @@
         <div v-if="isReviewing && !isOverviewing">
             <div class="review-card">
                 <el-form label-width="120px">
-                    <el-col :span="8">
-                        <el-form-item label="学号">
-                            <el-input v-model="currentStudent.id" :readonly=true></el-input>
+                    <el-row>
+                        <el-col :span="8">
+                            <el-form-item label="学号">
+                                <el-input v-model="currentStudent.id" :readonly=true></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="姓名">
+                                <el-input v-model="currentStudent.name" :readonly=true></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="学苑">
+                                <el-input v-model="currentStudent.class" :readonly=true></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <template v-for="(project, index) in waitingStudents[currentIndex].research">
+                        <br>
+                        <el-divider v-if="index >= 0">参与的科研项目{{ index + 1 }}</el-divider>
+
+                        <el-form-item label="名称">
+                            <el-input v-model="project.name" :readonly=true></el-input>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-form-item label="姓名">
-                            <el-input v-model="currentStudent.name" :readonly=true></el-input>
+                        <el-form-item label="负责人">
+                            <el-input v-model="project.manager" :readonly=true></el-input>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-form-item label="学苑">
-                            <el-input v-model="currentStudent.class" :readonly=true></el-input>
+                        <el-row>
+                            <el-col :span="8">
+                                <el-form-item label="组织机构">
+                                    <el-input v-model="project.organization" :readonly=true></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item label="项目级别">
+                                    <el-input v-model="project.level" :readonly=true></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item label="参与时间">
+                                    <el-input v-model="project.time" :readonly=true></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+
+
+                        <el-form-item label="项目成果">
+                            <el-input type="textarea" autosize v-model="project.achievement" :readonly=true></el-input>
                         </el-form-item>
-                    </el-col>
-                    <el-form-item label="学习情况总结">
-                        <el-input type="textarea" autosize v-model="currentStudent.studySummary" :readonly=true></el-input>
-                    </el-form-item>
-                    <el-form-item label="社会实践总结">
-                        <el-input type="textarea" autosize v-model="currentStudent.practiceSummary" :readonly=true></el-input>
-                    </el-form-item>
-                    <el-form-item label="自我评价">
-                        <el-input type="textarea" autosize v-model="currentStudent.selfEvaluation" :readonly=true></el-input>
-                    </el-form-item>
+                    </template>
+
+
                 </el-form>
+
                 <el-divider></el-divider>
                 <div class="block">
                     <span class="demonstration">评分：{{ currentScore }}</span>
@@ -116,40 +147,62 @@ export default {
                     id: 1,
                     name: '张三',
                     class: '一班',
-                    research: {
-                        name: '人工智能应用于智慧医疗研究',
-                        manager: '李华',
-                        organization: '清华大学',
-                        level: '国家级',
-                        time: '2019年-2020年',
-                        achievement: '发表SCI论文两篇'
-                    }
+                    research: [
+                        {
+                            name: '人工智能应用于智慧医疗研究',
+                            manager: '李华',
+                            organization: '清华大学',
+                            level: '国家级',
+                            time: '2019年-2020年',
+                            achievement: '发表在 IEEE Transactions on Medical Imaging 上的一篇论文;开发了一套基于深度学习的医疗影像智能诊断系统;探索了疾病预测的可解释性与通用性'
+                        },
+                        {
+                            name: '机器学习在金融数据分析中的应用研究',
+                            manager: '王刚',
+                            organization: '中央财经大学',
+                            level: '省级',
+                            time: '2020年-2021年',
+                            achievement: '提出一种基于更安全的加密算法的银行信用风险识别方法，相较于传统方法精度提高10个百分点;在美国顶尖金融机构担任数据科学家实习生，积累了非常丰富的项目经验'
+                        }
+                    ]
                 },
                 {
                     id: 2,
                     name: '李四',
                     class: '二班',
-                    research: {
-                        name: '物联网在智慧城市中的应用研究',
-                        manager: '王明',
-                        organization: '北京大学',
-                        level: '省级',
-                        time: '2018年-2019年',
-                        achievement: '获得省级科研创新资助'
-                    }
+                    research: [
+                        {
+                            name: '物联网在智慧城市中的应用研究',
+                            manager: '王明',
+                            organization: '北京大学',
+                            level: '省级',
+                            time: '2018年-2019年',
+                            achievement: '提出一套采用区块链技术解决智慧城市设施信任问题的方案;开发了一种基于物联网的智能城市路灯系统;应用实践探讨了智慧城市中个人数据隐私保护的方案'
+                        }
+                    ]
                 },
                 {
                     id: 3,
                     name: '王五',
                     class: '三班',
-                    research: {
-                        name: '区块链技术在供应链金融中的应用研究',
-                        manager: '张三丰',
-                        organization: '复旦大学',
-                        level: '校级',
-                        time: '2020年-2021年',
-                        achievement: '获得校内科研成果奖'
-                    }
+                    research: [
+                        {
+                            name: '区块链技术在供应链金融中的应用研究',
+                            manager: '张三丰',
+                            organization: '复旦大学',
+                            level: '校级',
+                            time: '2020年-2021年',
+                            achievement: '提出一套区块链智能化供应链金融管理平台;成功开展区块链供应链金融的试点项目;担任南京银行区块链金融部门实习生，积累了丰富的从业经验'
+                        },
+                        {
+                            name: '城市经济发展的空间分析',
+                            manager: '李丹',
+                            organization: '上海交通大学',
+                            level: '国家级',
+                            time: '2019年-2021年',
+                            achievement: '发现城市中心区域与发展趋势之间的关系;制定了合理的城市空间规划，推动了城市的经济繁荣;参加国际学术会议并发表论文'
+                        }
+                    ]
                 }],
             finishedStudents: [],
             isReviewing: false,
