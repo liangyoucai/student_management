@@ -45,15 +45,22 @@
                     </el-row>
 
                     <template v-for="(project, index) in waitingStudents[currentIndex].research">
-                        <br>
-                        <el-divider v-if="index >= 0">参与的科研项目{{ index + 1 }}</el-divider>
+                        
+                        <div v-if="index >= 0"><h4>参与的科研项目{{ index + 1 }}</h4></div>
+                        <el-row>
+                            <el-col :span="16">
+                                <el-form-item label="名称">
+                                    <el-input v-model="project.name" :readonly=true></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item label="负责人">
+                                    <el-input v-model="project.manager" :readonly=true></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
 
-                        <el-form-item label="名称">
-                            <el-input v-model="project.name" :readonly=true></el-input>
-                        </el-form-item>
-                        <el-form-item label="负责人">
-                            <el-input v-model="project.manager" :readonly=true></el-input>
-                        </el-form-item>
+
                         <el-row>
                             <el-col :span="8">
                                 <el-form-item label="组织机构">
@@ -71,15 +78,10 @@
                                 </el-form-item>
                             </el-col>
                         </el-row>
-
-
-
                         <el-form-item label="项目成果">
                             <el-input type="textarea" autosize v-model="project.achievement" :readonly=true></el-input>
                         </el-form-item>
                     </template>
-
-
                 </el-form>
 
                 <el-divider></el-divider>
@@ -102,12 +104,15 @@
 
         <!-- 评分总览表 -->
         <overview-table :allStudents="allStudents.sort((a, b) => a.id - b.id)" v-if="isOverviewing" @review-from-overview="startReviewFromOverview">
-            <el-table-column label="学习情况总结" prop="research.name" :show-overflow-tooltip="true">
+            <!-- <el-table-column v-for="(project, index) in research" :key="index" label="科研项目名称" prop="project.name" :show-overflow-tooltip="true">
+            </el-table-column> -->
+
+            <el-table-column label="科研情况" width="350">
+                <template slot-scope="scope">
+                    <div v-for="(project, index) in scope.row.research" :key="index">{{ '项目' + (index + 1) + '：' + project.name }}</div>
+                </template>
             </el-table-column>
-            <el-table-column label="社会实践总结" prop="research.name" :show-overflow-tooltip="true">
-            </el-table-column>
-            <el-table-column label="自我评价" prop="research.name" :show-overflow-tooltip="true">
-            </el-table-column>
+
         </overview-table>
 
         <!-- 确认提交按钮与弹出提示 -->
@@ -151,7 +156,7 @@ export default {
                         {
                             name: '人工智能应用于智慧医疗研究',
                             manager: '李华',
-                            organization: '清华大学',
+                            organization: '北京大学',
                             level: '国家级',
                             time: '2019年-2020年',
                             achievement: '发表在 IEEE Transactions on Medical Imaging 上的一篇论文;开发了一套基于深度学习的医疗影像智能诊断系统;探索了疾病预测的可解释性与通用性'
@@ -164,7 +169,8 @@ export default {
                             time: '2020年-2021年',
                             achievement: '提出一种基于更安全的加密算法的银行信用风险识别方法，相较于传统方法精度提高10个百分点;在美国顶尖金融机构担任数据科学家实习生，积累了非常丰富的项目经验'
                         }
-                    ]
+                    ],
+                    score:null
                 },
                 {
                     id: 2,
@@ -175,11 +181,12 @@ export default {
                             name: '物联网在智慧城市中的应用研究',
                             manager: '王明',
                             organization: '北京大学',
-                            level: '省级',
+                            level: '国家级',
                             time: '2018年-2019年',
                             achievement: '提出一套采用区块链技术解决智慧城市设施信任问题的方案;开发了一种基于物联网的智能城市路灯系统;应用实践探讨了智慧城市中个人数据隐私保护的方案'
                         }
-                    ]
+                    ],
+                    score:null
                 },
                 {
                     id: 3,
@@ -202,7 +209,8 @@ export default {
                             time: '2019年-2021年',
                             achievement: '发现城市中心区域与发展趋势之间的关系;制定了合理的城市空间规划，推动了城市的经济繁荣;参加国际学术会议并发表论文'
                         }
-                    ]
+                    ],
+                    score:null
                 }],
             finishedStudents: [],
             isReviewing: false,
@@ -240,6 +248,11 @@ export default {
         },
         showNextStudent() {
             if (this.waitingStudents.length > 0) {
+                // 滚动到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
                 this.currentStudent = this.waitingStudents[0];
                 this.currentIndex = 0;
                 this.currentScore = 0;
