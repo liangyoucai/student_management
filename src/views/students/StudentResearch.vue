@@ -27,7 +27,7 @@
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="8">
+                    <el-col :span="16">
                         <el-form-item label="组织机构">
                             <el-input placeholder="请输入项目组织机构" v-model="form.research[index].organization"></el-input>
                         </el-form-item>
@@ -42,12 +42,16 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8">
+                </el-row>
+                <el-row>
+                    <el-col :span="12"> 
                         <el-form-item label="参与时间">
-                            <el-date-picker v-model="form.research[index].time" type="monthrange" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间">
+                            <el-date-picker style="" v-model="form.research[index].time" type="monthrange" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间">
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
+                    <el-col></el-col>
+
                 </el-row>
                 <el-form-item label="项目成果">
                     <el-input type="textarea" :rows="4" placeholder="请输入项目成果" v-model="form.research[index].achievements"></el-input>
