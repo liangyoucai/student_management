@@ -58,7 +58,14 @@
                         <span>学工管理员入口</span>
                     </template>
 
-                    <el-menu-item index="3-1" @click="$router.push('/stumanager/eximport')"><i class="el-icon-edit-outline"></i>学工管理员页面</el-menu-item>
+                    <el-menu-item index="3-1" @click="$router.push('/stumanager/eximport')"><i class="el-icon-edit-outline"></i>学生信息管理</el-menu-item>
+
+                    <el-submenu index="3-2">
+                      <template slot="title"><i class="el-icon-edit-outline"></i>学生评分汇总</template>
+                      <el-menu-item index="3-2-1" @click="$router.push('/stumanager/gradenonsum')"><i class="el-icon-edit-outline"></i>未测评学生</el-menu-item>
+                      <el-menu-item index="3-2-2" @click="$router.push('/stumanager/gradesum')"><i class="el-icon-edit-outline"></i>已测评学生</el-menu-item>
+                    </el-submenu>
+                    
                 </el-submenu>
 
                 <el-menu-item index="/logout" @click="">
