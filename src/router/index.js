@@ -40,6 +40,16 @@ const routes = [
         component: () => import("../views/students/ServiceWorks.vue"),
       },
       {
+        path: "stumanager/gradesum",
+        name: "StuManagergradesum",
+        component: () => import("../views/stumanager/stumanagergrade/StuManagerGradeSum.vue"),
+      },
+      {
+        path: "stumanager/gradenonsum",
+        name: "StuManagergradenonsum",
+        component: () => import("../views/stumanager/stumanagergrade/StuManagerGradeNonSum.vue"),
+      },
+      {
         path: "stumanager/eximport",
         name: "StuManagerExImport",
         component: () => import("../views/stumanager/StuManagerExImport.vue"),
