@@ -39,6 +39,11 @@ const routes = [
         name: "StudentServiceWorkExperience",
         component: () => import("../views/students/ServiceWorks.vue"),
       },
+      {
+        path: "stumanager/eximport",
+        name: "StuManagerExImport",
+        component: () => import("../views/stumanager/StuManagerExImport.vue"),
+      },
     ],
   }
 ];
