@@ -58,8 +58,7 @@
                         <span>学工管理员入口</span>
                     </template>
 
-                    <el-menu-item index="3-1"><i class="el-icon-edit-outline"></i>学工管理员页面</el-menu-item>
-
+                    <el-menu-item index="3-1" @click="$router.push('/stumanager/eximport')"><i class="el-icon-edit-outline"></i>学工管理员页面</el-menu-item>
                 </el-submenu>
 
                 <el-menu-item index="/logout" @click="">
