@@ -2,7 +2,7 @@
   <div>
 
     <div class="title">
-      <h1 class="title">学生数据管理 - 导入/导出</h1>
+      <h1 class="title">学生名单管理 - 导入/导出</h1>
       <el-divider></el-divider>
     </div>
 
@@ -38,24 +38,20 @@
     </div>
     
     <el-table :data="tableData" style="width: 100%" id="mainTable">
-      <el-table-column prop="date" label="更新日期" width="100"> </el-table-column>
-      <el-table-column prop="ID" label="学号" width="120">
+      <el-table-column prop="date" label="更新日期" width="160"> </el-table-column>
+      <el-table-column prop="ID" label="学号" width="160">
       </el-table-column>
       <el-table-column prop="name" label="姓名" width="120">
       </el-table-column>
       <el-table-column prop="sex" label="性别" width="100">
       </el-table-column>
-      <el-table-column prop="grade" label="年级" width="100">
+      <el-table-column prop="grade" label="年级" width="140">
       </el-table-column>
-      <el-table-column prop="class" label="学苑" width="100">
+      <el-table-column prop="class" label="学苑" width="140">
       </el-table-column>
-      <el-table-column prop="major" label="专业" width="180">
+      <el-table-column prop="major" label="专业" width="200">
       </el-table-column>
       <el-table-column prop="mailbox" label="邮箱地址" width="250">
-      </el-table-column>
-      <el-table-column prop="evaluationstatus" label="测评状态" width="100">
-      </el-table-column>
-      <el-table-column prop="totalpoints" label="测评总分" width="100">
       </el-table-column>
     </el-table>
   </div>
@@ -76,8 +72,6 @@ export default {
           grade: "2022级",
           class: "求知三苑",
           major: "软件工程大数据方向",
-          evaluationstatus: "未测评",
-          totalpoints: "/",
           mailbox: "watermelon_boom@163.com",
         },
       ],
@@ -88,7 +82,7 @@ export default {
     //导出
     exportClick() {
       //第一个参数是到处后文件名，第二个是id绑定表格dom
-      this.exportExcel("test", "mainTable");
+      this.exportExcel("学生信息管理_导出", "mainTable");
     },
     //转换数据
     exportExcel(filename, tableId) {
@@ -156,8 +150,6 @@ export default {
               class: ws[i]["学苑"],
               major: ws[i]["专业"],
               mailbox: ws[i]["邮箱地址"],
-              evaluationstatus: ws[i]["测评状态"],
-              totalpoints: ws[i]["测评总分"],
             };
             console.log("上传的数据:", sheetData);
             //添加到表格中
