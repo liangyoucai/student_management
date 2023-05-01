@@ -1,15 +1,13 @@
 <template>
   <div>
+
+    <div class="title">
+      <h1 class="title">学生数据管理 - 导入/导出</h1>
+      <el-divider></el-divider>
+    </div>
+
     <div class="titleBtn">
-      <!-- 导出Excel -->
-      <el-button
-        @click="exportClick"
-        type="primary"
-        size="small"
-        style="margin: 0 20px"
-        icon="el-icon-folder-opened"
-        >导出</el-button
-      >
+      
       <!-- 导入Excel -->
       <el-upload
         action="/上传文件的接口"
@@ -20,10 +18,23 @@
         ref="upload"
         :multiple="true"
       >
-        <el-button type="warning" icon="el-icon-folder-add" size="small"
+        <el-button 
+        type="warning" 
+        icon="el-icon-folder-add" 
+        size="small"
+        style="margin: 0 380px"
           >导入</el-button
         >
       </el-upload>
+
+      <!-- 导出Excel -->
+      <el-button
+        @click="exportClick"
+        type="primary"
+        size="small"
+        icon="el-icon-folder-opened"
+        >导出</el-button
+      >
     </div>
     
     <el-table :data="tableData" style="width: 100%" id="mainTable">
@@ -165,9 +176,16 @@ export default {
   },
 };
 </script>
+
 <style scoped>
-.titleBtn {
-  display: flex;
-  margin: 20px 0;
-}
+  .title {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .titleBtn {
+    display: flex;
+    margin: 20px 0;
+  }
 </style>
+  
