@@ -29,6 +29,16 @@ const routes = [
         name: "StudentResearch",
         component: () => import("../views/students/StudentResearch.vue"),
       },
+      {
+        path: "student/social",
+        name: "StudentSocialExperience",
+        component: () => import("../views/students/SocialExperience.vue"),
+      },
+      {
+        path: "student/works",
+        name: "StudentServiceWorkExperience",
+        component: () => import("../views/students/ServiceWorks.vue"),
+      },
     ],
   }
 ];
