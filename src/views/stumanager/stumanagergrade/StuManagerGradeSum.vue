@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
 
     <div class="title">
       <h1 class="title">学生评分汇总 - 已测评</h1>
@@ -7,7 +7,7 @@
     </div>
 
     <div class="titleBtn">
-
+      
       <!-- 导出Excel -->
       <el-button
         @click="exportClick"
@@ -18,27 +18,30 @@
       >
     </div>
     
-    <el-table :data="tableData" style="width: 100%" id="mainTable">
-      <el-table-column prop="date" label="更新日期" width="100"> </el-table-column>
-      <el-table-column prop="ID" label="学号" width="120">
-      </el-table-column>
-      <el-table-column prop="name" label="姓名" width="120">
-      </el-table-column>
-      <el-table-column prop="sex" label="性别" width="100">
-      </el-table-column>
-      <el-table-column prop="grade" label="年级" width="100">
-      </el-table-column>
-      <el-table-column prop="class" label="学苑" width="100">
-      </el-table-column>
-      <el-table-column prop="major" label="专业" width="180">
-      </el-table-column>
-      <el-table-column prop="mailbox" label="邮箱地址" width="250">
-      </el-table-column>
-      <el-table-column prop="evaluationstatus" label="测评状态" width="100">
-      </el-table-column>
-      <el-table-column prop="totalpoints" label="测评总分" width="100">
-      </el-table-column>
-    </el-table>
+    <div class="main">
+      <el-table :data="tableData" style="width: 100%" id="mainTable" max-height="500">
+        <el-table-column prop="no" label="序号" width="80"> 
+          <template slot-scope="scope">
+            {{ scope.$index + 1}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="date" label="更新日期" width="140"> </el-table-column>
+        <el-table-column prop="ID" label="学号" width="140">
+        </el-table-column>
+        <el-table-column prop="name" label="姓名" width="120">
+        </el-table-column>
+        <el-table-column prop="sex" label="性别" width="100">
+        </el-table-column>
+        <el-table-column prop="grade" label="年级" width="140">
+        </el-table-column>
+        <el-table-column prop="class" label="学苑" width="140">
+        </el-table-column>
+        <el-table-column prop="major" label="专业" width="200">
+        </el-table-column>
+        <el-table-column prop="mailbox" label="邮箱地址" width="250">
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
@@ -53,7 +56,7 @@ export default {
           date: "2002-06-28",
           ID: "2200022758",
           name: "ZYY",
-          sex: "♂",
+          sex: "男",
           grade: "2022级",
           class: "求知三苑",
           major: "软件工程大数据方向",
@@ -125,7 +128,7 @@ export default {
           const wsname = workbook.SheetNames[0]; //取第一张表
           const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]); //生成json表格内容
           console.log("生成json：", ws);
-          // that.tableData = [];
+          that.tableData = [];
           for (var i = 1; i < ws.length; i++) {
             let sheetData = {
               // 键名为绑定 el 表格的关键字，值则是 ws[i][对应表头名]
@@ -159,14 +162,28 @@ export default {
 </script>
 
 <style scoped>
-  .title {
-    font-size: 28px;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  .titleBtn {
-    /* display: flex; */
-    margin: 20px 0;
-  }
+  html, body {
+   height: 100%;
+   width: 100%;
+ }
+ .container {
+   display: flex;
+   flex-direction: column;
+   height: 100vh;
+ }
+ .title {
+   font-size: 28px;
+   text-align: center;
+ }
+ .titleBtn {
+   margin: 20px 0;
+   margin-bottom: 50px;
+ }
+ .main {
+   flex: 1;
+   width: 100%;
+   overflow-y: auto;
+ }
 </style>
   
+
