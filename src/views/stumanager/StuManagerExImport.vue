@@ -51,9 +51,9 @@
         </el-table-column>
         <el-table-column prop="sex" label="性别" width="100">
         </el-table-column>
-        <el-table-column prop="grade" label="年级" width="140">
+        <el-table-column prop="grade" label="年级" width="120">
         </el-table-column>
-        <el-table-column prop="class" label="学苑" width="140">
+        <el-table-column prop="class" label="学苑" width="120">
         </el-table-column>
         <el-table-column prop="major" label="专业" width="200">
         </el-table-column>
