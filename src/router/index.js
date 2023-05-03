@@ -49,8 +49,6 @@ const routes = [
         name: "UploadServiceWork",
         component: () => import("../views/students/ServiceUpload.vue"),
       },
-      
-      
       {
         path: "stumanager/gradesum",
         name: "StuManagergradesum",
@@ -66,6 +64,26 @@ const routes = [
         name: "StuManagerExImport",
         component: () => import("../views/stumanager/StuManagerExImport.vue"),
       },
+      {
+        path: "judge/volunteer-service",
+        name: "JudgeVolunteerService",
+        component: () => import("../views/judges/JudgeVolunteerService.vue"),
+      },
+      {
+        path: "judge/GPA",
+        name: "JudgeGPA",
+        component: () => import("../views/judges/JudgeGPA.vue"),
+      },
+      {
+        path: "student/volunteer-service",
+        name: "StudentVolunteerService",
+        component: () => import("../views/students/StudentVolunteerService.vue"),
+      },
+      {
+        path: "student/GPA",
+        name: "StudentGPA",
+        component: () => import("../views/students/StudentGPA.vue"),
+      }
     ],
   }
 ];
