@@ -30,15 +30,27 @@ const routes = [
         component: () => import("../views/students/StudentResearch.vue"),
       },
       {
-        path: "student/social",
+        path: "judge/social",
         name: "StudentSocialExperience",
-        component: () => import("../views/students/SocialExperience.vue"),
+        component: () => import("../views/judges/SocialExperience.vue"),
       },
       {
-        path: "student/works",
-        name: "StudentServiceWorkExperience",
-        component: () => import("../views/students/ServiceWorks.vue"),
+        path: "student/social",
+        name: "UploadSocialExperience",
+        component: () => import("../views/students/SocialUpload.vue"),
       },
+      {
+        path: "judge/service",
+        name: "StudentServiceWorks",
+        component: () => import("../views/judges/ServiceWorks.vue"),
+      },
+      {
+        path: "student/service",
+        name: "UploadServiceWork",
+        component: () => import("../views/students/ServiceUpload.vue"),
+      },
+      
+      
       {
         path: "stumanager/gradesum",
         name: "StuManagergradesum",
