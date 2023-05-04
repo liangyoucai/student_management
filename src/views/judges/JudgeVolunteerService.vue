@@ -146,7 +146,6 @@
       text-align: center;
     }
     .titleBtn {
-      display: flex;
       margin: 20px 0;
       margin-bottom: 50px;
     }

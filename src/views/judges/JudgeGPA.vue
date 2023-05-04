@@ -22,7 +22,7 @@
           type="warning" 
           icon="el-icon-folder-add" 
           size="small"
-          style="margin: 0 380px"
+          style="margin: 0 80px"
             >导入</el-button
           >
         </el-upload>
@@ -43,7 +43,7 @@
           </el-table-column>
           <el-table-column prop="class" label="学苑" width="120">
           </el-table-column>
-          <el-table-column prop="GPA" label="GPA" width="200">
+          <el-table-column prop="GPA" label="GPA" width="120">
           </el-table-column>
             
         </el-table>
@@ -146,9 +146,9 @@
       text-align: center;
     }
     .titleBtn {
-      display: flex;
       margin: 20px 0;
       margin-bottom: 50px;
+      
     }
     .main {
       margin: 0 auto;
