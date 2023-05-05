@@ -2,7 +2,7 @@
     <div class="my-form">
         <h1 class="title">学生科研情况 - 在线填写</h1>
         <el-divider></el-divider>
-        <el-form :model="form" label-width="120px" ref="form" :rules="rules">
+        <el-form :model="form" label-width="120px" ref="form">
             <div v-for="(project, index) in form.research" :key="project.key">
                 <el-row type="flex">
                     <el-col :span="22">
@@ -15,25 +15,33 @@
                 </el-row>
                 <el-row>
                     <el-col :span="16">
-                        <el-form-item label="名称">
+                        <el-form-item label="名称" :prop="'research.' + index + '.name'" :rules="{
+                                required: true, message: '该项不能为空', trigger: 'blur'
+                            }">
                             <el-input placeholder="请输入项目名称" v-model="form.research[index].name">
                             </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
-                        <el-form-item label="负责人">
+                        <el-form-item label="负责人" :prop="'research.' + index + '.manager'" :rules="{
+                                required: true, message: '该项不能为空', trigger: 'blur'
+                            }">
                             <el-input placeholder="请输入项目负责人" v-model="form.research[index].manager"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="16">
-                        <el-form-item label="组织机构">
+                        <el-form-item label="组织机构" :prop="'research.' + index + '.organization'" :rules="{
+                                required: true, message: '该项不能为空', trigger: 'blur'
+                            }">
                             <el-input placeholder="请输入项目组织机构" v-model="form.research[index].organization"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
-                        <el-form-item label="项目级别">
+                        <el-form-item label="项目级别" :prop="'research.' + index + '.level'" :rules="{
+                                required: true, message: '该项不能为空', trigger: 'change'
+                            }">
                             <el-select v-model="form.research[index].level" placeholder="请选择项目级别" style="width: 100%;">
                                 <el-option label="国家级" value="国家级"></el-option>
                                 <el-option label="省级" value="省级"></el-option>
@@ -44,16 +52,20 @@
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="12"> 
-                        <el-form-item label="参与时间">
-                            <el-date-picker style="" v-model="form.research[index].time" type="monthrange" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间">
+                    <el-col :span="12">
+                        <el-form-item label="参与时间" :prop="'research.' + index + '.time'" :rules="{
+                                required: true, message: '该项不能为空', trigger: 'change'
+                            }" style="float: left">
+                            <el-date-picker v-model="form.research[index].time" type="monthrange" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间">
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
-                    <el-col></el-col>
+
 
                 </el-row>
-                <el-form-item label="项目成果">
+                <el-form-item label="项目成果" :prop="'research.' + index + '.achievements'" :rules="{
+                        required: true, message: '该项不能为空', trigger: 'blur'
+                    }">
                     <el-input type="textarea" :rows="4" placeholder="请输入项目成果" v-model="form.research[index].achievements"></el-input>
                 </el-form-item>
             </div>
@@ -83,17 +95,6 @@ export default {
                     }
                 ]
             },
-            rules: {
-                studySummary: [
-                    { required: true, message: '该项不能为空', trigger: 'blur' },
-                ],
-                practiceSummary: [
-                    { required: true, message: '该项不能为空', trigger: 'blur' },
-                ],
-                selfEvaluation: [
-                    { required: true, message: '该项不能为空', trigger: 'blur' },
-                ],
-            }
         };
     },
     methods: {
