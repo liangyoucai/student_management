@@ -2,10 +2,10 @@
   <div class="container">
 
     <div class="title">
-      <h1 class="title">学生评分汇总 - 已测评学生信息</h1>
-      
+      <h1 class="title">学生评分汇总 - 已测评</h1>
+      <el-divider></el-divider>
     </div>
-<el-divider></el-divider>
+
     <div class="titleBtn">
       
       <!-- 导出Excel -->
@@ -20,26 +20,34 @@
     
     <div class="main">
       <el-table :data="tableData" style="width: 100%" id="mainTable" max-height="500">
-        <el-table-column prop="no" label="序号" width="80"> 
+        <el-table-column prop="no" label="序号" width="60"> 
           <template slot-scope="scope">
             {{ scope.$index + 1}}
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="更新日期" width="140"> </el-table-column>
-        <el-table-column prop="ID" label="学号" width="140">
+        <el-table-column prop="date" label="更新日期" width="120"> </el-table-column>
+        <el-table-column prop="ID" label="学号" width="120">
         </el-table-column>
-        <el-table-column prop="name" label="姓名" width="120">
+        <el-table-column prop="name" label="姓名" width="100">
         </el-table-column>
         <el-table-column prop="sex" label="性别" width="100">
         </el-table-column>
-        <el-table-column prop="grade" label="年级" width="120">
+        <el-table-column prop="grade" label="年级" width="100">
         </el-table-column>
-        <el-table-column prop="class" label="学苑" width="120">
+        <el-table-column prop="class" label="学苑" width="100">
         </el-table-column>
-        <el-table-column prop="major" label="专业" width="200">
+        <el-table-column prop="major" label="专业" width="180">
         </el-table-column>
-        <el-table-column prop="mailbox" label="邮箱地址" width="250">
+        <el-table-column prop="mailbox" label="邮箱地址" width="220">
         </el-table-column>
+        <el-table-column label="操作" prop="action">
+          <template slot-scope="scope">
+            <!-- 使用作用域插槽获取当前行数据 -->
+            <el-button :class="{ 'red-button': scope.row.buttonText === '重新测评', 'blue-button': scope.row.buttonText === '待测评' }" @click="handleButtonClick(scope.row)">
+              {{ scope.row.buttonText }} </el-button>
+          </template>
+        </el-table-column>
+      
       </el-table>
     </div>
   </div>
@@ -51,6 +59,7 @@ import * as XLSX from "xlsx";
 export default {
   data() {
     return {
+      defaultButtonText: '重新测评',
       tableData: [
         {
           date: "2002-06-28",
@@ -67,8 +76,18 @@ export default {
       ],
     };
   },
+
+  created() {
+    // 使用map()方法为每个行数据对象添加按钮文本属性
+    this.tableData = this.tableData.map(row => ({ ...row, buttonText: this.defaultButtonText }));
+  },
   
   methods: {
+    handleButtonClick(row) {
+      if (row.buttonText === '重新测评') {
+        row.buttonText = '待测评';
+      }
+    },
     //导出
     exportClick() {
       //第一个参数是到处后文件名，第二个是id绑定表格dom
@@ -167,8 +186,6 @@ export default {
    width: 100%;
  }
  .container {
-  margin: 10px auto;
-    max-width: 900px;
    display: flex;
    flex-direction: column;
    height: 100vh;
@@ -186,6 +203,16 @@ export default {
    width: 100%;
    overflow-y: auto;
  }
+
+ .red-button {
+  background-color: rgb(245, 108, 108);
+  color: white;
+}
+
+.blue-button {
+  background-color: rgb(64, 158, 255);
+  color: white;
+}
+
 </style>
   
-
