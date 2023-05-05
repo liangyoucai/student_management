@@ -8,7 +8,6 @@
           <div class="content">
             <h1>欢迎您, 李平 老师!</h1>
             <p>现在是 {{ nowTime }}</p>
-            <!-- <p>Welcome, {{ username }}!</p> -->
           </div>
         </el-main>
       </el-container>
@@ -16,7 +15,6 @@
   </template>
   
   <script>
-//   import user from "@/api/user";
   
   export default {
     name: "SuccessPage",

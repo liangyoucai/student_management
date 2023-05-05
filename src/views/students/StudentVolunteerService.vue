@@ -3,9 +3,9 @@
   
       <div class="title">
         <h1 class="title">志愿服务时长 - 在线审核</h1>
-        <el-divider></el-divider>
+        
       </div>
-  
+      <el-divider></el-divider>
       <div class="main">
         <el-table :data="tableData" style="width: 100%" id="mainTable" max-height="500">
           <el-table-column prop="no" label="序号" width="80"> 
@@ -79,6 +79,8 @@
       margin: 0 auto;
     }
     .container {
+      margin: 10px auto;
+      max-width: 900px;
       display: flex;
       flex-direction: column;
       height: 100vh;
