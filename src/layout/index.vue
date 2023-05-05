@@ -80,7 +80,7 @@
                     <img src="./img/logo01.png" alt="logo" height="80px">
                     <img src="./img/name.png" alt="caption" height="80px">
                     <div class="time">{{ nowTime }}</div>
-                    <h1>学生奖学金评定系统</h1>
+                    <h1>学生综合测评系统</h1>
                     
                 </div>
                 <el-divider borderWidth = "2px"></el-divider>
