@@ -3,9 +3,9 @@
 
     <div class="title">
       <h1 class="title">学生评分汇总 - 已测评</h1>
-      <el-divider></el-divider>
+      
     </div>
-
+    <el-divider></el-divider>
     <div class="titleBtn">
       
       <!-- 导出Excel -->
@@ -186,6 +186,8 @@ export default {
    width: 100%;
  }
  .container {
+  margin: 10px auto;
+    max-width: 900px;
    display: flex;
    flex-direction: column;
    height: 100vh;
