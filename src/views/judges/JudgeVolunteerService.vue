@@ -3,9 +3,9 @@
   
       <div class="title">
         <h1 class="title">志愿服务时长 - 导入</h1>
-        
+        <el-divider></el-divider>
       </div>
-      <el-divider ></el-divider>
+  
       <div class="titleBtn">
         
         <!-- 导入Excel -->
@@ -37,11 +37,11 @@
             </template>
           </el-table-column>
           <el-table-column prop="date" label="更新日期" width="140"> </el-table-column>
-          <el-table-column prop="class" label="学苑" width="120">
-          </el-table-column>
           <el-table-column prop="ID" label="学号" width="140">
           </el-table-column>
           <el-table-column prop="name" label="姓名" width="120">
+          </el-table-column>
+          <el-table-column prop="class" label="学苑" width="120">
           </el-table-column>
           <el-table-column prop="hours" label="志愿服务时长" width="120">
           </el-table-column>
@@ -137,22 +137,14 @@
       margin: 0 auto;
     }
     .container {
-      margin: 10px auto;
-      max-width: 900px;
       display: flex;
       flex-direction: column;
       height: 100vh;
-      /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
     }
-    .el-divider--horizontal {
-    margin-top: 3px;
-}
     .title {
       font-size: 28px;
       text-align: center;
-      
     }
-    
     .titleBtn {
       margin: 20px 0;
       margin-bottom: 50px;
