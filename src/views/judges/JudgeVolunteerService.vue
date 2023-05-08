@@ -3,9 +3,9 @@
   
       <div class="title">
         <h1 class="title">志愿服务时长 - 导入</h1>
-        <el-divider></el-divider>
+        
       </div>
-  
+      <el-divider ></el-divider>
       <div class="titleBtn">
         
         <!-- 导入Excel -->
@@ -37,16 +37,45 @@
             </template>
           </el-table-column>
           <el-table-column prop="date" label="更新日期" width="140"> </el-table-column>
+          <el-table-column prop="class" label="学苑" width="120">
+          </el-table-column>
           <el-table-column prop="ID" label="学号" width="140">
           </el-table-column>
           <el-table-column prop="name" label="姓名" width="120">
           </el-table-column>
-          <el-table-column prop="class" label="学苑" width="120">
-          </el-table-column>
           <el-table-column prop="hours" label="志愿服务时长" width="120">
           </el-table-column>
-            
+          <el-table-column prop="state" label="状态" width="120">
+            <template slot-scope="scope">
+              <template v-if="scope.row.state === 0">
+                未确认
+              </template>
+              <template v-else-if="scope.row.state === 1">
+                已确认
+              </template>
+              <template v-else-if="scope.row.state === 2">
+                有误
+              </template>
+            </template>
+          </el-table-column>
+          <el-table-column prop="do" label="操作" width="120">
+              <template slot-scope="scope">
+                <el-button type="primary" :disabled="scope.row.state !== 2" @click="showDialog(scope.row)">修改</el-button>
+              </template>
+          </el-table-column>
         </el-table>
+        
+        <el-dialog :visible.sync="dialogVisible">
+          <el-form :model="form" ref="form" label-width="100px">
+            <el-form-item label="志愿服务时长">
+              <el-input v-model="form.hours"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleChange">确定</el-button>
+          </div>
+        </el-dialog>
       </div>
   
     </div>
@@ -61,16 +90,63 @@
         tableData: [
           {
             date: "2002-06-28",
+            ID: "2200022600",
+            name: "ABC",
+            class: "求知三苑",
+            hours: "80",
+            state: 1
+          },
+          {
+            date: "2002-06-28",
+            ID: "2200022700",
+            name: "DEF",
+            class: "求知三苑",
+            hours: "50",
+            state: 2
+          },
+          {
+            date: "2002-06-28",
             ID: "2200022758",
             name: "ZYY",
             class: "求知三苑",
             hours: "30",
+            state: 0
           },
         ],
+        dialogVisible: false,
+        form: {
+          hours: ''
+        },
+        currentRow: null,
       };
     },
     
     methods: {
+      showDialog(row) {
+        // 记录当前行的数据到 tempData 中
+        this.tempData = Object.assign({}, row);
+        this.currentRow = row;
+        // 将当前行的数据赋值给对话框的 form 对象
+        this.form.ID = row.ID;
+        this.form.name = row.name;
+        this.form.hours = row.hours;
+        this.dialogVisible = true; // 显示对话框
+      },
+      handleChange(){
+        // 判断数据是否合法
+        if (!this.form.hours || isNaN(this.form.hours) || this.form.hours < 0 || this.form.hours > 10000) {
+          this.$message.error('请输入有效的志愿服务时长');
+          return;
+        }
+        // 处理修改逻辑
+        // 获取当前行的索引
+        const index = this.tableData.findIndex(item => item === this.currentRow);
+        // 更新当前行数据
+        this.tableData[index].hours = this.form.hours;
+        this.tableData[index].state = 0;
+        
+        this.dialogVisible = false;
+      },
       //导入
       onChange(file, fileList) {
         this.readExcel(file); // 调用读取数据的方法
@@ -137,14 +213,22 @@
       margin: 0 auto;
     }
     .container {
+      margin: 10px auto;
+      max-width: 900px;
       display: flex;
       flex-direction: column;
       height: 100vh;
+      /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
     }
+    .el-divider--horizontal {
+    margin-top: 3px;
+}
     .title {
       font-size: 28px;
       text-align: center;
+      
     }
+    
     .titleBtn {
       margin: 20px 0;
       margin-bottom: 50px;
