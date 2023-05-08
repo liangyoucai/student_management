@@ -3,9 +3,9 @@
   
       <div class="title">
         <h1 class="title">个人成绩 - 在线审核</h1>
+        <el-divider></el-divider>
       </div>
-      <el-divider></el-divider>
-
+  
       <div class="main">
         <el-table :data="tableData" style="width: 100%" id="mainTable" max-height="500">
           <el-table-column prop="no" label="序号" width="80"> 
@@ -23,7 +23,7 @@
   
       <div class="footer">
         <el-button type="primary" v-if="!isConfirmed" @click="confirm">确认</el-button>
-        <el-button type="danger" v-if="!isConfirmed" @click="report">有误</el-button>
+        <el-button type="danger" v-if="!isConfirmed" @click="report">信息有误</el-button>
         <el-button type="info" v-else disabled>已确认</el-button>
       </div>
 
@@ -57,12 +57,24 @@
         // 在提交成功后进行一些提示或跳转
         this.$message.success('信息已确认');
       },
-      report(){
-        // 将错误上报信息传送到后台服务器
-        console.log(0);
-        // 在提交成功后进行一些提示或跳转
-        this.$message.success('错误信息已上报，请等待老师与您联系');
-      }
+      report() {
+    this.$prompt('请输入备注信息',  {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      inputPlaceholder: '在此备注有错误的信息',
+      inputValidator: (value) => {
+        // 验证输入的内容是否为空
+        return value !== '';
+      },
+    }).then(({ value }) => {
+      // 将错误上报信息传送到后台服务器
+      console.log(value);
+      // 在提交成功后进行一些提示或跳转
+      this.$message.success('信息已上报，请等待老师与您联系');
+    }).catch(() => {
+      // 取消操作，不需要做任何事情
+    });
+  }
     },
   };
   </script>
@@ -74,8 +86,6 @@
       margin: 0 auto;
     }
     .container {
-      margin: 10px auto;
-      max-width: 900px;
       display: flex;
       flex-direction: column;
       height: 100vh;
