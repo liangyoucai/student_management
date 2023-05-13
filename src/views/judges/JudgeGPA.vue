@@ -87,6 +87,8 @@
   </template>
   
   <script>
+  import axios from 'axios';
+  import { saveExcelData } from '@/api/grade/gradeApi';
   import FileSaver from "file-saver";
   import * as XLSX from "xlsx";
   export default {
@@ -166,6 +168,24 @@
           this.$message.error("上传格式不正确，请上传xls或者xlsx格式");
           return false;
         }
+
+      const formData = new FormData();
+      formData.append('file', file.raw); // 将文件添加到 FormData 对象中
+
+      // 发送 POST 请求，将文件传递给后端
+      axios.post('/api/grade/upload', formData)
+        .then(response => {
+          // 处理上传成功的逻辑
+          this.$message.success("文件上传成功");
+          // 根据后端返回的数据进行操作
+          console.log(response.data);
+        })
+        .catch(error => {
+          // 处理上传失败的逻辑
+          this.$message.error("文件上传失败");
+          console.error(error);
+        });
+
         const fileReader = new FileReader();
         fileReader.onload = (ev) => {
           try {
@@ -191,7 +211,7 @@
                 ID: ws[i]["学号"],
                 name: ws[i]["姓名"],
                 class: ws[i]["学苑"],
-                GPA: ws[i]["GPA"],
+                hours: ws[i]["志愿服务时长"],
               };
               console.log("上传的数据:", sheetData);
               //添加到表格中
