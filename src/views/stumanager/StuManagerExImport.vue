@@ -73,14 +73,14 @@ export default {
     return {
       tableData: [
         {
-          date: "2002-06-28",
-          ID: "2200022758",
-          name: "ZYY",
+          date: "1111-11-1",
+          ID: "111111",
+          name: "111",
           sex: "男",
           grade: "2022级",
-          class: "求知三苑",
-          major: "软件工程大数据方向",
-          mailbox: "watermelon_boom@163.com",
+          class: "123",
+          major: "123",
+          mailbox: "123@163.com",
         },
       ],
     };
