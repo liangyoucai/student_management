@@ -106,10 +106,12 @@
 .side-bar {
     display: flex;
     height: 100%;
+    width: 100%;
+    overflow: auto;
 }
 
 .el-menu-vertical-demo {
-    min-width: 14%;
+    // min-width: 14%;
 }
 
 .main-content {
