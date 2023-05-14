@@ -62,16 +62,16 @@ export default {
       defaultButtonText: '重新测评',
       tableData: [
         {
-          date: "2002-06-28",
-          ID: "2200022758",
-          name: "ZYY",
+          date: "1111-11-1",
+          ID: "11111",
+          name: "123",
           sex: "男",
           grade: "2022级",
-          class: "求知三苑",
-          major: "软件工程大数据方向",
+          class: "123",
+          major: "123",
           evaluationstatus: "已测评",
           totalpoints: "66",
-          mailbox: "watermelon_boom@163.com",
+          mailbox: "123@163.com",
         },
       ],
     };
