@@ -6,25 +6,15 @@
 
     </div>
     <el-divider></el-divider>
+    <!-- 导入按钮 -->
     <div class="titleBtn">
-
-      <!-- 导入Excel -->
-      <!-- <el-upload action="#" :http-request="uploadHttpRequest" :on-change="onChange" :auto-upload="false" :show-file-list="false" accept=".xls, .xlsx" ref="upload" :multiple="true">
-        <el-button type="warning" icon="el-icon-folder-add" size="small" style="margin: 0 80px">导入</el-button>
-      </el-upload>
-      <el-row>
-        <el-button type="primary" size="small" @click="submitUpload">上 传</el-button>
-      </el-row> -->
-      <el-upload ref="upload" accept=".xls,.xlsx" action='#' :auto-upload="false" :multiple="false" :file-list="fileList" :before-upload="beforeUpload" :http-request="uploadHttpRequest" :on-remove="fileRemove" :on-change="fileChange">
-        <el-button size="small" type="primary">选择文件</el-button>
-        <div slot="tip" class="el-upload__tip">一次只能上传一个xls/xlsx文件，且不超过10M</div>
-      </el-upload>
-      <el-row>
-        <el-button size="small" @click="closeDialog">取 消</el-button>
-        <el-button type="primary" size="small" @click="submitUpload">上 传</el-button>
-      </el-row>
+      <el-button type="warning" icon="el-icon-folder-add" size="small" style="margin: 0 80px" @click="openImportDialog">导入</el-button>
     </div>
-
+    <!-- 上传对话框 -->
+    <div v-if="isImportFileDialogVisible">
+      <importFileDialog importName="grade" importTitle="上传学生成绩文件" importTip="一次只能上传一个xls/xlsx文件，且不超过10M" @close-dialog="closeImportDialog">
+      </importFileDialog>
+    </div>
     <div class="main">
       <el-table :data="tableData" style="width: 100%" id="mainTable" max-height="500">
         <el-table-column prop="no" label="序号" width="80">
@@ -83,13 +73,16 @@
 </template>
   
 <script>
-import { uploadHttpRequest } from '@/api/grade/gradeApi';
-
+import importFileDialog from '@/components/importFileDialog.vue'
 import axios from 'axios';
-import { saveExcelData, submitUpload } from '@/api/grade/gradeApi';
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
+
 export default {
+  emits: ['close-dialog'],
+  components: {
+    importFileDialog
+  },
   data() {
     return {
       tableData: [
@@ -119,6 +112,7 @@ export default {
         },
       ],
       dialogVisible: false,
+      isImportFileDialogVisible: false,
       form: {
         GPA: ''
       },
@@ -127,65 +121,11 @@ export default {
   },
 
   methods: {
-    beforeUpload(file) {
-      //文件类型
-      const isType = file.type === 'application/vnd.ms-excel'
-      const isTypeComputer = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      const fileType = isType || isTypeComputer
-      if (!fileType) {
-        this.$message.error('上传文件只能是xls/xlsx格式！')
-      }
-
-      // 文件大小限制为10M
-      const fileLimit = file.size / 1024 / 1024 < 10;
-      if (!fileLimit) {
-        this.$message.error('上传文件大小不超过10M！');
-      }
-      return fileType && fileLimit
+    openImportDialog() {
+      this.isImportFileDialogVisible = true;
     },
-    // 自定义上传方法，param是默认参数，可以取得file文件信息，具体信息如下图
-    uploadHttpRequest(param) {
-      const formData = new FormData() //FormData对象，添加参数只能通过append('key', value)的形式添加
-      formData.append('file', param.file) //添加文件对象
-      formData.append('uploadType', this.rulesType)
-      const url = `http://localhost:28080/api/grade/import` //上传地址
-      axios.post(url, formData)
-        .then(res => {
-          console.log(res)
-          if (res.status === 200) {
-            param.onSuccess()  // 上传成功的文件显示绿色的对勾
-            // this.uploadMark = mark
-            this.$message.success('上传成功');
-          }
-          return;
-        })
-        .catch(err => {
-          console.log('失败', err)
-          param.onError() //上传失败的文件会从文件列表中删除
-        })
-    },
-
-    // 点击上传：手动上传到服务器，此时会触发组件的http-request
-    submitUpload() {
-      this.$refs.upload.submit()
-    },
-    // 文件发生改变
-    fileChange(file, fileList) {
-      if (fileList.length > 0) {
-        this.fileList = [fileList[fileList.length - 1]] // 展示最后一次选择的文件
-      }
-    },
-    // 移除选择的文件
-    fileRemove(file, fileList) {
-      if (fileList.length < 1) {
-        this.uploadDisabled = true //未选择文件则禁用上传按钮
-      }
-    },
-    // 取消
-    closeDialog() {
-      this.$refs.upload.clearFiles() //清除上传文件对象
-      this.fileList = [] //清空选择的文件列表
-      this.$emit('close', false)
+    closeImportDialog() {
+      this.isImportFileDialogVisible = false;
     },
     showDialog(row) {
       // 记录当前行的数据到 tempData 中
