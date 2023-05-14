@@ -22,11 +22,18 @@
       </div>
   
       <div class="footer">
-        <el-button type="primary" v-if="!isConfirmed" @click="confirm">确认</el-button>
-        <el-button type="danger" v-if="!isConfirmed" @click="report">有误</el-button>
-        <el-button type="info" v-else disabled>已确认</el-button>
+        <el-button type="primary" v-if="state!=1" @click="confirm(); showForm = false">确认</el-button>
+        <el-button type="danger" v-if="state!=1" @click="showForm = true">信息有误</el-button>
+          <el-form v-if="showForm" :rules="formRules" ref="form" label-width="120px" :model="formData">
+            <el-form-item label="问题描述" prop="description" style="margin-top: 50px;">
+              <el-input v-model="formData.description"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="report">提交</el-button>
+            </el-form-item>
+          </el-form>
+        <el-button type="info" v-if="state==1" disabled>已确认</el-button>
       </div>
-
     </div>
   </template>
   
@@ -36,32 +43,49 @@
   export default {
     data() {
       return {
-        tableData: [
-          {
-            date: "2002-06-28",
-            ID: "2200022758",
-            name: "ZYY",
-            class: "求知三苑",
-            GPA: "4.00",
-          },
+      showForm: false, // 控制是否显示表单
+      formData: {
+        description: "", // 表单数据
+      },
+      formRules: { // 表单验证规则
+        description: [
+          { required: true, message: "问题描述不能为空", trigger: "blur" },
         ],
-        isConfirmed: false // 目前默认未确认，写了后端以后可以从后端调用相应数据
+      },
+      tableData: [
+        {
+          date: "2002-06-28",
+          ID: "2200022758",
+          name: "ZYY",
+          class: "求知三苑",
+          GPA: "4.00",
+        },
+      ],
+      state: 0, // 0-未确认，1-已确认，2-有误，目前默认未确认，写了后端以后可以从后端调用相应数据
       };
     },
     
     methods: {
       confirm(){
-        this.isConfirmed = true;
+        this.state = 1;
         // 将确认信息传送到后台服务器
-        console.log(1);
+        console.log(state);
         // 在提交成功后进行一些提示或跳转
         this.$message.success('信息已确认');
       },
-      report(){
-        // 将错误上报信息传送到后台服务器
-        console.log(0);
-        // 在提交成功后进行一些提示或跳转
-        this.$message.success('错误信息已上报，请等待老师与您联系');
+      report() {
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            // 表单验证通过，提交表单数据
+            console.log(this.formData);
+            this.state = 2;
+            this.$message.success("信息已上报，请等待老师与您联系");
+            this.showForm = false; // 隐藏表单
+          } else {
+            // 表单验证不通过，提示错误信息
+            this.$message.error("备注不能为空");
+          }
+        });
       }
     },
   };

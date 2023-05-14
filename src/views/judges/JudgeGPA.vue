@@ -35,6 +35,7 @@
             <template slot-scope="scope">
               {{ scope.$index + 1}}
             </template>
+            
           </el-table-column>
           <el-table-column prop="date" label="更新日期" width="140"> </el-table-column>
           <el-table-column prop="class" label="学苑" width="120">
@@ -45,14 +46,49 @@
           </el-table-column>
           <el-table-column prop="GPA" label="GPA" width="120">
           </el-table-column>
-            
+          <el-table-column prop="state" label="状态" width="120">
+            <template slot-scope="scope">
+              <template v-if="scope.row.state === 0">
+                未确认
+              </template>
+              <template v-else-if="scope.row.state === 1">
+                已确认
+              </template>
+              <template v-else-if="scope.row.state === 2">
+                有误
+              </template>
+            </template>
+          </el-table-column>
+          <el-table-column prop="do" label="操作" width="120">
+              <template slot-scope="scope">
+                <el-button type="primary" :disabled="scope.row.state !== 2" @click="showDialog(scope.row)">修改</el-button>
+              </template>
+          </el-table-column>
         </el-table>
+        
+        <el-dialog :visible.sync="dialogVisible">
+          <el-form :model="form" ref="form" label-width="100px">
+            <el-form-item label="学号">
+              <el-input v-model="form.ID"></el-input>
+            </el-form-item>
+            <el-form-item label="GPA">
+              <el-input v-model="form.GPA"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleChange">确定</el-button>
+          </div>
+        </el-dialog>     
+          
       </div>
   
     </div>
   </template>
   
   <script>
+  import axios from 'axios';
+  import { saveExcelData } from '@/api/grade/gradeApi';
   import FileSaver from "file-saver";
   import * as XLSX from "xlsx";
   export default {
@@ -61,16 +97,63 @@
         tableData: [
           {
             date: "2002-06-28",
+            ID: "2200022600",
+            name: "ABC",
+            class: "求知三苑",
+            GPA: "3.80",
+            state: 1
+          },
+          {
+            date: "2002-06-28",
+            ID: "2200022700",
+            name: "DEF",
+            class: "求知三苑",
+            GPA: "3.50",
+            state: 2
+          },
+          {
+            date: "2002-06-28",
             ID: "2200022758",
             name: "ZYY",
             class: "求知三苑",
             GPA: "4.00",
+            state: 0
           },
         ],
+        dialogVisible: false,
+        form: {
+          GPA: ''
+        },
+        currentRow: null,
       };
     },
     
     methods: {
+      showDialog(row) {
+        // 记录当前行的数据到 tempData 中
+        this.tempData = Object.assign({}, row);
+        this.currentRow = row;
+        // 将当前行的数据赋值给对话框的 form 对象
+        this.form.ID = row.ID;
+        this.form.name = row.name;
+        this.form.GPA = row.GPA;
+        this.dialogVisible = true; // 显示对话框
+      },
+      handleChange(){
+        // 判断数据是否合法
+        if (!this.form.GPA || isNaN(this.form.GPA) || this.form.GPA < 0 || this.form.GPA > 5) {
+          this.$message.error('请输入有效的GPA');
+          return;
+        }
+        // 处理修改逻辑
+        // 获取当前行的索引
+        const index = this.tableData.findIndex(item => item === this.currentRow);
+        // 更新当前行数据
+        this.tableData[index].GPA = this.form.GPA;
+        this.tableData[index].state = 0;
+        
+        this.dialogVisible = false;
+      },
       //导入
       onChange(file, fileList) {
         this.readExcel(file); // 调用读取数据的方法
@@ -85,6 +168,24 @@
           this.$message.error("上传格式不正确，请上传xls或者xlsx格式");
           return false;
         }
+
+      const formData = new FormData();
+      formData.append('file', file.raw); // 将文件添加到 FormData 对象中
+
+      // 发送 POST 请求，将文件传递给后端
+      axios.post('/api/grade/upload', formData)
+        .then(response => {
+          // 处理上传成功的逻辑
+          this.$message.success("文件上传成功");
+          // 根据后端返回的数据进行操作
+          console.log(response.data);
+        })
+        .catch(error => {
+          // 处理上传失败的逻辑
+          this.$message.error("文件上传失败");
+          console.error(error);
+        });
+
         const fileReader = new FileReader();
         fileReader.onload = (ev) => {
           try {
@@ -110,7 +211,7 @@
                 ID: ws[i]["学号"],
                 name: ws[i]["姓名"],
                 class: ws[i]["学苑"],
-                GPA: ws[i]["GPA"],
+                hours: ws[i]["志愿服务时长"],
               };
               console.log("上传的数据:", sheetData);
               //添加到表格中
