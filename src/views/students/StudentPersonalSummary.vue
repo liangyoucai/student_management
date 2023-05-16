@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
     name: 'PersonalSummaryForm',
     data() {
@@ -44,13 +45,34 @@ export default {
         };
     },
     methods: {
+
         submitForm() {
             this.$refs.form.validate((valid) => {
                 if (valid) {
-                    // 将表单数据传送到后台服务器
-                    console.log(this.form);
-                    // 在提交成功后进行一些提示或跳转
-                    this.$message.success('提交成功');
+                    let data = [{
+                        "school": this.form.studySummary,
+                        "score": null,
+                        "self": this.form.selfEvaluation,
+                        "society": this.form.practiceSummary,
+                        "status": 1,
+                        "stu_id": 23,
+                        "stu_name": "张三",
+                        "stu_num": 22200044123
+                    }]
+
+                    console.log(data)
+                    axios.post("http://localhost:28080/api/personal/import", data, {
+                        headers: {
+                            'Content-Type': 'application/json;'
+                        }
+                    }
+                    )
+                        .then(res => {
+                            console.log(res);
+                            if (res.data.code == 200) {
+                                this.$message.success("提交成功")
+                            }
+                        });
                 } else {
                     // 表单校验不通过
                     this.$message.error('表单填写不完整或有误，请检查');
@@ -71,11 +93,10 @@ export default {
     text-align: center;
     margin-bottom: 30px;
 }
-.my-form{
+
+.my-form {
     width: 80%;
     margin: 0 auto;
     min-height: 100vh;
 }
-
-
 </style>

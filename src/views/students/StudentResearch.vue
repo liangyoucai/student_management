@@ -16,16 +16,16 @@
                 <el-row>
                     <el-col :span="16">
                         <el-form-item label="名称" :prop="'research.' + index + '.name'" :rules="{
-                                required: true, message: '该项不能为空', trigger: 'blur'
-                            }">
+                            required: true, message: '该项不能为空', trigger: 'blur'
+                        }">
                             <el-input placeholder="请输入项目名称" v-model="form.research[index].name">
                             </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="负责人" :prop="'research.' + index + '.manager'" :rules="{
-                                required: true, message: '该项不能为空', trigger: 'blur'
-                            }">
+                            required: true, message: '该项不能为空', trigger: 'blur'
+                        }">
                             <el-input placeholder="请输入项目负责人" v-model="form.research[index].manager"></el-input>
                         </el-form-item>
                     </el-col>
@@ -33,15 +33,15 @@
                 <el-row>
                     <el-col :span="16">
                         <el-form-item label="组织机构" :prop="'research.' + index + '.organization'" :rules="{
-                                required: true, message: '该项不能为空', trigger: 'blur'
-                            }">
+                            required: true, message: '该项不能为空', trigger: 'blur'
+                        }">
                             <el-input placeholder="请输入项目组织机构" v-model="form.research[index].organization"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="项目级别" :prop="'research.' + index + '.level'" :rules="{
-                                required: true, message: '该项不能为空', trigger: 'change'
-                            }">
+                            required: true, message: '该项不能为空', trigger: 'change'
+                        }">
                             <el-select v-model="form.research[index].level" placeholder="请选择项目级别" style="width: 100%;">
                                 <el-option label="国家级" value="国家级"></el-option>
                                 <el-option label="省级" value="省级"></el-option>
@@ -54,8 +54,8 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="参与时间" :prop="'research.' + index + '.time'" :rules="{
-                                required: true, message: '该项不能为空', trigger: 'change'
-                            }" style="float: left">
+                            required: true, message: '该项不能为空', trigger: 'change'
+                        }" style="float: left">
                             <el-date-picker v-model="form.research[index].time" type="monthrange" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间">
                             </el-date-picker>
                         </el-form-item>
@@ -64,8 +64,8 @@
 
                 </el-row>
                 <el-form-item label="项目成果" :prop="'research.' + index + '.achievements'" :rules="{
-                        required: true, message: '该项不能为空', trigger: 'blur'
-                    }">
+                    required: true, message: '该项不能为空', trigger: 'blur'
+                }">
                     <el-input type="textarea" :rows="4" placeholder="请输入项目成果" v-model="form.research[index].achievements"></el-input>
                 </el-form-item>
             </div>
@@ -79,6 +79,8 @@
 </template>
 
 <script>
+// import request from '@/utils/request.js'
+import axios from 'axios';
 export default {
     name: 'PersonalSummaryForm',
     data() {
@@ -95,16 +97,42 @@ export default {
                     }
                 ]
             },
+            levels: ['校级', '市级', '省级', '国家级']
         };
     },
     methods: {
         submitForm() {
             this.$refs.form.validate((valid) => {
                 if (valid) {
-                    // 将表单数据传送到后台服务器
-                    console.log(this.form);
-                    // 在提交成功后进行一些提示或跳转
-                    this.$message.success('提交成功');
+                    let data = []
+                    for (let item of this.form.research) {
+                        data.push({
+                            "constitution": item.organization,
+                            "director": item.manager,
+                            "level": this.levels.indexOf(item.level),
+                            "result": item.achievements,
+                            "score": null,
+                            "status": 1,
+                            "stu_id": 672,
+                            "stu_name": "李十",
+                            "stu_num": 120020323,
+                            "time": 40,
+                            "title": item.name
+                        })
+                    }
+                    console.log(data)
+                    axios.post("http://localhost:28080/api/science/import", data, {
+                        headers: {
+                            'Content-Type': 'application/json;'
+                        }
+                    }
+                    )
+                        .then(res => {
+                            console.log(res);
+                            if (res.data.code == 200) {
+                                this.$message.success("提交成功")
+                            }
+                        });
                 } else {
                     // 表单校验不通过
                     this.$message.error('表单填写不完整或有误，请检查');
@@ -112,6 +140,7 @@ export default {
                 }
             });
         },
+
         clearForm() {
             this.$refs.form.resetFields();
         },
