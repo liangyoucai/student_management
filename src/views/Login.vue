@@ -9,6 +9,8 @@
         <div class="login-form">
           <h3>用户登录</h3>
           <el-form ref="loginForm" :model="loginForm" :rules="rules" label-position="left" label-width="0">
+            <el-radio v-model="loginForm.role" label="false">学生</el-radio>
+            <el-radio v-model="loginForm.role" label="true">教职工</el-radio>
             <el-form-item prop="username">
               <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
             </el-form-item>
@@ -23,84 +25,44 @@
             </div>
           </el-form>
         </div>
-        <!-- 找回密码 -->
-        <el-dialog @close="clearForm('findPasswordForm')" title="找回密码" :visible.sync="dialogFormVisible" width="40%">
-          <el-form :model="findPasswordForm" ref="findPasswordForm" :rules="rules" label-width="60px">
-
-            <el-form-item label="邮箱" prop="email">
-              <el-input placeholder="请填写邮箱" maxlength="32" v-model="findPasswordForm.email"></el-input>
-            </el-form-item>
-
-            <el-form-item label="新密码" prop="password">
-              <el-input placeholder="请填写 6-18 位密码" type="password" maxlength="18" v-model="findPasswordForm.password" show-password></el-input>
-            </el-form-item>
-
-          </el-form>
-
-          <div slot="footer" class="dialog-footer">
-            <el-button :loading="loading" @click="submitFindPassword('findPasswordForm')">提 交</el-button>
-          </div>
-        </el-dialog>
+        
       </div>
     </div>
   </template>
   
   <script>
-  import {setToken} from '@/utils/auth'
-  import user from '@/api/user'
+  import {setToken} from '@/utils/token'
+  import user from '@/api/auth/user'
   export default {
     data() {
-      var email = (rule, value, callback) => {
-        if(!value) {
-          return callback(new Error('请输入邮箱'))
-        }else if(!/^([a-zA-Z0-9]+[-_\.]?)+@[a-zA-Z0-9]+\.[a-z]+$/.test(value)) {
-          return callback(new Error('请输入正确的邮箱'))
-        }else {
-          callback()
+      // 角色身份必选
+      var validateRadio = (rule, value, callback) => {
+      if (value) {
+         // 当值为0的时候当做没选择
+         if (value==0) {
+          callback(new Error('请选择工单状态'))
+        }  else {
+          callback();
         }
-       };
-      var password = (rule, value, callback) => {
-        if(!value) {
-          return callback(new Error('请输入密码'))
-        }else if(!/(?=.*[a-zA-Z])[a-zA-Z0-9]{6,18}/.test(value)) {
-          return callback(new Error("密码长度在6-18个字符，只能包含数字、大小写字母 且 至少包含一个字母"))
-        }else {
-          callback()
-        }
-      };
+      } else {
+        callback(new Error('请选择工单状态'));
+      }
+    };
 
       return {
-        isCode: false,
-        // 倒计时
-        disabled: false,
-        msg: '点击获取验证码',
-        count: 60,
-        timer: 0,
         // 按钮加载
         loading: false,
         loginForm: {
+          role:'false',
           username: '',
-          password: ''
-        },
-        rules: {
-          username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-          password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-        },
-        loading: false,
-        // 找回密码
-        dialogFormVisible: false,
-        findPasswordForm: {
-          email: '',
           password: '',
         },
         rules: {
-          email: [
-            { validator: email, trigger: 'blur' }
-          ],
-          password: [
-            { validator: password, trigger: 'blur' }
-          ],
+          role:     [{ required: true, message: '请选择用户角色', trigger: 'change' }],
+          username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+          password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
         },
+        
       }
     },
     methods: {
@@ -140,7 +102,7 @@
                 setToken(res.data.accessToken)
                 
                 setTimeout(() => {
-                  this.$router.push({ path: '/'})
+                  this.$router.push({ path: '/home'})
                 }, 500);
 
                 this.$message({
@@ -159,32 +121,6 @@
           }
         });
       },
-        
-      // 修改密码
-      submitFindPassword(formName) {
-        this.$refs[formName].validate((valid) => {
-        if(valid) {
-          this.$message({
-                message: "暂未开放",
-                type: 'error'
-              })
-          // this.loading = true
-          // // 请求
-          // user.findPassword(this.findPasswordForm).then(_ => {
-          //   if(_) {
-          //     // 请求成功
-          //     this.$message({
-          //       message: '密码修改成功',
-          //       type: 'success'
-          //     })
-          //     this.dialogFormVisible = false
-          //   }
-          // }).finally(_ => {
-          //   this.loading = false
-          // })
-        }
-      })
-    }
  
     }
 }

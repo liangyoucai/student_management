@@ -15,18 +15,7 @@ export default {
     })
   },
 
-  /**
-   * 2.注册
-   * @param {*} param 
-   * @returns 
-   */
-  register(param) {
-    return request({
-      url: '/auth/register',
-      method: 'post',
-      data: param
-    })
-  },
+  
 
   /**
    * 找回密码
@@ -44,10 +33,11 @@ export default {
    * 获取信息
    * @returns 
    */
-  getInfo() {
+  getInfo(param) {
     return request({
       url: 'user/profile/get',
-      method: 'get'
+      method: 'get',
+      data:param
     })
   },
   

@@ -10,7 +10,7 @@ const routes = [
     component: Layout, // 修改为 Layout 组件
     children: [
       {
-        path: '',
+        path: 'home',
         component: () => import( '../views/Home.vue'),
         name: 'home'
       },
