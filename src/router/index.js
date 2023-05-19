@@ -90,7 +90,17 @@ const routes = [
         component: () => import("../views/students/StudentGPA.vue"),
       }
     ],
-  }
+  },
+  {
+    path: '/beforelogin',
+    component: () => import('../views/BeforeLogin.vue'),
+    name: 'beforelogin',
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/Login.vue')
+  },
 ];
 
 const router = new VueRouter({

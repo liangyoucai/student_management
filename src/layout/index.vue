@@ -68,7 +68,7 @@
                     
                 </el-submenu>
 
-                <el-menu-item index="/logout" >
+                <el-menu-item index="/logout" @click="logout">
                     <!-- 返回到登录页面 -->
                     <i class="el-icon-setting"></i>
                     <span slot="title">退出</span>
@@ -122,7 +122,7 @@
 </style>
 
 <script>
- 
+ import {removeToken} from '@/utils/auth'
  export default {
     name: "SuccessPage",
     data() {
@@ -134,6 +134,12 @@
         this.getNowTime();
     },
     methods: {
+        logout() {
+            this.$confirm('确定注销并退出系统吗？', '提示').then(() => {
+                removeToken()
+                this.$router.push({ path: '/login' })
+            }).catch(() => {});
+        },
         getNowTime () {
             let speed = 1000
             let that = this

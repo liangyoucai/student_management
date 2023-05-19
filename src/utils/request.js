@@ -9,6 +9,12 @@ const service = axios.create({
 service.interceptors.request.use(
     // 函数
   config => {
+    // 在请求发送之前对请求数据进行处理
+    // 携带token
+    if (getAccessToken() ) {
+      config.headers['Authorization'] = 'Bearer ' + getAccessToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    }
+    return config;
     
   },
   error => {
@@ -22,8 +28,8 @@ service.interceptors.response.use(
   response => {
     // 对响应数据进行处理
     // ...
-    
-    return response.data;
+    const res = response.data
+    return response.data
   },
   error => {
     // 对响应错误做些什么
