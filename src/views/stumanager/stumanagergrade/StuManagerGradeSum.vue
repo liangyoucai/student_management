@@ -80,15 +80,26 @@
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 import axios from 'axios';
+import staff from '@/api/studentManager/getSummary'
+import qs from 'qs';
 export default {
   data() {
     return {
       defaultButtonText: '重新测评',
       dialogVisible: false,
       checkedScores: [],
-      tableData: [
-
-      ],
+      tableData: [{
+          date: "",
+              ID: "",
+              name: "",
+              gpa: "",
+              vol: "",
+              sci: "",
+              pra: "",
+              ser: "",
+              per: "",
+              totalpoints:""
+        }],
 
 
       pageSize: 20, // 每页显示的数据条数
@@ -106,14 +117,10 @@ export default {
     this.tableData = this.tableData.map(row => ({ ...row, buttonText: this.defaultButtonText }));
     this.init();
     this.tableData = this.tableData.map(row => ({ ...row, buttonText: this.defaultButtonText }));
-
-
   },
 
 
   computed: {
-
-
 
     // 计算分页后的数据
     // 计算分页后的数据
@@ -129,77 +136,45 @@ export default {
 
     init(){
       let _this = this;
-      this.$axios.post('http://localhost:28080/api/summary/selectbystatus1',null )
-              .then(function (response) {
-                console.log(response);
-                // 如果保存成功，则更新表格数据
+      staff.getList(qs.stringify({flag:1})).then(res => {
+        // 如果保存成功，则更新表格数据
+        if (res.code === 200) {
 
-                if (response.data.code === 200) {
+          const formdata = res.data;
 
-                  const data1 = response.data.data;
-                  console.log("数据" + JSON.stringify(data1))
+          // 提取当前时间
+          let currentDate = new Date();
+          let year = currentDate.getFullYear();
+          let month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+          let day = currentDate.getDate().toString().padStart(2, '0');
+          let formattedDate = `${year}-${month}-${day}`;
+          
+          this.tableData.length = 0;
+          for (var i = 0;i < formdata.summarylist.length; i++){
+            this.tableData.push({
+              date: formattedDate,
+              ID: formdata.summarylist[i]["stuNum"],
+              name: formdata.summarylist[i]["stuName"],
+              gpa: formdata.summarylist[i]["gpa"],
+              vol: formdata.summarylist[i]["vol"],
+              sci: formdata.summarylist[i]["sci"],
+              pra: formdata.summarylist[i]["pra"],
+              ser: formdata.summarylist[i]["ser"],
+              per: formdata.summarylist[i]["per"],
+              totalpoints: formdata.summarylist[i]["gpa"] + formdata.summarylist[i]["vol"] + formdata.summarylist[i]["sci"] + 
+              formdata.summarylist[i]["pra"] + formdata.summarylist[i]["ser"] + formdata.summarylist[i]["per"]
+            });
+          }
+          console.log(this.tableData)
 
-                  const tableData = [];
+          // 在赋值之后，再次对每一行数据添加buttonText属性
+          _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
 
-
-
-                  let currentDate = new Date();
-                  let year = currentDate.getFullYear();
-                  let month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-                  let day = currentDate.getDate().toString().padStart(2, '0');
-                  let formattedDate = `${year}-${month}-${day}`;
-
-
-                  for (var i = 0;i < data1.length;i++){
-
-
-
-
-                    let sheetData = {
-                      // 键名为绑定 el 表格的关键字，值则是 ws[i][对应表头名]
-                      date: formattedDate,
-                      ID: data1[i]["stuNum"],
-                      name: data1[i]["stuName"],
-
-                      // sex: data1[i]['stu_name'],
-                      gpa: data1[i]["gpa"],
-                      vol: data1[i]["vol"],
-                      sci: data1[i]["sci"],
-                      pra: data1[i]["pra"],
-                      ser: data1[i]["ser"],
-                      per: data1[i]["per"],
-                      totalpoints: data1[i]["gpa"] + data1[i]["vol"] + data1[i]["sci"] + data1[i]["pra"] + data1[i]["ser"] + data1[i]["per"]
-
-                    };
-
-                    // this.tableData = this.tableData.map(row => ({ ...row, buttonText: this.defaultButtonText }));
-
-
-                    console.log("数据：" + sheetData)
-
-
-                    tableData.push(sheetData);
-
-                  }
-
-
-                  console.log(1111111)
-                  _this.tableData = tableData;
-                  console.log(222222)
-
-                  // 在赋值之后，再次对每一行数据添加buttonText属性
-                  _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
-
-
-
-                } else {
-                  // this.$message.error("保存数据失败");
-                }
-              })
-              .catch(function (error) {
-                console.log(error);
-                // this.$message.error("保存数据失败");
+        } else {
+          // this.$message.error("保存数据失败");
+        }
               });
+      
     },
 
     handleButtonClick(row) {
@@ -336,21 +311,12 @@ export default {
 
     },
 
-
-
-
-
-
-
-
-
-
     //导出
     exportClick() {
       //第一个参数是到处后文件名，第二个是id绑定表格dom
       this.exportExcel("学生评分汇总_已测评", "mainTable");
     },
-//转换数据
+    //转换数据
     exportExcel(filename, tableId) {
       var xlsxParam = { raw: true };
       var table = document.createElement('table');
@@ -411,76 +377,6 @@ export default {
         }
       }
       return wbout;
-    },
-
-
-
-
-
-
-
-
-
-
-    //导入
-    onChange(file, fileList) {
-      this.readExcel(file); // 调用读取数据的方法
-    },
-    // 读取数据
-    readExcel(file) {
-      let that = this;
-      if (!file) {
-        //如果没有文件
-        return false;
-      } else if (!/.(xls|xlsx)$/.test(file.name.toLowerCase())) {
-        this.$message.error("上传格式不正确，请上传xls或者xlsx格式");
-        return false;
-      }
-      const fileReader = new FileReader();
-      fileReader.onload = (ev) => {
-        try {
-          const data = ev.target.result;
-          const workbook = XLSX.read(data, {
-            type: "binary",
-          });
-          if (workbook.SheetNames.length >= 1) {
-            this.$message({
-              message: "导入数据表格成功",
-              showClose: true,
-              type: "success",
-            });
-          }
-          const wsname = workbook.SheetNames[0]; //取第一张表
-          const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]); //生成json表格内容
-          console.log("生成json：", ws);
-          that.tableData = [];
-          for (var i = 1; i < ws.length; i++) {
-            let sheetData = {
-              // 键名为绑定 el 表格的关键字，值则是 ws[i][对应表头名]
-              date: ws[i]["更新日期"],
-              ID: ws[i]["学号"],
-              name: ws[i]["姓名"],
-              gpa: ws[i]["GPA"],
-              vol: ws[i]["志愿"],
-              sci: ws[i]["科研"],
-              pra: ws[i]["实践"],
-              ser: ws[i]["学生骨干"],
-              per: ws[i]["个人总结"],
-              totalpoints: ws[i]["测评总分"],
-            };
-            console.log("上传的数据:", sheetData);
-            //添加到表格中
-            that.tableData.push(sheetData);
-            //正常导入需要拿到上传的数据就在这从新弄个数组push进去，然后传给后台，后台保存后查询表格返给前端。
-          }
-          this.$refs.upload.value = "";
-        } catch (e) {
-          console.log(e);
-          return false;
-        }
-      };
-      // 如果为原生 input 则应是 files[0]
-      fileReader.readAsBinaryString(file.raw);
     },
   },
 };

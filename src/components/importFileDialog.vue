@@ -59,7 +59,7 @@ export default {
       const formData = new FormData() //FormData对象，添加参数只能通过append('key', value)的形式添加
       formData.append('file', param.file) //添加文件对象
       formData.append('uploadType', this.rulesType)
-      const url = `http://localhost:28080/api/${this.importName}/import` //上传地址
+      const url = `http://localhost:28080/api/${this.importName}/upload` //上传地址
       axios.post(url, formData)
         .then(res => {
           console.log(res)

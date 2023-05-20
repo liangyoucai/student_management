@@ -60,13 +60,26 @@
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 import axios from 'axios';
+import staff from '@/api/studentManager/getSummary'
+import qs from 'qs';
 export default {
-
   data() {
     return {
-      tableData: [
-
-      ],
+      defaultButtonText: '重新测评',
+      dialogVisible: false,
+      checkedScores: [],
+      tableData: [{
+          date: "",
+              ID: "",
+              name: "",
+              gpa: "",
+              vol: "",
+              sci: "",
+              pra: "",
+              ser: "",
+              per: "",
+              totalpoints:""
+        }],
       pageSize: 20, // 每页显示的数据条数
       currentPage: 1, // 当前页数
     };
@@ -93,86 +106,47 @@ export default {
   methods: {
 
     init(){
-
-      // alert();
-
       let _this = this;
+      staff.getList(qs.stringify({flag:0})).then(res => {
+        // 如果保存成功，则更新表格数据
+        if (res.code === 200) {
 
-      this.$axios.post('http://localhost:28080/api/summary/selectbystatus',null )
-              .then(function (response) {
-                console.log(response);
-                // 如果保存成功，则更新表格数据
-                console.log("12312312:" + response)
-                console.log("12312312:" + response.code)
-                console.log("12312312:" + response.data.code)
-                console.log("12312312:" + response.data.data)
+          const formdata = res.data;
 
+          // 提取当前时间
+          let currentDate = new Date();
+          let year = currentDate.getFullYear();
+          let month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+          let day = currentDate.getDate().toString().padStart(2, '0');
+          let formattedDate = `${year}-${month}-${day}`;
+          
+          this.tableData.length = 0;
+          for (var i = 0;i < formdata.summarylist.length; i++){
+            this.tableData.push({
+              date: formattedDate,
+              ID: formdata.summarylist[i]["stuNum"],
+              name: formdata.summarylist[i]["stuName"],
+              gpa: formdata.summarylist[i]["gpa"],
+              vol: formdata.summarylist[i]["vol"],
+              sci: formdata.summarylist[i]["sci"],
+              pra: formdata.summarylist[i]["pra"],
+              ser: formdata.summarylist[i]["ser"],
+              per: formdata.summarylist[i]["per"],
+              totalpoints: formdata.summarylist[i]["gpa"] + formdata.summarylist[i]["vol"] + formdata.summarylist[i]["sci"] + 
+              formdata.summarylist[i]["pra"] + formdata.summarylist[i]["ser"] + formdata.summarylist[i]["per"]
+            });
+          }
+          console.log(this.tableData)
 
-                if (response.data.code === 200) {
+          // 在赋值之后，再次对每一行数据添加buttonText属性
+          _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
 
-
-                  const data1 = response.data.data;
-                  console.log("数据" + JSON.stringify(data1))
-
-                  const tableData = [];
-
-
-
-                  let currentDate = new Date();
-                  let year = currentDate.getFullYear();
-                  let month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-                  let day = currentDate.getDate().toString().padStart(2, '0');
-                  let formattedDate = `${year}-${month}-${day}`;
-
-
-                  for (var i = 0;i < data1.length;i++){
-
-
-
-
-                    let sheetData = {
-                      // 键名为绑定 el 表格的关键字，值则是 ws[i][对应表头名]
-                      date: formattedDate,
-                      ID: data1[i]["stuNum"],
-                      name: data1[i]["stuName"],
-
-                      // sex: data1[i]['stu_name'],
-                      gpa: data1[i]["gpa"],
-                      vol: data1[i]["vol"],
-                      sci: data1[i]["sci"],
-                      pra: data1[i]["pra"],
-                      ser: data1[i]["ser"],
-                      per: data1[i]["per"],
-
-                    };
-
-                    console.log("数据：" + sheetData)
-
-
-                    tableData.push(sheetData);
-
-                  }
-                  console.log(1111111)
-                  _this.tableData = tableData;
-                  console.log(222222)
-
-
-                } else {
-                  // this.$message.error("保存数据失败");
-                }
-              })
-              .catch(function (error) {
-                console.log(error);
-                // this.$message.error("保存数据失败");
+        } else {
+          // this.$message.error("保存数据失败");
+        }
               });
+      
     },
-
-
-
-
-
-
-
 
     //导出
     exportClick() {

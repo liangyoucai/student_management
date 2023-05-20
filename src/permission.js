@@ -6,7 +6,7 @@ import { getAccessToken } from '@/utils/token'
 
 router.beforeEach((to, from, next) => {
   if (getAccessToken()) {
-    if (to.path === '/beforelogin'|| to.path === '/login') {
+    if (to.path === '/beforelogin'||to.path === '/'|| to.path === '/login') {
       next({ path: '/home' })
     } 
     next()

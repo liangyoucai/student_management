@@ -3,9 +3,9 @@
 
     <div class="title">
       <h1 class="title">学生成绩 - 导入</h1>
-
     </div>
     <el-divider></el-divider>
+
     <!-- 导入按钮 -->
     <div class="titleBtn">
       <el-button type="warning" icon="el-icon-folder-add" size="small" style="margin: 0 80px" @click="openImportDialog">导入</el-button>
@@ -66,6 +66,7 @@
           <el-button type="primary" @click="handleChange">确定</el-button>
         </div>
       </el-dialog>
+      
 
     </div>
 
@@ -86,30 +87,30 @@ export default {
   data() {
     return {
       tableData: [
-        {
-          date: "2002-06-28",
-          ID: "2200022600",
-          name: "ABC",
-          class: "求知三苑",
-          GPA: "3.80",
-          state: 1
-        },
-        {
-          date: "2002-06-28",
-          ID: "2200022700",
-          name: "DEF",
-          class: "求知三苑",
-          GPA: "3.50",
-          state: 2
-        },
-        {
-          date: "2002-06-28",
-          ID: "2200022758",
-          name: "ZYY",
-          class: "求知三苑",
-          GPA: "4.00",
-          state: 0
-        },
+      //   {
+      //     date: "2002-06-28",
+      //     ID: "2200022600",
+      //     name: "ABC",
+      //     class: "求知三苑",
+      //     GPA: "3.80",
+      //     state: 1
+      //   },
+      //   {
+      //     date: "2002-06-28",
+      //     ID: "2200022700",
+      //     name: "DEF",
+      //     class: "求知三苑",
+      //     GPA: "3.50",
+      //     state: 2
+      //   },
+      //   {
+      //     date: "2002-06-28",
+      //     ID: "2200022758",
+      //     name: "ZYY",
+      //     class: "求知三苑",
+      //     GPA: "4.00",
+      //     state: 0
+      //   },
       ],
       dialogVisible: false,
       isImportFileDialogVisible: false,
