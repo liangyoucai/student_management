@@ -44,13 +44,7 @@
         </el-table-column>
         <el-table-column prop="totalpoints" label="测评总分" width="80">
         </el-table-column>
-        <el-table-column label="操作" prop="action">
-          <template slot-scope="scope">
-            <!-- 使用作用域插槽获取当前行数据 -->
-            <el-button :class="{ 'red-button': scope.row.buttonText === '重新测评', 'blue-button': scope.row.buttonText === '待测评' }" @click="handleButtonClick(scope.row)">
-              {{ scope.row.buttonText }} </el-button>
-          </template>
-        </el-table-column>
+        
 
       </el-table>
 
