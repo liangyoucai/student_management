@@ -4,7 +4,7 @@
         <el-table :data="allStudents" class="socreTable" stripe>
             <el-table-column label="学号" prop="id"></el-table-column>
             <el-table-column label="姓名" prop="name"></el-table-column>
-            <el-table-column label="学苑" prop="class"></el-table-column>
+            <!-- <el-table-column label="学苑" prop="class"></el-table-column> -->
 
             <slot></slot>
 
@@ -33,7 +33,7 @@ export default {
             this.$emit('review-from-overview', row.id)
         }
     }
-    
+
 };
 </script>
 
@@ -43,5 +43,4 @@ export default {
     max-width: 900px;
     min-height: 60vh;
 }
-
 </style>
