@@ -100,12 +100,22 @@ export default {
             levels: ['校级', '市级', '省级', '国家级']
         };
     },
+
     methods: {
         submitForm() {
             this.$refs.form.validate((valid) => {
                 if (valid) {
                     let data = []
                     for (let item of this.form.research) {
+                        let dateStringArray = []
+                        item.time.forEach((date) => {
+                            const year = date.getFullYear().toString();
+                            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                            dateStringArray.push(year + '.' + month); // 这里用 '.' 进行连接，也可以使用其他分隔符，如 '-'
+                        });
+                        const start = dateStringArray[0];
+                        const end = dateStringArray[dateStringArray.length - 1];
+                        const dateRangeString = start + ' ~ ' + end;
                         data.push({
                             "constitution": item.organization,
                             "director": item.manager,
@@ -113,10 +123,10 @@ export default {
                             "result": item.achievements,
                             "score": null,
                             "status": 1,
-                            "stu_id": 672,
-                            "stu_name": "李十",
-                            "stu_num": 120020323,
-                            "time": 40,
+                            "stuId": 72,
+                            "stuName": "李十",
+                            "stuNum": 1202020323,
+                            "time": dateRangeString,
                             "title": item.name
                         })
                     }
