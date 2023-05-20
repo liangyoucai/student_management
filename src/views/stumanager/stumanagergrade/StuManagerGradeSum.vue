@@ -114,9 +114,9 @@ export default {
   created() {
     this.$axios = axios;
     // 使用map()方法为每个行数据对象添加按钮文本属性
-    this.tableData = this.tableData.map(row => ({ ...row, buttonText: this.defaultButtonText }));
+    // this.tableData = this.tableData.map(row => ({ ...row, buttonText: this.defaultButtonText }));
     this.init();
-    this.tableData = this.tableData.map(row => ({ ...row, buttonText: this.defaultButtonText }));
+    // this.tableData = this.tableData.map(row => ({ ...row, buttonText: this.defaultButtonText }));
   },
 
 
@@ -165,10 +165,10 @@ export default {
               formdata.summarylist[i]["pra"] + formdata.summarylist[i]["ser"] + formdata.summarylist[i]["per"]
             });
           }
-          console.log(this.tableData)
+          // console.log(this.tableData)
 
           // 在赋值之后，再次对每一行数据添加buttonText属性
-          _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
+          // _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
 
         } else {
           // this.$message.error("保存数据失败");
@@ -326,34 +326,22 @@ export default {
       // 创建表头
       var header = this.tableData[0];
       var tr = document.createElement('tr');
-
-
-
       for (var key in header) {
-
-        if (key !== "buttonText") { // 修改这里的列名
-          var th = document.createElement('th');
-          th.innerText = key;
-          tr.appendChild(th);
-        }
+        var th = document.createElement('th');
+        th.innerText = key;
+        tr.appendChild(th);
       }
       thead.appendChild(tr);
-
       // 创建表格内容
-      for (var i = 0; i < this.tableData.length - 2; i++) {
+      for (var i = 0; i < this.tableData.length; i++) {
         var item = this.tableData[i];
         var tr = document.createElement('tr');
         for (var key in item) {
-          if (key != "buttonText"){
-
-            var td = document.createElement('td');
-            td.innerText = item[key];
-            tr.appendChild(td);
-
-          }
-
-
+          var td = document.createElement('td');
+          td.innerText = item[key];
+          tr.appendChild(td);
         }
+        // console.log(tr)
         tbody.appendChild(tr);
       }
 

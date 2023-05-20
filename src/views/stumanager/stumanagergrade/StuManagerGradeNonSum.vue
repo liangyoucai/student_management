@@ -136,10 +136,9 @@ export default {
               formdata.summarylist[i]["pra"] + formdata.summarylist[i]["ser"] + formdata.summarylist[i]["per"]
             });
           }
-          console.log(this.tableData)
 
           // 在赋值之后，再次对每一行数据添加buttonText属性
-          _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
+          // _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
 
         } else {
           // this.$message.error("保存数据失败");
@@ -153,7 +152,7 @@ export default {
       //第一个参数是到处后文件名，第二个是id绑定表格dom
       this.exportExcel("学生评分汇总_未测评", "mainTable");
     },
-//转换数据
+    //转换数据
     exportExcel(filename, tableId) {
       var xlsxParam = { raw: true };
       var table = document.createElement('table');
@@ -169,7 +168,6 @@ export default {
         tr.appendChild(th);
       }
       thead.appendChild(tr);
-
       // 创建表格内容
       for (var i = 0; i < this.tableData.length; i++) {
         var item = this.tableData[i];
@@ -179,6 +177,7 @@ export default {
           td.innerText = item[key];
           tr.appendChild(td);
         }
+        // console.log(tr)
         tbody.appendChild(tr);
       }
 
