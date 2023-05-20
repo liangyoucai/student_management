@@ -6,7 +6,7 @@
       <el-container class="menu">
         <el-main>
           <div class="content">
-            <h1>欢迎您, 李平 老师!</h1>
+            <h1>欢迎您, {{ username }} {{rolename}}!</h1>
             <p>现在是 {{ nowTime }}</p>
           </div>
         </el-main>
@@ -15,22 +15,30 @@
   </template>
   
   <script>
-  
+  import user from "@/api/auth/user";
+
   export default {
     name: "SuccessPage",
     data() {
       return {
         nowTime: '',
         username: "",
+        role: '',
+        rolename: ""
       };
     },
     mounted() {
         this.getNowTime();
-
-    //   // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
-    //   user.getInfo().then((res) => {
-    //     this.username = res.data.username;
-    //   });
+        // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
+        user.getInfo(this.role).then((res) => {
+          this.username = res.data.username;
+          this.role = res.data.role;
+          if(this.role) {
+            this.rolename ="老师"
+          } else {
+            this.rolename = "同学"
+          }
+        });
     },
     methods: {
         getNowTime () {

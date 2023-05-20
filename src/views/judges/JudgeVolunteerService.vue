@@ -5,28 +5,15 @@
         <h1 class="title">志愿服务时长 - 导入</h1>
         
       </div>
-      <el-divider ></el-divider>
+      <el-divider></el-divider>
+      <!-- 导入按钮 -->
       <div class="titleBtn">
-        
-        <!-- 导入Excel -->
-        <el-upload
-          action="/上传文件的接口"
-          :on-change="onChange"
-          :auto-upload="false"
-          :show-file-list="false"
-          accept=".xls, .xlsx"
-          ref="upload"
-          :multiple="true"
-        >
-          <el-button 
-          type="warning" 
-          icon="el-icon-folder-add" 
-          size="small"
-          style="margin: 0 380px"
-            >导入</el-button
-          >
-        </el-upload>
-  
+        <el-button type="warning" icon="el-icon-folder-add" size="small" style="margin: 0 80px" @click="openImportDialog">导入</el-button>
+      </div>
+      <!-- 上传对话框 -->
+      <div v-if="isImportFileDialogVisible">
+        <importFileDialog importName="volunteer" importTitle="上传学生志愿服务时长文件" importTip="一次只能上传一个xls/xlsx文件，且不超过10M" @close-dialog="closeImportDialog">
+        </importFileDialog>
       </div>
       
       <div class="main">
@@ -43,7 +30,7 @@
           </el-table-column>
           <el-table-column prop="name" label="姓名" width="120">
           </el-table-column>
-          <el-table-column prop="hours" label="志愿服务时长" width="120">
+          <el-table-column prop="time" label="志愿服务时长" width="120">
           </el-table-column>
           <el-table-column prop="state" label="状态" width="120">
             <template slot-scope="scope">
@@ -68,7 +55,7 @@
         <el-dialog :visible.sync="dialogVisible">
           <el-form :model="form" ref="form" label-width="100px">
             <el-form-item label="志愿服务时长">
-              <el-input v-model="form.hours"></el-input>
+              <el-input v-model="form.time"></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -82,9 +69,15 @@
   </template>
   
   <script>
+  import importFileDialog from '@/components/importFileDialog.vue'
+  import axios from 'axios';
   import FileSaver from "file-saver";
   import * as XLSX from "xlsx";
   export default {
+    emits: ['close-dialog'],
+    components: {
+      importFileDialog
+    },
     data() {
       return {
         tableData: [
@@ -93,7 +86,7 @@
             ID: "2200022600",
             name: "ABC",
             class: "求知三苑",
-            hours: "80",
+            time: "80",
             state: 1
           },
           {
@@ -101,7 +94,7 @@
             ID: "2200022700",
             name: "DEF",
             class: "求知三苑",
-            hours: "50",
+            time: "50",
             state: 2
           },
           {
@@ -109,19 +102,26 @@
             ID: "2200022758",
             name: "ZYY",
             class: "求知三苑",
-            hours: "30",
+            time: "30",
             state: 0
           },
         ],
         dialogVisible: false,
+        isImportFileDialogVisible: false,
         form: {
-          hours: ''
+          time: ''
         },
         currentRow: null,
       };
     },
     
     methods: {
+      openImportDialog() {
+        this.isImportFileDialogVisible = true;
+      },
+      closeImportDialog() {
+        this.isImportFileDialogVisible = false;
+      },
       showDialog(row) {
         // 记录当前行的数据到 tempData 中
         this.tempData = Object.assign({}, row);
@@ -129,12 +129,12 @@
         // 将当前行的数据赋值给对话框的 form 对象
         this.form.ID = row.ID;
         this.form.name = row.name;
-        this.form.hours = row.hours;
+        this.form.time = row.time;
         this.dialogVisible = true; // 显示对话框
       },
       handleChange(){
         // 判断数据是否合法
-        if (!this.form.hours || isNaN(this.form.hours) || this.form.hours < 0 || this.form.hours > 10000) {
+        if (!this.form.time || isNaN(this.form.time) || this.form.time < 0 || this.form.time > 10000) {
           this.$message.error('请输入有效的志愿服务时长');
           return;
         }
@@ -142,7 +142,7 @@
         // 获取当前行的索引
         const index = this.tableData.findIndex(item => item === this.currentRow);
         // 更新当前行数据
-        this.tableData[index].hours = this.form.hours;
+        this.tableData[index].time = this.form.time;
         this.tableData[index].state = 0;
         
         this.dialogVisible = false;
@@ -186,7 +186,7 @@
                 ID: ws[i]["学号"],
                 name: ws[i]["姓名"],
                 class: ws[i]["学苑"],
-                hours: ws[i]["志愿服务时长"],
+                time: ws[i]["志愿服务时长"],
               };
               console.log("上传的数据:", sheetData);
               //添加到表格中

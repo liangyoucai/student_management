@@ -15,44 +15,56 @@
         </el-row>
         <el-row>
           <el-col :span="20">
-            <el-form-item label="名称" prop="name">
-              <el-input placeholder="请输入社会实践名称" v-model="form.name">
+            <el-form-item label="名称" :prop="'research.'+index+'.name'" :rules="{
+                            required: true, message: '该项不能为空', trigger: 'blur'
+                        }">
+              <el-input placeholder="请输入社会实践名称" v-model="form.research[index].name" >
               </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="20">
-            <el-form-item label="负责人" prop="manager">
-              <el-input placeholder="请输入社会实践负责人" v-model="form.manager">
+            <el-form-item label="负责人" :prop="'research.'+index+'.manager'" :rules="{
+                            required: true, message: '该项不能为空', trigger: 'blur'
+                        }">
+              <el-input placeholder="请输入社会实践负责人" v-model="form.research[index].manager">
               </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="20">
-            <el-form-item label="负责单位" prop="organization">
-              <el-input placeholder="请输入社会实践负责单位" v-model="form.organization">
+            <el-form-item label="负责单位" :prop="'research.'+index+'.organization'" :rules="{
+                            required: true, message: '该项不能为空', trigger: 'blur'
+                        }">
+              <el-input placeholder="请输入社会实践负责单位" v-model="form.research[index].organization">
               </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="20">
-            <el-form-item label="内容" prop="content">
-              <el-input placeholder="请输入社会实践内容" v-model="form.content"></el-input>
+            <el-form-item label="内容" ::prop="'research.'+index+'.content'" :rules="{
+                            required: true, message: '该项不能为空', trigger: 'blur'
+                        }">
+              <el-input placeholder="请输入社会实践内容" v-model="form.research[index].content"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="20">
-            <el-form-item label="成果" prop="achievements">
-              <el-input placeholder="请输入社会实践成果" v-model="form.achievements"></el-input>
+            <el-form-item label="成果" :prop="'research.'+index+'.achievements'" :rules="{
+                            required: true, message: '该项不能为空', trigger: 'blur'
+                        }">
+              <el-input placeholder="请输入社会实践成果" v-model="form.research[index].achievements"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="20">
-            <el-form-item label="时长" prop="time">
-              <el-input placeholder="请输入社会实践时长" v-model="form.time"></el-input>
+            <el-form-item label="时长" :prop="'research.'+index+'.time'" :rules="{
+                            required: true, message: '该项不能为空', trigger: 'blur'
+                        }">
+              <el-input placeholder="请输入社会实践时长" v-model="form.research[index].time"></el-input>
             </el-form-item>
           </el-col>
 
@@ -69,6 +81,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: 'PersonalSummaryForm',
   data() {
@@ -111,12 +125,56 @@ export default {
   },
   methods: {
     submitForm() {
+
+      console.log(this.form.research)
+
       this.$refs.form.validate((valid) => {
         if (valid) {
-          // 将表单数据传送到后台服务器
-          console.log(this.form);
-          // 在提交成功后进行一些提示或跳转
-          this.$message.success('提交成功');
+          let data = []
+          // let data=[{
+          //   "constitution": "北京大学",
+          //   "content": "hahahhaah",
+          //   "director": "李四",
+          //   "result": 100,
+          //   "score": 8,
+          //   "status": 1,
+          //   "stu_id": 1,
+          //   "stu_name": "张三",
+          //   "stu_num": 2200022123,
+          //   "time": 10,
+          //   "title": "智能餐厅管理系统"
+          // }]
+          for (let item of this.form.research) {
+            data.push({
+              "constitution": item.organization,
+              "director": item.manager,
+              "content": item.content,
+             // "level": this.levels.indexOf(item.level),
+              "result": parseInt(item.achievements),
+              "score": 8 ,
+              "status": 1,
+              "stu_id": 328,
+              "stu_name": "李十",
+              "stu_num": 1111110,
+              "time": item.time,
+              "title": item.name
+            })
+
+           }
+          console.log(data)
+
+          axios.post("http://localhost:58080/api/practice/import", data, {
+                headers: {
+                  'Content-Type': 'application/json;'
+                }
+              }
+          )
+              .then(res => {
+                console.log(res);
+                if (res.data.code == 200) {
+                  this.$message.success("提交成功")
+                }
+              });
         } else {
           // 表单校验不通过
           this.$message.error('表单填写不完整或有误，请检查');

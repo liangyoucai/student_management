@@ -2,7 +2,7 @@
     <div>
         <div class="side-bar">
             <el-menu class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
-                <el-menu-item index="/" @click="$router.push('/')">
+                <el-menu-item index="/" @click="$router.push('/home')">
                     <i class="el-icon-house"></i>
                     <span slot="title">首页</span>
                 </el-menu-item>
@@ -68,7 +68,7 @@
                     
                 </el-submenu>
 
-                <el-menu-item index="/logout" >
+                <el-menu-item index="/logout" @click="logout">
                     <!-- 返回到登录页面 -->
                     <i class="el-icon-setting"></i>
                     <span slot="title">退出</span>
@@ -110,9 +110,7 @@
     overflow: auto;
 }
 
-.el-menu-vertical-demo {
-    // min-width: 14%;
-}
+
 
 .main-content {
     flex: 1;
@@ -122,7 +120,7 @@
 </style>
 
 <script>
- 
+ import {removeToken} from '@/utils/token'
  export default {
     name: "SuccessPage",
     data() {
@@ -134,6 +132,12 @@
         this.getNowTime();
     },
     methods: {
+        logout() {
+            this.$confirm('确定注销并退出系统吗？', '提示').then(() => {
+                removeToken()
+                this.$router.push({ path: '/login' })
+            }).catch(() => {});
+        },
         getNowTime () {
             let speed = 1000
             let that = this
