@@ -1,5 +1,5 @@
-# front_end
-
+# student_management
+学生综合测评系统前端
 ## Project setup
 ```
 npm install
