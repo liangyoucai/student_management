@@ -1,5 +1,18 @@
-import axios from 'axios';
+import request from '@/utils/request'
 
-// export function saveExcelFile(file) {
-//   return axios.post('/api/grade/upload', data);
-// }
+export default {
+
+    /**
+   * 发送查看所有学生GPA列表请求
+   * @param {*} param 
+   * @returns 
+   */
+ getList(param) {
+    //   返回请求 
+      return request({
+        url: '/api/grade/selectListAll',
+        method: 'post',
+        data: param
+      })
+    },
+}
