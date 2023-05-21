@@ -155,6 +155,7 @@ export default {
     },
     closeImportDialog() {
       this.isImportFileDialogVisible = false;
+      this.init(); // 刷新数据
     },
     showDialog(row) {
       // 记录当前行的数据到 tempData 中
