@@ -79,8 +79,8 @@
 </template>
 
 <script>
-// import request from '@/utils/request.js'
 import axios from 'axios';
+import user from '@/api/auth/user';
 export default {
     name: 'PersonalSummaryForm',
     data() {
@@ -97,10 +97,18 @@ export default {
                     }
                 ]
             },
-            levels: ['校级', '市级', '省级', '国家级']
+            levels: ['校级', '市级', '省级', '国家级'],
+            username: '',
+            num: '',
         };
     },
-
+    mounted() {
+        // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
+        user.getInfo(this.role).then((res) => {
+            this.username = res.data.username;
+            this.num = res.data.num
+        });
+    },
     methods: {
         submitForm() {
             this.$refs.form.validate((valid) => {
@@ -123,9 +131,9 @@ export default {
                             "result": item.achievements,
                             "score": null,
                             "status": 1,
-                            "stuId": 72,
-                            "stuName": "李十",
-                            "stuNum": 1202020323,
+                            "stuId": 1,
+                            "stuName": this.username,
+                            "stuNum": this.num,
                             "time": dateRangeString,
                             "title": item.name
                         })
