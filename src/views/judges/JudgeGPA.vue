@@ -2,7 +2,7 @@
   <div class="container">
 
     <div class="title">
-      <h1 class="title">学生成绩 - 导入</h1>
+      <h1 class="title">学生成绩 - 导入/在线评审</h1>
     </div>
     <el-divider></el-divider>
 
@@ -135,6 +135,7 @@ export default {
               stuNum: formdata.gradelist[i]["stuNum"],
               stuName: formdata.gradelist[i]["stuName"],
               gpa: formdata.gradelist[i]["gpa"],
+              score: formdata.gradelist[i]["score"],
             });
           }
           // 在赋值之后，再次对每一行数据添加buttonText属性
@@ -177,13 +178,19 @@ export default {
         .then(response => {
           // 请求成功处理
           console.log('打分更新成功', response);
-          // 可以根据需要执行其他操作
+          // 更新页面上对应学生的分数
+          const updatedStudent = this.tableData.find(student => student.stuNum === this.form.stuNum);
+          if (updatedStudent) {
+            updatedStudent.score = this.form.score;
+          }
+          
         })
         .catch(error => {
           // 请求失败处理
           console.error('打分更新失败', error);
           // 可以根据需要执行其他操作
         });
+      this.dialogVisible = false;
     },
     
   },
