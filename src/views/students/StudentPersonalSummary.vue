@@ -55,7 +55,7 @@ export default {
                         "self": this.form.selfEvaluation,
                         "society": this.form.practiceSummary,
                         "status": 1,
-                        "stu_id": 23,
+                        "stuId": 23,
                         "stu_name": "张三",
                         "stu_num": 22200044123
                     }]

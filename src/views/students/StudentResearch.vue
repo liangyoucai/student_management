@@ -130,7 +130,7 @@ export default {
                             "title": item.name
                         })
                     }
-                    console.log(data)
+                   // console.log(data)
                     axios.post("http://localhost:28080/api/science/import", data, {
                         headers: {
                             'Content-Type': 'application/json;'
@@ -138,7 +138,7 @@ export default {
                     }
                     )
                         .then(res => {
-                            console.log(res);
+                           // console.log(res);
                             if (res.data.code == 200) {
                                 this.$message.success("提交成功")
                             }

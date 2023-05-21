@@ -77,6 +77,7 @@
 
 <script>
 import axios from "axios";
+import user from "@/api/auth/user";
 
 export default {
   name: 'PersonalSummaryForm',
@@ -85,6 +86,8 @@ export default {
       form: {
         research: [
           {
+            username: '',
+            num: '',
             name: '',
             manager:'',
             organization:'',
@@ -121,6 +124,16 @@ export default {
 
 
   },
+
+  mounted() {
+    //console.log("asdasdas")
+    // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
+    user.getInfo(this.role).then((res) => {
+      this.username = res.data.username;
+      this.num = res.data.num
+      // console.log(this.num)
+    });
+  },
   methods: {
 
     submitForm() {
@@ -152,9 +165,9 @@ export default {
               "result": parseInt(item.achievements),
               "score": 8 ,
               "status": 1,
-              "stu_id": 328,
-              "stu_name": "李十",
-              "stu_num": 1111110,
+              "stuId": 328,
+              "stuName": this.username,
+              "stuNum": this.num,
               "time": item.time,
               "title": item.name
             })
