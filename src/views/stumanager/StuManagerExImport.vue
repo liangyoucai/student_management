@@ -5,36 +5,16 @@
       <h1 class="title">学生名单管理 - 导入/导出</h1>
     </div>
     <el-divider></el-divider>
+
+    <!-- 导入导出按钮 -->
     <div class="titleBtn">
-      
-      <!-- 导入Excel -->
-      <el-upload ref="upload" accept=".xls,.xlsx" action='#' :auto-upload="false" :multiple="false" :file-list="fileList" :before-upload="beforeUpload" :http-request="uploadHttpRequest" :on-remove="fileRemove" :on-change="fileChange">
-        <el-button size="small" type="primary">选择文件</el-button>
-
-        <el-button
-                @click="exportClick"
-                type="primary"
-                size="small"
-                icon="el-icon-folder-opened"
-        >导出</el-button
-        >
-
-        <div slot="tip" class="el-upload__tip">一次只能上传一个xls/xlsx文件，且不超过10M</div>
-      </el-upload>
-      <!-- 导出Excel -->
-
-
-      <el-row>
-        <el-button size="small" @click="closeDialog">取 消</el-button>
-        <el-button type="primary" size="small" @click="submitUpload">上 传</el-button>
-
-
-
-      </el-row>
-
-
-
-
+      <el-button type="warning" icon="el-icon-folder-add" size="small" style="margin: 0 20px" @click="openImportDialog">导入</el-button>
+      <el-button @click="exportClick" type="primary" size="small" icon="el-icon-folder-opened">导出</el-button>
+    </div>
+    <!-- 上传对话框 -->
+    <div v-if="isImportFileDialogVisible">
+      <importFileDialog importName="stu" importTitle="上传学生信息文件" importTip="一次只能上传一个xls/xlsx文件，且不超过10M" @close-dialog="closeImportDialog">
+      </importFileDialog>
     </div>
     
     <div class="main">
@@ -58,12 +38,7 @@
         <el-table-column prop="major" label="专业" width="200">
         </el-table-column>
         <el-table-column prop="mailbox" label="邮箱地址" width="250">
-        </el-table-column>
-
-
-
-
-          
+        </el-table-column>   
       </el-table>
 
       <!-- 分页 -->
@@ -73,29 +48,22 @@
               :page-size="pageSize"
               :current-page.sync="currentPage"
       />
-
-
-
     </div>
-    <el-divider>
-
-
-
-    </el-divider>
-
   </div>
 </template>
 
 <script>
-import { uploadHttpRequest } from '@/api/grade/gradeApi';
+import importFileDialog from '@/components/importFileDialog.vue'
 import axios from 'axios';
-import { saveExcelData, submitUpload } from '@/api/grade/gradeApi';
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 
 export default {
   created() {
     this.$axios = axios;
+  },
+  components: {
+    importFileDialog
   },
   data() {
     return {
@@ -114,9 +82,7 @@ export default {
 
       pageSize: 20, // 每页显示的数据条数
       currentPage: 1, // 当前页数
-
-
-
+      isImportFileDialogVisible: false,
       data: []
 
     };
@@ -124,19 +90,12 @@ export default {
 
   created(){
     this.$axios = axios;
-
     this.init();
-
-
-
   },
 
 
   computed: {
 
-
-
-    // 计算分页后的数据
     // 计算分页后的数据
     pagedData() {
       const start = (this.currentPage - 1) * this.pageSize;
@@ -147,37 +106,26 @@ export default {
   },
   
   methods: {
-
-
-
-
+    openImportDialog() {
+      this.isImportFileDialogVisible = true;
+    },
+    closeImportDialog() {
+      this.isImportFileDialogVisible = false;
+    },
+    //获取当前数据库内的学生信息
     init(){
-
-      // alert();
 
       let _this = this;
 
-
-
       this.$axios.post('http://localhost:28080/api/stu/selectall',null )
               .then(function (response) {
-                console.log(response);
                 // 如果保存成功，则更新表格数据
-                console.log("12312312:" + response)
-                console.log("12312312:" + response.code)
-                console.log("12312312:" + response.data.code)
-                console.log("12312312:" + response.data.data)
-
 
                 if (response.data.code === 200) {
 
-
                   const data1 = response.data.data;
-                  console.log("数据" + JSON.stringify(data1))
 
                   const tableData = [];
-
-
 
                   let currentDate = new Date();
                   let year = currentDate.getFullYear();
@@ -187,9 +135,6 @@ export default {
 
 
                   for (var i = 0;i < data1.length;i++){
-
-
-
 
                     let sheetData = {
                       // 键名为绑定 el 表格的关键字，值则是 ws[i][对应表头名]
@@ -203,45 +148,29 @@ export default {
                       major: data1[i]["majorId"],
                       mailbox: data1[i]["email"],
 
-
-
-
-
                     };
-
-                    console.log("数据：" + sheetData)
-
 
                     tableData.push(sheetData);
 
                   }
-                  console.log(1111111)
                   _this.tableData = tableData;
-                  console.log(222222)
-
-                  _this.pagedData()
-
 
                 } else {
-                  // this.$message.error("保存数据失败");
+                  this.$message.error("保存数据失败");
                 }
               })
               .catch(function (error) {
                 console.log(error);
-                // this.$message.error("保存数据失败");
+                this.$message.error("保存数据失败");
               });
     },
-
-
-
-
 
     //导出
     exportClick() {
       //第一个参数是到处后文件名，第二个是id绑定表格dom
       this.exportExcel("学生信息管理_导出", "mainTable");
     },
-//转换数据
+    //转换数据
     exportExcel(filename, tableId) {
       var xlsxParam = { raw: true };
       var table = document.createElement('table');
@@ -292,138 +221,9 @@ export default {
       return wbout;
     },
 
-
-
-
-
-
-
-
-
-
-
-    // 导入
-    beforeUpload(file) {
-      //文件类型
-      const isType = file.type === 'application/vnd.ms-excel'
-      const isTypeComputer = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      const fileType = isType || isTypeComputer
-      if (!fileType) {
-        this.$message.error('上传文件只能是xls/xlsx格式！')
-      }
-
-      // 文件大小限制为10M
-      const fileLimit = file.size / 1024 / 1024 < 10;
-      if (!fileLimit) {
-        this.$message.error('上传文件大小不超过10M！');
-      }
-      return fileType && fileLimit
-    },
-    // 自定义上传方法，param是默认参数，可以取得file文件信息，具体信息如下图
-    uploadHttpRequest(param) {
-
-      const list = [];
-      const data1 = this.tableData;
-
-      for (var i = 0;i < this.tableData.length;i++){
-        let sheetData = {
-
-          ID: data1[i]["num"],
-          name: data1[i]["name"],
-          num: data1[i]["ID"],
-
-          sex: data1[i]['sex'] == '男' ? '1' : '0',
-          yearId: data1[i]["grade"],
-          classId: data1[i]["class"],
-          majorId: data1[i]["major"],
-          email: data1[i]["mailbox"],
-
-        };
-
-        console.log("数据：" + sheetData)
-        list.push(sheetData);
-
-      }
-
-
-      console.log("更新的数据:" + list)
-
-
-      const url = `http://localhost:28080/api/stu/upload` //上传地址
-      this.$axios.post(url,list , {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-        .then(res => {
-          console.log(res)
-          if (res.data.code === 200) {
-            param.onSuccess()  // 上传成功的文件显示绿色的对勾
-            // this.uploadMark = mark
-            this.$message.success('上传成功');
-
-          }
-          const data1 = res.data.data;
-
-
-
-          console.log("huixianshuju" + JSON.stringify(data1))
-
-          const data = [];
-
-          for (var i = 0;i < data1.length;i++){
-            let sheetData = {
-              // 键名为绑定 el 表格的关键字，值则是 ws[i][对应表头名]
-              // date: data1[i]["更新日期"],
-              ID: data1[i]["num"],
-              name: data1[i]["name"],
-
-              sex: data1[i]['sex'] == '0' ? '女' : '男',
-              grade: data1[i]["year_id"],
-              class: data1[i]["class_id"],
-              major: data1[i]["major_id"],
-              mailbox: data1[i]["email"],
-            };
-            data.push(sheetData);
-
-
-            // that.tableData.push(sheetData)
-
-          }
-
-          console.log("所有数据:" + JSON.stringify(data) );
-
-
-
-
-
-
-          this.data = data;
-
-          console.log("data:" + JSON.stringify(this.data) );
-
-          return;
-        })
-        .catch(err => {
-          console.log('失败', err)
-          param.onError() //上传失败的文件会从文件列表中删除
-        })
-    },
-
-    // 点击上传：手动上传到服务器，此时会触发组件的http-request
-    submitUpload() {
-      this.$refs.upload.submit()
-
-
-    },
+  
     // 文件发生改变
     fileChange(file, fileList) {
-
-
-      // this.tableData = this.tableData;
-
-
-
       if (fileList.length > 0) {
         this.fileList = [fileList[fileList.length - 1]] // 展示最后一次选择的文件
         this.onChange(file,this.fileList)
@@ -470,16 +270,9 @@ export default {
     onChange(file, fileList) {
       this.readExcel(file); // 调用读取数据的方法
 
-
-
-      // this.tableData = this.data;
-
-
     },
     // 读取数据
     readExcel(file) {
-
-
 
       let _this = this;
       if (!file) {
@@ -543,8 +336,6 @@ export default {
             //正常导入需要拿到上传的数据就在这从新弄个数组push进去，然后传给后台，后台保存后查询表格返给前端。
             // this.tableData.push(data1);
           }
-          console.log("11111111:" +this.data)
-          console.log(JSON.stringify(this.data))
 
           this.$refs.upload.value = "";
 
