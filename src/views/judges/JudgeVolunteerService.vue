@@ -26,7 +26,7 @@
         <!-- <el-table-column prop="date" label="更新日期" width="140"> </el-table-column> -->
         <el-table-column prop="stuNum" label="学号" width="140">
         </el-table-column>
-        <el-table-column prop="name" label="姓名" width="120">
+        <el-table-column prop="stuName" label="姓名" width="120">
         </el-table-column>
         <el-table-column prop="time" label="志愿服务时长" width="120">
         </el-table-column>
@@ -55,7 +55,7 @@
       <el-dialog :visible.sync="dialogVisible">
         <el-form :model="form" ref="form" label-width="100px">
           <el-form-item label="志愿服务时长">
-            <el-input v-model="form.time" :readonly="true"></el-input>
+            <el-input v-model="form.time" :disabled="true"></el-input>
           </el-form-item>
         </el-form>
         <div class="block">
@@ -67,6 +67,7 @@
           <el-button type="primary" @click="saveForm()">确定</el-button>
         </div>
       </el-dialog>
+
     </div>
 
   </div>
@@ -98,11 +99,11 @@ export default {
         // {
         //   date: "2002-06-28",
         //   stuNum: "2200022600",
-        //   name: "ABC",
+        //   stuName: "ABC",
         //   time: "80",
         // },
         stuNum: "",
-        name: "",
+        stuName: "",
         time: "",
         score:""
       }],
@@ -128,7 +129,7 @@ export default {
           for (var i = 0;i < formdata.volunteerlist.length; i++){
             this.tableData.push({
               stuNum: formdata.volunteerlist[i]["stuNum"],
-              name: formdata.volunteerlist[i]["stuName"],
+              stuName: formdata.volunteerlist[i]["stuName"],
               time: formdata.volunteerlist[i]["time"],
             });
           }
@@ -142,7 +143,7 @@ export default {
       
     },
     showRatingDialog() {
-    this.isRatingDialogVisible = true;
+      this.isRatingDialogVisible = true;
     },
     onScoreSelected(score) {
       this.currentScore = score;
@@ -160,7 +161,7 @@ export default {
       this.currentRow = row;
       // 将当前行的数据赋值给对话框的 form 对象
       this.form.stuNum = row.stuNum;
-      this.form.name = row.name;
+      this.form.stuName = row.stuName;
       this.form.time = row.time;
       this.dialogVisible = true; // 显示对话框
     },
