@@ -1,89 +1,89 @@
 <template>
-    <div class="success-page">
-        
-     
+  <div class="success-page">
+
+
     <!-- 菜单 -->
-      <el-container class="menu">
-        <el-main>
-          <div class="content">
-            <h1>欢迎您, {{ username }} {{rolename}}!</h1>
-            <p>现在是 {{ nowTime }}</p>
-          </div>
-        </el-main>
-      </el-container>
-    </div>
-  </template>
+    <el-container class="menu">
+      <el-main>
+        <div class="content">
+          <h1>欢迎您, {{ username }} {{ rolename }}!</h1>
+          <p>现在是 {{ nowTime }}</p>
+        </div>
+      </el-main>
+    </el-container>
+  </div>
+</template>
   
-  <script>
-  import user from "@/api/auth/user";
+<script>
+import user from "@/api/auth/user";
 
-  export default {
-    name: "SuccessPage",
-    data() {
-      return {
-        nowTime: '',
-        username: "",
-        role: '',
-        rolename: ""
-      };
-    },
-    mounted() {
-        this.getNowTime();
-        // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
-        user.getInfo(this.role).then((res) => {
-          this.username = res.data.username;
-          this.role = res.data.role;
-          if(this.role) {
-            this.rolename ="老师"
-          } else {
-            this.rolename = "同学"
-          }
-        });
-    },
-    methods: {
-        getNowTime () {
-            let speed = 1000
-            let that = this
-            let theNowTime = function () {
-                that.nowTime = that.timeNumber()
-            }
-            setInterval(theNowTime, speed)
-        },
-        timeNumber () {
-            let today = new Date()
-            let date = today.getFullYear() + '年' + this.twoDigits(today.getMonth() + 1) + '月' + this.twoDigits(today.getDate() + 1) + '日 '
-            let time = this.twoDigits(today.getHours()) + ':' + this.twoDigits(today.getMinutes()) + ':' + this.twoDigits(today.getSeconds())
-            return date + '  ' + time
-        },
-        twoDigits (val) {
-            if (val < 10) return '0' + val
-            return val
-        },
+export default {
+  name: "SuccessPage",
+  data() {
+    return {
+      nowTime: '',
+      username: "",
+      role: '',
+      rolename: ""
+    };
   },
-  };
-  </script>
+  mounted() {
+    this.getNowTime();
+    // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
+    user.getInfo(this.role).then((res) => {
+      console.log(res.data)
+      this.username = res.data.username;
+      this.role = res.data.role;
+      if (this.role) {
+        this.rolename = "老师"
+      } else {
+        this.rolename = "同学"
+      }
+    });
+  },
+  methods: {
+    getNowTime() {
+      let speed = 1000
+      let that = this
+      let theNowTime = function () {
+        that.nowTime = that.timeNumber()
+      }
+      setInterval(theNowTime, speed)
+    },
+    timeNumber() {
+      let today = new Date()
+      let date = today.getFullYear() + '年' + this.twoDigits(today.getMonth() + 1) + '月' + this.twoDigits(today.getDate() + 1) + '日 '
+      let time = this.twoDigits(today.getHours()) + ':' + this.twoDigits(today.getMinutes()) + ':' + this.twoDigits(today.getSeconds())
+      return date + '  ' + time
+    },
+    twoDigits(val) {
+      if (val < 10) return '0' + val
+      return val
+    },
+  },
+};
+</script>
   
-  <style scoped>
- 
-  .menu {
-    padding-top: 0px;
-    margin: auto;
-    float: left;
-    width: 100%;
-  }
+<style scoped>
+.menu {
+  padding-top: 0px;
+  margin: auto;
+  float: left;
+  width: 100%;
+}
 
-  
-  .success-page {
-    height: 100%;
-    width: 100%;
-  }
-  
-  .content {
-    /* width: 80%; */
-    margin: 20px;
-    padding: 30px;
-    background-color: #ffffff;
-    border-radius: 4px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  }
-  </style>
+
+.success-page {
+  height: 100%;
+  width: 100%;
+}
+
+.content {
+  /* width: 80%; */
+  margin: 20px;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+</style>

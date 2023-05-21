@@ -152,10 +152,10 @@ export default {
         RatingList
     },
     mounted() {
-        console.log("mounted")
+        // console.log("mounted")
         if (this.rawData !== null) {
-            // 暂时取1,26,27测试
-            axios.get("http://localhost:28080/api/science/list?ids=1%2C26%2C27%2C4%2C5%2C6%2C7%2C8%2C9%2C10")
+            // 暂时仅1,26,27有数据
+            axios.get("http://localhost:28080/api/science/list?ids=1%2C26%2C27%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10")
                 .then(res => {
                     this.rawData = res.data.data
                     this.clean(this.rawData);
@@ -284,7 +284,8 @@ export default {
                             level: item.level,
                             time: item.time,
                             achievement: item.result,
-                        }]
+                        }],
+                        score: null
                     });
                     this.final.push({
                         "gpa": null,

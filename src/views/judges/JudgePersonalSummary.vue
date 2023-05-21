@@ -37,20 +37,20 @@
                                 <el-input v-model="currentStudent.name" :readonly=true></el-input>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="8">
+                        <!-- <el-col :span="8">
                             <el-form-item label="学苑">
                                 <el-input v-model="currentStudent.class" :readonly=true></el-input>
                             </el-form-item>
-                        </el-col>
+                        </el-col> -->
                     </el-row>
                     <el-form-item label="学习情况总结">
-                        <el-input type="textarea" autosize v-model="currentStudent.studySummary" :readonly=true></el-input>
+                        <el-input type="textarea" autosize v-model="currentStudent.school" :readonly=true></el-input>
                     </el-form-item>
                     <el-form-item label="社会实践总结">
-                        <el-input type="textarea" autosize v-model="currentStudent.practiceSummary" :readonly=true></el-input>
+                        <el-input type="textarea" autosize v-model="currentStudent.society" :readonly=true></el-input>
                     </el-form-item>
                     <el-form-item label="自我评价">
-                        <el-input type="textarea" autosize v-model="currentStudent.selfEvaluation" :readonly=true></el-input>
+                        <el-input type="textarea" autosize v-model="currentStudent.self" :readonly=true></el-input>
                     </el-form-item>
                 </el-form>
                 <el-divider></el-divider>
@@ -73,11 +73,11 @@
 
         <!-- 评分总览表 -->
         <overview-table :allStudents="allStudents.sort((a, b) => a.id - b.id)" v-if="isOverviewing" @review-from-overview="startReviewFromOverview">
-            <el-table-column label="学习情况总结" prop="studySummary" :show-overflow-tooltip="true">
+            <el-table-column label="学习情况总结" prop="school" :show-overflow-tooltip="true">
             </el-table-column>
-            <el-table-column label="社会实践总结" prop="practiceSummary" :show-overflow-tooltip="true">
+            <el-table-column label="社会实践总结" prop="society" :show-overflow-tooltip="true">
             </el-table-column>
-            <el-table-column label="自我评价" prop="selfEvaluation" :show-overflow-tooltip="true">
+            <el-table-column label="自我评价" prop="self" :show-overflow-tooltip="true">
             </el-table-column>
         </overview-table>
 
@@ -94,7 +94,7 @@
             <span>确认提交？一经提交评分不可撤回。</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialog2Visible = false">取 消</el-button>
-                <el-button type="primary" @click="dialog2Visible = false">确 定</el-button>
+                <el-button type="primary" @click="sumbitFinal()">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -104,6 +104,7 @@
 import OverviewTable from '@/components/OverviewTable.vue';
 import ScoreTable from '@/components/ScoreTable.vue'
 import RatingList from '@/components/RatingList.vue';
+import axios from 'axios';
 export default {
     emits: ['score-selected', 'review-from-overview'],
     components: {
@@ -113,10 +114,13 @@ export default {
     },
     data() {
         return {
+            result: [],
+            rawData: [],
+            final: [],
             waitingStudents: [
-                { id: 1, name: '张三', class: '一班', studySummary: '本人认真学习，成绩优秀，本人认真学习，成绩优秀，本人认真学习，成绩优秀', practiceSummary: '本人积极参加各种实践活动，表现良好,本人积极参加各种实践活动，表现良好,本人积极参加各种实践活动，表现良好', selfEvaluation: '本人对自己的表现非常满意，但还有提升空间,本人对自己的表现非常满意，但还有提升空间', score: null },
-                { id: 2, name: '李四', class: '二班', studySummary: '本人学习主动性不够，需要改进，本人学习主动性不够，需要改进，本人学习主动性不够，需要改进', practiceSummary: '本人参加的社会实践活动较少，需要加强,本人参加的社会实践活动较少，需要加强,本人参加的社会实践活动较少，需要加强', selfEvaluation: '本人对自己的表现有些不满意，但会继续努力,本人对自己的表现有些不满意，但会继续努力', score: null },
-                { id: 3, name: '王五', class: '三班', studySummary: '本人学习成绩中等，需要加强复习和提高学习效率,本人学习成绩中等，需要加强复习和提高学习效率,本人学习成绩中等，需要加强复习和提高学习效率', practiceSummary: '本人参加的社会实践活动表现一般', selfEvaluation: '本人对自己的表现有些不满意，需要更多的努力,本人对自己的表现有些不满意，需要更多的努力', score: null },
+                // { id: 1, name: '张三', class: '一班', school: '本人认真学习，成绩优秀，本人认真学习，成绩优秀，本人认真学习，成绩优秀', society: '本人积极参加各种实践活动，表现良好,本人积极参加各种实践活动，表现良好,本人积极参加各种实践活动，表现良好', self: '本人对自己的表现非常满意，但还有提升空间,本人对自己的表现非常满意，但还有提升空间', score: null },
+                // { id: 2, name: '李四', class: '二班', school: '本人学习主动性不够，需要改进，本人学习主动性不够，需要改进，本人学习主动性不够，需要改进', society: '本人参加的社会实践活动较少，需要加强,本人参加的社会实践活动较少，需要加强,本人参加的社会实践活动较少，需要加强', self: '本人对自己的表现有些不满意，但会继续努力,本人对自己的表现有些不满意，但会继续努力', score: null },
+                // { id: 3, name: '王五', class: '三班', school: '本人学习成绩中等，需要加强复习和提高学习效率,本人学习成绩中等，需要加强复习和提高学习效率,本人学习成绩中等，需要加强复习和提高学习效率', society: '本人参加的社会实践活动表现一般', self: '本人对自己的表现有些不满意，需要更多的努力,本人对自己的表现有些不满意，需要更多的努力', score: null },
             ],
             finishedStudents: [],
             isReviewing: false,
@@ -142,7 +146,44 @@ export default {
             return [...this.finishedStudents, ...this.waitingStudents];
         }
     },
+    mounted() {
+        console.log("mounted")
+        if (this.rawData !== null) {
+            // 暂时仅1有数据
+            axios.get("http://localhost:28080/api/personal/list?ids=1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10")
+                .then(res => {
+                    this.rawData = res.data.data
+                    this.clean(this.rawData);
+                });
+        }
+    },
     methods: {
+        clean(rawData) {
+            console.log(rawData);
+            rawData.map((item) => {
+                this.result.push({
+                    theId: item.stuId,
+                    id: item.stuNum,
+                    name: item.stuName,
+                    school: item.school,
+                    self: item.self,
+                    society: item.society,
+                    score: null
+                });
+                this.final.push({
+                    "school": item.school,
+                    "self": item.self,
+                    "society": item.society,
+                    "stuId": item.stuId,
+                    "stuName": item.stuName,
+                    "stuNum": item.stuNum,
+                    "score": null
+                })
+
+            })
+            this.waitingStudents = this.result;
+            console.log("final:" + this.waitingStudents)
+        },
         startReview() {
             this.isReviewing = true;
             this.isOverviewing = false;
@@ -216,6 +257,29 @@ export default {
             } else {
                 this.dialog2Visible = true;
             }
+        },
+        sumbitFinal() {
+            console.log("finished:" + this.finishedStudents)
+            this.final.map((item) => {
+                console.log("item.stuId = " + item.stuId)
+                console.log("finished find:" + this.finishedStudents.find(finished => finished.theId == item.stuId))
+                item.per = this.finishedStudents.find(finished => finished.theId == item.stuId).score;
+                item.status = null
+            })
+            console.log("final:" + this.final);
+            this.dialog2Visible = false;
+            axios.post("http://localhost:28080/api/summary/import", this.final, {
+                headers: {
+                    'Content-Type': 'application/json;'
+                }
+            }
+            )
+                .then(res => {
+                    console.log(res);
+                    if (res.data.code == 200) {
+                        this.$message.success("提交成功")
+                    }
+                });
         }
     }
 };

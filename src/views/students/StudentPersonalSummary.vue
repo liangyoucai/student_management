@@ -22,6 +22,7 @@
 
 <script>
 import axios from 'axios';
+import user from '@/api/auth/user';
 export default {
     name: 'PersonalSummaryForm',
     data() {
@@ -41,8 +42,17 @@ export default {
                 selfEvaluation: [
                     { required: true, message: '该项不能为空', trigger: 'blur' },
                 ],
-            }
+            },
+            username: '',
+            num: ''
         };
+    },
+    mounted() {
+        // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
+        user.getInfo(this.role).then((res) => {
+            this.username = res.data.username;
+            this.num = res.data.num
+        });
     },
     methods: {
 
@@ -54,10 +64,9 @@ export default {
                         "score": null,
                         "self": this.form.selfEvaluation,
                         "society": this.form.practiceSummary,
-                        "status": 1,
-                        "stu_id": 23,
-                        "stu_name": "张三",
-                        "stu_num": 22200044123
+                        "stuId": 1,
+                        "stuName": this.username,
+                        "stuNum": this.num
                     }]
 
                     console.log(data)
