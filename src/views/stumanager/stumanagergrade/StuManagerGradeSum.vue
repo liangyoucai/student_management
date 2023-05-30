@@ -48,7 +48,7 @@
 
       </el-table>
 
-      <el-dialog title="删除分数项" :visible.sync="dialogVisible">
+      <!-- <el-dialog title="删除分数项" :visible.sync="dialogVisible">
         <el-checkbox-group v-model="checkedScores">
           <el-checkbox :label="'gpa'">GPA</el-checkbox>
           <el-checkbox :label="'vol'">志愿</el-checkbox>
@@ -61,7 +61,7 @@
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="confirmDelete">确 定</el-button>
         </div>
-      </el-dialog>
+      </el-dialog> -->
 
       <!-- 分页 -->
       <el-pagination
@@ -79,8 +79,8 @@
 <script>
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-import axios from 'axios';
-import staff from '@/api/studentManager/getSummary'
+// import axios from 'axios';
+import staff from '@/api/studentManager/summary'
 import qs from 'qs';
 export default {
   data() {
@@ -111,15 +111,9 @@ export default {
     };
   },
 
-  created() {
-    this.$axios = axios;
-    // 使用map()方法为每个行数据对象添加按钮文本属性
-    // this.tableData = this.tableData.map(row => ({ ...row, buttonText: this.defaultButtonText }));
+  mounted() {
     this.init();
-    // this.tableData = this.tableData.map(row => ({ ...row, buttonText: this.defaultButtonText }));
   },
-
-
   computed: {
 
     // 计算分页后的数据
@@ -188,116 +182,98 @@ export default {
       this.noeId = row.ID;
     },
 
-    confirmDelete() {
-      let _this = this;
+    // confirmDelete() {
+    //   let _this = this;
 
-      // 删除选择的分数项
-     for (let i = 0; i < this.checkedScores.length; i++) {
-        const score = this.checkedScores[i];
+    //   // 删除选择的分数项
+    //  for (let i = 0; i < this.checkedScores.length; i++) {
+    //     const score = this.checkedScores[i];
 
-        console.log("属性=" + score)
-        this.summary = { ...this.currentRow };
+    //     console.log("属性=" + score)
+    //     this.summary = { ...this.currentRow };
 
-        delete this.currentRow[score];
+    //     delete this.currentRow[score];
 
-        this.summary[score] = '';
+    //     this.summary[score] = '';
 
-      }
+    //   }
 
-      // 重新计算总分
-      let totalpoints = 0;
-      for (let key in this.currentRow) {
-        if (key !== 'no' && key !== 'ID' && key !== 'name' && key !== 'totalpoints' && key !== 'buttonText') {
-          totalpoints += parseFloat(this.currentRow[key]);
-        }
-      }
+    //   // 重新计算总分
+    //   let totalpoints = 0;
+    //   for (let key in this.currentRow) {
+    //     if (key !== 'no' && key !== 'ID' && key !== 'name' && key !== 'totalpoints' && key !== 'buttonText') {
+    //       totalpoints += parseFloat(this.currentRow[key]);
+    //     }
+    //   }
 
-      // 确认删除时将按钮文本改为“待测评”
-      _this.currentRow.buttonText = '待测评';
+    //   // 确认删除时将按钮文本改为“待测评”
+    //   _this.currentRow.buttonText = '待测评';
 
-      this.currentRow.totalpoints = ""; // 更新总分
-      this.dialogVisible = false; // 隐藏对话框
+    //   this.currentRow.totalpoints = ""; // 更新总分
+    //   this.dialogVisible = false; // 隐藏对话框
 
-      // 将更改后的行数据设置到临时变量 summary 中
+    //   // 将更改后的行数据设置到临时变量 summary 中
 
-      console.log("删除后：" + JSON.stringify(this.currentRow))
+    //   // console.log("删除后：" + JSON.stringify(this.currentRow))
 
-      // // 删除选择的分数项
-      // for (let i = 0; i < this.checkedScores.length; i++) {
-      //   const score = this.checkedScores[i];
-      //   delete this.summary[score];
-      // }
+    //   let summaryVO = this.tableData.find(item => item.ID==this.noeId);
+    //   this.checkedScores.forEach(item => {
+    //     summaryVO[item] = 0;
+    //   });
+    //   console.log(summaryVO);
 
-
-      console.log(JSON.stringify(this.summary))
-
-      console.log(1111);
-
-      console.log(this.noeId);
-
-      console.log(this.checkedScores);
-
-      console.log(this.tableData);
-
-      console.log(1111);
-      let summaryVO = this.tableData.find(item => item.ID==this.noeId);
-      this.checkedScores.forEach(item => {
-        summaryVO[item] = 0;
-      });
-      console.log(summaryVO);
-
-      let summary = {};
+    //   let summary = {};
 
 
-       summary['stuNum'] = summaryVO['ID']
-       summary['stuName'] = summaryVO['ID']
-       summary['gpa'] = summaryVO['gpa']
-       summary['vol'] = summaryVO['vol']
-       summary['sci'] = summaryVO['sci']
-       summary['pra'] = summaryVO['pra']
-       summary['ser'] = summaryVO['ser']
-       summary['per'] = summaryVO['per']
+    //    summary['stuNum'] = summaryVO['ID']
+    //    summary['stuName'] = summaryVO['ID']
+    //    summary['gpa'] = summaryVO['gpa']
+    //    summary['vol'] = summaryVO['vol']
+    //    summary['sci'] = summaryVO['sci']
+    //    summary['pra'] = summaryVO['pra']
+    //    summary['ser'] = summaryVO['ser']
+    //    summary['per'] = summaryVO['per']
 
-      console.log("更新数据=" + JSON.stringify(summary))
+    //   console.log("更新数据=" + JSON.stringify(summary))
 
 
-      this.$axios.post('http://localhost:28080/api/summary/update',JSON.stringify(summary), {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      } )
-              .then(function (response) {
-                console.log(response);
-                // 如果保存成功，则更新表格数据
+    //   this.$axios.post('http://localhost:18080/api/summary/update',JSON.stringify(summary), {
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     }
+    //   } )
+    //           .then(function (response) {
+    //             console.log(response);
+    //             // 如果保存成功，则更新表格数据
 
-                if (response.data.code === 200) {
+    //             if (response.data.code === 200) {
 
-                  const data1 = response.data.data;
-                  console.log("数据" + JSON.stringify(data1))
+    //               const data1 = response.data.data;
+    //               console.log("数据" + JSON.stringify(data1))
 
-                  const tableData = [];
+    //               const tableData = [];
 
 
 
-                  let currentDate = new Date();
-                  let year = currentDate.getFullYear();
-                  let month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-                  let day = currentDate.getDate().toString().padStart(2, '0');
-                  let formattedDate = `${year}-${month}-${day}`;
+    //               let currentDate = new Date();
+    //               let year = currentDate.getFullYear();
+    //               let month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    //               let day = currentDate.getDate().toString().padStart(2, '0');
+    //               let formattedDate = `${year}-${month}-${day}`;
 
-                  // // 在赋值之后，再次对每一行数据添加buttonText属性
-                  // _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
+    //               // // 在赋值之后，再次对每一行数据添加buttonText属性
+    //               // _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
 
 
 
-                } else {
-                  // this.$message.error("保存数据失败");
-                }
-              })
-              .catch(function (error) {
-                console.log(error);
-                // this.$message.error("保存数据失败");
-              });
+    //             } else {
+    //               // this.$message.error("保存数据失败");
+    //             }
+    //           })
+    //           .catch(function (error) {
+    //             console.log(error);
+    //             // this.$message.error("保存数据失败");
+    //           });
 
 
 
@@ -309,7 +285,7 @@ export default {
 
 
 
-    },
+    // },
 
     //导出
     exportClick() {

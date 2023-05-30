@@ -6,7 +6,7 @@
     <el-container class="menu">
       <el-main>
         <div class="content">
-          <h1>欢迎您, {{ username }} {{ rolename }}!</h1>
+          <h1>欢迎您, {{ name }} {{ rolename }}!</h1>
           <p>现在是 {{ nowTime }}</p>
         </div>
       </el-main>
@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       nowTime: '',
-      username: "",
+      name: "",
       role: '',
       rolename: ""
     };
@@ -31,8 +31,7 @@ export default {
     this.getNowTime();
     // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
     user.getInfo(this.role).then((res) => {
-      console.log(res.data)
-      this.username = res.data.username;
+      this.name = res.data.name;
       this.role = res.data.role;
       if (this.role) {
         this.rolename = "老师"
@@ -52,7 +51,7 @@ export default {
     },
     timeNumber() {
       let today = new Date()
-      let date = today.getFullYear() + '年' + this.twoDigits(today.getMonth() + 1) + '月' + this.twoDigits(today.getDate() + 1) + '日 '
+      let date = today.getFullYear() + '年' + this.twoDigits(today.getMonth() + 1) + '月' + this.twoDigits(today.getDate() ) + '日 '
       let time = this.twoDigits(today.getHours()) + ':' + this.twoDigits(today.getMinutes()) + ':' + this.twoDigits(today.getSeconds())
       return date + '  ' + time
     },

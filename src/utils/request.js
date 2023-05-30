@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {getAccessToken} from '@/utils/token'
 const service = axios.create({
-  baseURL: 'http://localhost:28080/',
+  baseURL: 'http://localhost:18080/',
   timeout: 5000000,
 });
 
@@ -32,27 +32,10 @@ service.interceptors.response.use(
   },
   (error) => {
     // 对响应错误做些什么
-    console.log(error);
+    // console.log(error);
     return Promise.reject(error);
-  }
+    }
 );
 
-export const saveExcelData = async (file) => {
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await axios.post('/api/grade/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw new Error('保存 Excel 文件失败');
-  }
-};
 
 export default service;

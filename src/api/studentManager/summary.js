@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export default {
 
     /**
-   * 发送已测评学生请求
+   * 发送已/未测评学生请求
    * @param {*} param 
    * @returns 
    */
