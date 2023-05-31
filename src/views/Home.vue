@@ -22,9 +22,9 @@ export default {
   data() {
     return {
       nowTime: '',
-      name: "",
+      name: '',
       role: '',
-      rolename: ""
+      rolename: ''
     };
   },
   mounted() {
@@ -34,9 +34,9 @@ export default {
       this.name = res.data.name;
       this.role = res.data.role;
       if (this.role) {
-        this.rolename = "老师"
-      } else {
         this.rolename = "同学"
+      } else {
+        this.rolename = "老师"
       }
     });
   },

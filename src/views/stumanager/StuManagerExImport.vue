@@ -123,7 +123,6 @@ export default {
 
     //获取当前数据库内的学生信息
     init() {
-      let _this = this;
       student.getList().then((res) => {
           // 如果保存成功，则更新表格数据
           // console.log(res)
