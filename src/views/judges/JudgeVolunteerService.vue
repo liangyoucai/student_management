@@ -171,7 +171,7 @@ export default {
       // 构造请求体数据
       console.log();
       // 发送更新学生记录的请求到服务器
-      axios.post(`http://localhost:28080/api/volunteer/${this.form.stuNum}/update-score?score=${this.form.score}`)
+      axios.post(`http://localhost:18080/api/volunteer/${this.form.stuNum}/update-score?score=${this.form.score}`)
         .then(response => {
           // 请求成功处理
           console.log('打分更新成功', response);

@@ -18,8 +18,7 @@
 </template>
 
 <script>
-import axios from 'axios';
-
+import excel from '@/api/excel'
 export default {
   props: ['importTitle', 'importUrl', 'importData', 'importTip', 'importName'],
   data() {
@@ -54,16 +53,16 @@ export default {
       }
       return fileType && fileLimit
     },
+    
     // 自定义上传方法，param是默认参数，可以取得file文件信息，具体信息如下图
     uploadHttpRequest(param) {
       const formData = new FormData() //FormData对象，添加参数只能通过append('key', value)的形式添加
       formData.append('file', param.file) //添加文件对象
       formData.append('uploadType', this.rulesType)
-      const url = `http://localhost:28080/api/${this.importName}/import` //上传地址
-      axios.post(url, formData)
+      excel.import(formData,this.importName)
         .then(res => {
-          console.log(res)
-          if (res.status === 200) {
+          // console.log(res)
+          if (res.code === 200) {
             param.onSuccess()  // 上传成功的文件显示绿色的对勾
             this.$message.success('上传成功');
             this.$emit('close-dialog');
@@ -71,7 +70,8 @@ export default {
           return;
         })
         .catch(err => {
-          console.log('失败', err)
+          this.$message.error('文件上传失败!');
+          console.log('文件上传失败', err)
           param.onError() //上传失败的文件会从文件列表中删除
         })
     }

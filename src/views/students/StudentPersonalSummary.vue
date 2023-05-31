@@ -70,7 +70,7 @@ export default {
                     }]
 
                     console.log(data)
-                    axios.post("http://localhost:28080/api/personal/import", data, {
+                    axios.post("http://localhost:18080/api/personal/import", data, {
                         headers: {
                             'Content-Type': 'application/json;'
                         }

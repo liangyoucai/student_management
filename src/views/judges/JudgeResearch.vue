@@ -155,7 +155,7 @@ export default {
         // console.log("mounted")
         if (this.rawData !== null) {
             // 暂时仅1,26,27有数据
-            axios.get("http://localhost:28080/api/science/list?ids=1%2C26%2C27%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10")
+            axios.get("http://localhost:18080/api/science/list?ids=1%2C26%2C27%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10")
                 .then(res => {
                     this.rawData = res.data.data
                     this.clean(this.rawData);
@@ -392,7 +392,7 @@ export default {
             })
             console.log("final:" + this.final);
             this.dialog2Visible = false;
-            axios.post("http://localhost:28080/api/summary/import", this.final, {
+            axios.post("http://localhost:18080/api/summary/import", this.final, {
                 headers: {
                     'Content-Type': 'application/json;'
                 }

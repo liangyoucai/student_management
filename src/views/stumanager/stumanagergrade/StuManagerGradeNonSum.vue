@@ -3,34 +3,28 @@
 
     <div class="title">
       <h1 class="title">学生评分汇总 - 未测评学生信息</h1>
-      
+
     </div>
-<el-divider></el-divider>
+    <el-divider></el-divider>
     <div class="titleBtn">
 
       <!-- 导出Excel -->
-      <el-button
-        @click="exportClick"
-        type="primary"
-        size="small"
-        icon="el-icon-folder-opened"
-        >导出</el-button
-      >
+      <el-button @click="exportClick" type="primary" size="small" icon="el-icon-folder-opened">导出</el-button>
     </div>
-    
+
     <div class="main">
       <el-table :data="pagedData" style="width: 100%" id="mainTable" max-height="500">
-        <el-table-column prop="no" label="序号" width="80"> 
+        <el-table-column prop="no" label="序号" width="50">
           <template slot-scope="scope">
             {{ scope.$index + 1}}
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="更新日期" width="140"> </el-table-column>
-        <el-table-column prop="ID" label="学号" width="140">
+        <el-table-column prop="updateTime" label="更新日期" width="110"> </el-table-column>
+        <el-table-column prop="num" label="学号" width="100">
         </el-table-column>
-        <el-table-column prop="name" label="姓名" width="120">
+        <el-table-column prop="name" label="姓名" width="90">
         </el-table-column>
-        <el-table-column prop="gpa" label="GPA" width="80">
+        <el-table-column prop="gpa" label="GPA" width="70">
         </el-table-column>
         <el-table-column prop="vol" label="志愿" width="80">
         </el-table-column>
@@ -42,6 +36,9 @@
         </el-table-column>
         <el-table-column prop="per" label="个人总结" width="80">
         </el-table-column>
+        <el-table-column prop="totalpoints" label="测评总分" width="80">
+        </el-table-column>
+
       </el-table>
 
       <!-- 分页 -->
@@ -52,6 +49,7 @@
               :current-page.sync="currentPage"
       />
 
+
     </div>
   </div>
 </template>
@@ -59,41 +57,36 @@
 <script>
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-import axios from 'axios';
-import staff from '@/api/studentManager/getSummary'
+import staff from '@/api/studentManager/summary'
 import qs from 'qs';
+import parseTime from "@/utils/timeformat"
+
 export default {
   data() {
     return {
-      defaultButtonText: '重新测评',
-      dialogVisible: false,
-      checkedScores: [],
       tableData: [{
-          date: "",
-              ID: "",
-              name: "",
-              gpa: "",
-              vol: "",
-              sci: "",
-              pra: "",
-              ser: "",
-              per: "",
-              totalpoints:""
-        }],
-      pageSize: 20, // 每页显示的数据条数
+        updateTime: "",
+        num: "",
+        name: "",
+        gpa: "",
+        vol: "",
+        sci: "",
+        pra: "",
+        ser: "",
+        per: "",
+        totalpoints:""
+      }],
+
+      pageSize: 3, // 每页显示的数据条数
       currentPage: 1, // 当前页数
+
     };
   },
-  created() {
-    this.$axios = axios;
+
+  mounted() {
     this.init();
   },
-
   computed: {
-
-
-
-    // 计算分页后的数据
     // 计算分页后的数据
     pagedData() {
       const start = (this.currentPage - 1) * this.pageSize;
@@ -106,44 +99,34 @@ export default {
   methods: {
 
     init(){
-      let _this = this;
       staff.getList(qs.stringify({flag:0})).then(res => {
         // 如果保存成功，则更新表格数据
         if (res.code === 200) {
-
-          const formdata = res.data;
-
-          // 提取当前时间
-          let currentDate = new Date();
-          let year = currentDate.getFullYear();
-          let month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-          let day = currentDate.getDate().toString().padStart(2, '0');
-          let formattedDate = `${year}-${month}-${day}`;
-          
           this.tableData.length = 0;
-          for (var i = 0;i < formdata.summarylist.length; i++){
-            this.tableData.push({
-              date: formattedDate,
-              ID: formdata.summarylist[i]["stuNum"],
-              name: formdata.summarylist[i]["stuName"],
-              gpa: formdata.summarylist[i]["gpa"],
-              vol: formdata.summarylist[i]["vol"],
-              sci: formdata.summarylist[i]["sci"],
-              pra: formdata.summarylist[i]["pra"],
-              ser: formdata.summarylist[i]["ser"],
-              per: formdata.summarylist[i]["per"],
-              totalpoints: formdata.summarylist[i]["gpa"] + formdata.summarylist[i]["vol"] + formdata.summarylist[i]["sci"] + 
-              formdata.summarylist[i]["pra"] + formdata.summarylist[i]["ser"] + formdata.summarylist[i]["per"]
-            });
+          if (res.data !== null) {
+            const rawdata = res.data.summarylist;
+            for (var i = 0;i < rawdata.length; i++){
+              this.tableData.push({
+                updateTime: parseTime.dateFormat(rawdata[i]["updateTime"]),
+                num: rawdata[i]["stuNum"],
+                name: rawdata[i]["stuName"],
+                gpa: rawdata[i]["gpa"],
+                vol: rawdata[i]["vol"],
+                sci: rawdata[i]["sci"],
+                pra: rawdata[i]["pra"],
+                ser: rawdata[i]["ser"],
+                per: rawdata[i]["per"],
+                totalpoints: rawdata[i]["gpa"] + rawdata[i]["vol"] + rawdata[i]["sci"] + 
+                rawdata[i]["pra"] + rawdata[i]["ser"] + rawdata[i]["per"]
+              });
+            }
           }
-
-          // 在赋值之后，再次对每一行数据添加buttonText属性
-          // _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
-
+        
         } else {
+          console.log(error)
           // this.$message.error("保存数据失败");
         }
-              });
+      });
       
     },
 
@@ -192,8 +175,8 @@ export default {
       });
       try {
         FileSaver.saveAs(
-                new Blob([wbout], { type: "application/octet-stream" }),
-                filename + ".xlsx"
+          new Blob([wbout], { type: "application/octet-stream" }),
+          filename + ".xlsx"
         );
       } catch (e) {
         if (typeof console !== "undefined") {
@@ -203,51 +186,40 @@ export default {
       return wbout;
     },
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   },
 };
 </script>
 
 <style scoped>
-  html, body {
-   height: 100%;
-   width: 100%;
- }
- .container {
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+.container {
   margin: 10px auto;
-    max-width: 900px;
-   display: flex;
-   flex-direction: column;
-   height: 100vh;
- }
- .title {
-   font-size: 28px;
-   text-align: center;
- }
- .titleBtn {
-   margin: 20px 0;
-   margin-bottom: 50px;
- }
- .main {
-   flex: 1;
-   width: 100%;
-   overflow-y: auto;
- }
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.title {
+  font-size: 28px;
+  text-align: center;
+}
+
+.titleBtn {
+  margin: 20px 0;
+  margin-bottom: 50px;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
+}
 </style>
   
 

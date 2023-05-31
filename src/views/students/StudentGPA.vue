@@ -20,8 +20,7 @@
   
   <script>
   import axios from 'axios';
-  import FileSaver from "file-saver";
-  import * as XLSX from "xlsx";
+  import user from '@/api/auth/user'
   export default {
     data() {
       return {
@@ -40,13 +39,19 @@
       };
     },
     mounted() {
+
       this.getStudentInfo();
     },
     methods: {
       getStudentInfo() {
+
+        // user.getInfo().then((res) => {
+        //   this.stuName = res.data.username;
+        //   this.stuNum  = res.data.
+        // });
       const stuId = 1; // 你需要替换为实际的学生ID
       axios
-        .post(`http://localhost:28080/api/grade/${stuId}/get-grade-info`)
+        .post(`http://localhost:18080/api/grade/${stuId}/get-grade-info`)
         .then(response => {
           this.tableData = [response.data.data];
         })

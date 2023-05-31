@@ -139,7 +139,7 @@ export default {
                         })
                     }
                     console.log(data)
-                    axios.post("http://localhost:28080/api/science/import", data, {
+                    axios.post("http://localhost:18080/api/science/import", data, {
                         headers: {
                             'Content-Type': 'application/json;'
                         }

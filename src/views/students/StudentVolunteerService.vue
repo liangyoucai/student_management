@@ -74,7 +74,7 @@
       getStudentInfo() {
       const stuId = 1; // 你需要替换为实际的学生ID
       axios
-        .post(`http://localhost:28080/api/volunteer/${stuId}/get-volunteer-info`)
+        .post(`http://localhost:18080/api/volunteer/${stuId}/get-volunteer-info`)
         .then(response => {
           this.tableData = [response.data.data];
         })
