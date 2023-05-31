@@ -41,6 +41,7 @@ export default {
     });
   },
   methods: {
+    // 获取时间
     getNowTime() {
       let speed = 1000
       let that = this

@@ -70,6 +70,7 @@ export default {
           return;
         })
         .catch(err => {
+          this.$message.error('文件上传失败!');
           console.log('文件上传失败', err)
           param.onError() //上传失败的文件会从文件列表中删除
         })
