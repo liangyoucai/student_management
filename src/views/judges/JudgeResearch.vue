@@ -144,24 +144,7 @@ export default {
         ScoreTable,
         RatingList
     },
-    mounted() {
-        if (this.rawData !== null) {
-            // 获得summary表所有数据
-            axios.get("http://localhost:18080/api/summary/selectAllList")
-                .then(res => {
-                    this.summaryList = res.data.data.summarylist
-                    // console.log(this.summaryList)
-                    // this.clean(this.rawData);
-                });
-            // 获得science表所有数据
-            axios.get("http://localhost:18080/api/science/getAllList")
-                .then(res => {
-                    this.rawData = res.data.data
-                    this.clean(this.rawData);
-                });
 
-        }
-    },
     data() {
         return {
             summaryList: [],
@@ -193,7 +176,26 @@ export default {
             return [...this.finishedStudents, ...this.waitingStudents];
         }
     },
+    mounted() {
+        if (this.rawData !== null) {
+            // 获得summary表所有数据
+            axios.get("http://localhost:18080/api/summary/selectAllList")
+                .then(res => {
+                    this.summaryList = res.data.data.summarylist
+                    console.log(this.summaryList)
+                    this.getSheetData();
+                })
+        }
+    },
     methods: {
+        getSheetData() {
+            // 获得science表所有数据
+            axios.get("http://localhost:18080/api/science/getAllList")
+                .then(res => {
+                    this.rawData = res.data.data
+                    this.clean(this.rawData);
+                })
+        },
         clean(rawData) {
             rawData.map((item) => {
                 const index = this.result.findIndex((ele) => ele.id === item.stuNum);
@@ -343,11 +345,11 @@ export default {
         },
         sumbitFinal() {
             console.log("finished:" + this.finishedStudents)
-            this.final.map((item) => {
-                // console.log("item.stuId = " + item.stuId)
-                // console.log("finished find:" + this.finishedStudents.find(finished => finished.theId == item.stuId))
-                item.sci = this.finishedStudents.find(finished => finished.theId == item.stuId).score;
-            })
+            // this.final.map((item) => {
+            //     // console.log("item.stuId = " + item.stuId)
+            //     // console.log("finished find:" + this.finishedStudents.find(finished => finished.theId == item.stuId))
+            //     item.sci = this.finishedStudents.find(finished => finished.theId == item.stuId).score;
+            // })
             console.log("final:" + this.final);
             this.dialog2Visible = false;
             axios.post("http://localhost:18080/api/summary/import", this.final, {
