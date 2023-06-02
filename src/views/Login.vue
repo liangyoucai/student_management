@@ -9,8 +9,7 @@
         <div class="login-form">
           <h3>用户登录</h3>
           <el-form ref="loginForm" :model="loginForm" :rules="rules" label-position="left" label-width="0">
-            <el-radio v-model="loginForm.role" label="false">学生</el-radio>
-            <el-radio v-model="loginForm.role" label="true">教职工</el-radio>
+            
             <el-form-item prop="username">
               <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
             </el-form-item>
@@ -53,12 +52,10 @@
         // 按钮加载
         loading: false,
         loginForm: {
-          role:'false',
           username: '',
           password: '',
         },
         rules: {
-          role:     [{ required: true, message: '请选择用户角色', trigger: 'change' }],
           username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
           password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
         },
