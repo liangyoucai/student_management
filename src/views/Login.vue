@@ -98,8 +98,9 @@
             // 登录请求
             user.login(this.loginForm).then(res => {
               if(res.code == 200) {
+                console.log(res.data)
                 // 登录成功
-                setToken(res.data.accessToken)
+                setToken(res.data.token)
                 
                 setTimeout(() => {
                   this.$router.push({ path: '/home'})
