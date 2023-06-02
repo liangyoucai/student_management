@@ -133,7 +133,7 @@
 
 <script>
 import axios from 'axios';
-
+import judge from '@/api/judge/judge';
 import OverviewTable from '@/components/OverviewTable.vue';
 import ScoreTable from '@/components/ScoreTable.vue'
 import RatingList from '@/components/RatingList.vue';
@@ -179,20 +179,22 @@ export default {
     mounted() {
         if (this.rawData !== null) {
             // 获得summary表所有数据
-            axios.get("http://localhost:18080/api/summary/selectAllList")
-                .then(res => {
-                    this.summaryList = res.data.data.summarylist
-                    console.log(this.summaryList)
-                    this.getSheetData();
-                })
+            // axios.get("http://localhost:18080/api/summary/selectAllList")
+            judge.getSummary().then(res => {
+                this.summaryList = res.data.summarylist
+                console.log(this.summaryList)
+                this.getSheetData();
+            })
+
         }
     },
     methods: {
         getSheetData() {
             // 获得science表所有数据
-            axios.get("http://localhost:18080/api/science/getAllList")
+            // axios.get("http://localhost:18080/api/science/getAllList")
+            judge.getSheet('science')
                 .then(res => {
-                    this.rawData = res.data.data
+                    this.rawData = res.data
                     this.clean(this.rawData);
                 })
         },
@@ -352,12 +354,15 @@ export default {
             // })
             console.log("final:" + this.final);
             this.dialog2Visible = false;
-            axios.post("http://localhost:18080/api/summary/import", this.final, {
-                headers: {
-                    'Content-Type': 'application/json;'
-                }
-            }
-            )
+
+
+            // axios.post("http://localhost:18080/api/summary/import", this.final, {
+            //     headers: {
+            //         'Content-Type': 'application/json;'
+            //     }
+            // }
+            // )
+            judge.importScore(this.final)
                 .then(res => {
                     console.log(res);
                     if (res.data.code == 200) {

@@ -81,6 +81,7 @@
 <script>
 import axios from 'axios';
 import user from '@/api/auth/user';
+
 export default {
     name: 'PersonalSummaryForm',
     data() {

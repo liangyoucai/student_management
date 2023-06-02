@@ -105,6 +105,7 @@ import OverviewTable from '@/components/OverviewTable.vue';
 import ScoreTable from '@/components/ScoreTable.vue'
 import RatingList from '@/components/RatingList.vue';
 import axios from 'axios';
+import judge from '@/api/judge/judge';
 export default {
     emits: ['score-selected', 'review-from-overview'],
     components: {
@@ -149,22 +150,20 @@ export default {
     },
     mounted() {
         if (this.rawData !== null) {
-            // 暂时仅1有数据
             // 获得summary表所有数据
-            axios.get("http://localhost:18080/api/summary/selectAllList")
-                .then(res => {
-                    this.summaryList = res.data.data.summarylist
-                    console.log(this.summaryList)
-                    this.getSheetData();
-                })
+            judge.getSummary().then(res => {
+                this.summaryList = res.data.summarylist
+                console.log(this.summaryList)
+                this.getSheetData();
+            })
         }
     },
     methods: {
         getSheetData() {
             // 获得personal表所有数据
-            axios.get("http://localhost:18080/api/personal/getAllList")
+            judge.getSheet('personal')
                 .then(res => {
-                    this.rawData = res.data.data
+                    this.rawData = res.data
                     this.clean(this.rawData);
                 })
         },
@@ -299,12 +298,7 @@ export default {
             // })
             console.log("final:" + this.final);
             this.dialog2Visible = false;
-            axios.post("http://localhost:18080/api/summary/import", this.final, {
-                headers: {
-                    'Content-Type': 'application/json;'
-                }
-            }
-            )
+            judge.importScore(this.final)
                 .then(res => {
                     console.log(res);
                     if (res.data.code == 200) {
