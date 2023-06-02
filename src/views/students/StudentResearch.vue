@@ -107,6 +107,7 @@ export default {
         user.getInfo(this.role).then((res) => {
             this.username = res.data.username;
             this.num = res.data.num
+            console.log(res.data)
         });
     },
     methods: {
