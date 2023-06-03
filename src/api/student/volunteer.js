@@ -3,15 +3,15 @@ import request from '@/utils/request'
 export default {
 
     /**
-   * 发送查看所有学生志愿服务时长列表请求
+   * 获取当前登录学生志愿服务时长
    * @param {*} param 
    * @returns 
    */
- getList(param) {
+    getList(param) {
     //   返回请求 
       return request({
-        url: '/api/volunteer/selectListAll',
-        method: 'post',
+        url: '/api/volunteer/get-volunteer-info',
+        method: 'get',
         data: param
       })
     },

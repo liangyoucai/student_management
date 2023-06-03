@@ -38,33 +38,18 @@
   
   <script>
   import axios from 'axios';
-  import FileSaver from "file-saver";
-  import * as XLSX from "xlsx";
+  import user from '@/api/auth/user'
+  import student from '@/api/student/volunteer'
   export default {
     data() {
       return {
-        // showForm: false, // 控制是否显示表单
-        // formData: {
-        //   description: "", // 表单数据
-        // },
-        // formRules: { // 表单验证规则
-        //   description: [
-        //     { required: true, message: "问题描述不能为空", trigger: "blur" },
-        //   ],
-        // },
         tableData: [
           {
-            // date: "2002-06-28",
-            // ID: "2200022758",
-            // name: "ZYY",
-            // class: "求知三苑",
-            // hours: "30",
             stuNum: "",
             stuName: "",
             time: "",
           },
         ],
-        //state: 0, // 0-未确认，1-已确认，2-有误，目前默认未确认，写了后端以后可以从后端调用相应数据
       };
     },
     mounted() {
@@ -72,37 +57,22 @@
     },
     methods: {
       getStudentInfo() {
-      const stuId = 1; // 你需要替换为实际的学生ID
-      axios
-        .post(`http://localhost:18080/api/volunteer/${stuId}/get-volunteer-info`)
-        .then(response => {
-          this.tableData = [response.data.data];
-        })
-        .catch(error => {
-          console.error('获取学生信息失败', error);
-        });
+        const token = localStorage.getItem('ACCESS_TOKEN');
+        const headers = {
+          Authorization: `Bearer ${token}`, // 在请求头中添加Bearer Token
+        };
+        student.getList(headers)
+          .then(response => {
+            // 请求成功处理
+            
+            console.log(response.data); 
+            this.tableData = [response.data];
+          })
+          .catch(error => {
+            // 请求失败处理
+            console.error(error);
+          });
       },
-      // confirm(){
-      //   this.state = 1;
-      //   // 将确认信息传送到后台服务器
-      //   console.log(state);
-      //   // 在提交成功后进行一些提示或跳转
-      //   this.$message.success('信息已确认');
-      // },
-      // report() {
-      //   this.$refs.form.validate((valid) => {
-      //     if (valid) {
-      //       // 表单验证通过，提交表单数据
-      //       console.log(this.formData);
-      //       this.state = 2;
-      //       this.$message.success("信息已上报，请等待老师与您联系");
-      //       this.showForm = false; // 隐藏表单
-      //     } else {
-      //       // 表单验证不通过，提示错误信息
-      //       this.$message.error("备注不能为空");
-      //     }
-      //   });
-      // }
     },
     
   };
