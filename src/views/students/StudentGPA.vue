@@ -21,6 +21,7 @@
   <script>
   import axios from 'axios';
   import user from '@/api/auth/user'
+  import student from '@/api/student/grade'
   export default {
     data() {
       return {
@@ -39,25 +40,25 @@
       };
     },
     mounted() {
-
       this.getStudentInfo();
     },
     methods: {
       getStudentInfo() {
-
-        // user.getInfo().then((res) => {
-        //   this.stuName = res.data.username;
-        //   this.stuNum  = res.data.
-        // });
-      const stuId = 1; // 你需要替换为实际的学生ID
-      axios
-        .post(`http://localhost:18080/api/grade/${stuId}/get-grade-info`)
-        .then(response => {
-          this.tableData = [response.data.data];
-        })
-        .catch(error => {
-          console.error('获取学生信息失败', error);
-        });
+        const token = localStorage.getItem('ACCESS_TOKEN');
+        //console.log(token);
+        student.getList(this.stuNum)
+          .then(response => {
+            // 请求成功处理
+            console.log(response.data); // 处理返回的数据
+            //this.stuNum = response.data.stuNum;
+            //this.stuName = response.data.stuName;
+            //this.gpa = response.data.gpa;
+            this.tableData = [response.data];
+          })
+          .catch(error => {
+            // 请求失败处理
+            console.error(error);
+          });
       },
     },
   };
