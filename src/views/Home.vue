@@ -4,7 +4,7 @@
 
     <!-- 菜单 -->
     <el-container class="menu">
-      <el-main >
+      <el-main>
         <div class="content">
           <h1>欢迎您, {{ name }} {{ rolename }}!</h1>
           <p>现在是 {{ nowTime }}</p>
@@ -17,7 +17,7 @@
 <script>
 import user from "@/api/auth/user";
 import { Message } from 'element-ui';
-import {removeToken} from '@/utils/token'
+import { removeToken } from '@/utils/token'
 export default {
   name: "SuccessPage",
   data() {
@@ -32,7 +32,8 @@ export default {
     this.getNowTime();
     // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
     user.getInfo(this.role).then((res) => {
-      if(res.code == 200) {
+      console.log(res)
+      if (res.code == 200) {
         this.name = res.data.name;
         this.role = res.data.role;
         if (this.role) {
@@ -40,18 +41,19 @@ export default {
         } else {
           this.rolename = "老师"
         }
-      }else{
-        Message.error({
-          message: `Error ${res.code}: ${res.msg}`,
-          duration: 3000,
-        });   
-        //清除token
+      }
+      else {
+        // Message.error({
+        //   message: `Error ${res.code}: ${res.msg}`,
+        //   duration: 3000,
+        // });
+        // 清除token
         removeToken()
-      } 
+      }
     });
   },
   methods: {
-    
+
     // 获取时间
     getNowTime() {
       let speed = 1000
@@ -63,7 +65,7 @@ export default {
     },
     timeNumber() {
       let today = new Date()
-      let date = today.getFullYear() + '年' + this.twoDigits(today.getMonth() + 1) + '月' + this.twoDigits(today.getDate() ) + '日 '
+      let date = today.getFullYear() + '年' + this.twoDigits(today.getMonth() + 1) + '月' + this.twoDigits(today.getDate()) + '日 '
       let time = this.twoDigits(today.getHours()) + ':' + this.twoDigits(today.getMinutes()) + ':' + this.twoDigits(today.getSeconds())
       return date + '  ' + time
     },
@@ -81,10 +83,11 @@ export default {
   margin: auto;
   /* float: left; */
   width: 100%;
-  min-height:100vh;
+  min-height: 100vh;
 }
-el-main{
-height: 0;
+
+el-main {
+  height: 0;
 }
 
 .success-page {
