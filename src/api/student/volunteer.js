@@ -4,15 +4,15 @@ export default {
 
     /**
    * 获取当前登录学生志愿服务时长
-   * @param {*} param 
+   * @param {*} headers
    * @returns 
    */
-    getList(param) {
+    getList(headers) {
     //   返回请求 
       return request({
         url: '/api/volunteer/get-volunteer-info',
         method: 'get',
-        data: param
+        headers: headers
       })
     },
 }

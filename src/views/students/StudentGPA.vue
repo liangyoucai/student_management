@@ -21,7 +21,7 @@
   <script>
   import axios from 'axios';
   import user from '@/api/auth/user'
-  import student from '@/api/student/grade'
+  import gradeApi from '@/api/student/grade';
   export default {
     data() {
       return {
@@ -40,26 +40,26 @@
       };
     },
     mounted() {
-      this.getStudentInfo();
+      const token = localStorage.getItem('ACCESS_TOKEN');
+      const headers = {
+        Authorization: `"Bearer" + ${token}`, // 在请求头中添加Token
+      };
+      gradeApi.getList(headers)
+        .then(response => {
+          // 请求成功处理
+          console.log(response.data); // 处理返回的数据
+          //this.stuNum = response.data.stuNum;
+          //this.stuName = response.data.stuName;
+          //this.gpa = response.data.gpa;
+          this.tableData = [response.data];
+        })
+        .catch(error => {
+          // 请求失败处理
+          console.error(error);
+        });
     },
     methods: {
-      getStudentInfo() {
-        const token = localStorage.getItem('ACCESS_TOKEN');
-        //console.log(token);
-        student.getList(this.stuNum)
-          .then(response => {
-            // 请求成功处理
-            console.log(response.data); // 处理返回的数据
-            //this.stuNum = response.data.stuNum;
-            //this.stuName = response.data.stuName;
-            //this.gpa = response.data.gpa;
-            this.tableData = [response.data];
-          })
-          .catch(error => {
-            // 请求失败处理
-            console.error(error);
-          });
-      },
+    
     },
   };
   </script>

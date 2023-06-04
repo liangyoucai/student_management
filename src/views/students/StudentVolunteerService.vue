@@ -39,7 +39,7 @@
   <script>
   import axios from 'axios';
   import user from '@/api/auth/user'
-  import student from '@/api/student/volunteer'
+  import volunteerApi from '@/api/student/volunteer'
   export default {
     data() {
       return {
@@ -59,19 +59,18 @@
       getStudentInfo() {
         const token = localStorage.getItem('ACCESS_TOKEN');
         const headers = {
-          Authorization: `Bearer ${token}`, // 在请求头中添加Bearer Token
+          Authorization: `"Bearer" + ${token}`, // 在请求头中添加Token
         };
-        student.getList(headers)
+        volunteerApi.getList(headers)
           .then(response => {
             // 请求成功处理
-            
-            console.log(response.data); 
+            console.log(response.data); // 处理返回的数据
             this.tableData = [response.data];
           })
-          .catch(error => {
-            // 请求失败处理
-            console.error(error);
-          });
+        .catch(error => {
+          // 请求失败处理
+          console.error(error);
+        });
       },
     },
     

@@ -7,7 +7,7 @@ export default {
    * @param {*} param 
    * @returns 
    */
- getList(param) {
+    getList(param) {
     //   返回请求 
       return request({
         url: '/api/grade/selectListAll',
@@ -15,4 +15,12 @@ export default {
         data: param
       })
     },
+
+     /**
+   * 发送给学生GPA打分请求
+   * @param {*} param 
+   * @returns 
+   */
+    
+      
 }
