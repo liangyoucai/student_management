@@ -75,7 +75,7 @@
 
 <script>
 import qs from 'qs';
-import staff from '@/api/volunteer/volunteerApi'
+import staff from '@/api/judge/volunteer'
 import RatingList from '@/components/RatingList.vue';
 import importFileDialog from '@/components/importFileDialog.vue'
 import axios from 'axios';

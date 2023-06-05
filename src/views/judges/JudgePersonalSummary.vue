@@ -82,7 +82,7 @@
         </overview-table>
 
         <!-- 确认提交按钮与弹出提示 -->
-        <el-button v-if="isOverviewing" type="primary" class="submitSocre-btn" @click="submitAllScores">确认提交</el-button>
+        <!-- <el-button v-if="isOverviewing" type="primary" class="submitSocre-btn" @click="submitAllScores">确认提交</el-button>
         <el-dialog title="提示" :visible.sync="dialog1Visible" width="30%">
             <span>还有{{ waitingStudents.length }}名学生未评分，请评分后再提交！</span>
             <span slot="footer" class="dialog-footer">
@@ -96,7 +96,7 @@
                 <el-button @click="dialog2Visible = false">取 消</el-button>
                 <el-button type="primary" @click="sumbitFinal()">确 定</el-button>
             </span>
-        </el-dialog>
+        </el-dialog> -->
     </div>
 </template>
 
@@ -105,6 +105,7 @@ import OverviewTable from '@/components/OverviewTable.vue';
 import ScoreTable from '@/components/ScoreTable.vue'
 import RatingList from '@/components/RatingList.vue';
 import axios from 'axios';
+import judge from '@/api/judge/judge';
 export default {
     emits: ['score-selected', 'review-from-overview'],
     components: {
@@ -114,6 +115,7 @@ export default {
     },
     data() {
         return {
+            summaryList: [],
             result: [],
             rawData: [],
             final: [],
@@ -147,17 +149,24 @@ export default {
         }
     },
     mounted() {
-        console.log("mounted")
         if (this.rawData !== null) {
-            // 暂时仅1有数据
-            axios.get("http://localhost:18080/api/personal/list?ids=1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10")
-                .then(res => {
-                    this.rawData = res.data.data
-                    this.clean(this.rawData);
-                });
+            // 获得summary表所有数据
+            judge.getSummary().then(res => {
+                this.summaryList = res.data.summarylist
+                console.log(this.summaryList)
+                this.getSheetData();
+            })
         }
     },
     methods: {
+        getSheetData() {
+            // 获得personal表所有数据
+            judge.getSheet('personal')
+                .then(res => {
+                    this.rawData = res.data
+                    this.clean(this.rawData);
+                })
+        },
         clean(rawData) {
             console.log(rawData);
             rawData.map((item) => {
@@ -170,19 +179,29 @@ export default {
                     society: item.society,
                     score: null
                 });
-                this.final.push({
-                    "school": item.school,
-                    "self": item.self,
-                    "society": item.society,
-                    "stuId": item.stuId,
-                    "stuName": item.stuName,
-                    "stuNum": item.stuNum,
-                    "score": null
-                })
+                // this.final.push({
+                //     "school": item.school,
+                //     "self": item.self,
+                //     "society": item.society,
+                //     "stuId": item.stuId,
+                //     "stuName": item.stuName,
+                //     "stuNum": item.stuNum,
+                //     "score": null
+                // })
 
             })
-            this.waitingStudents = this.result;
-            console.log("final:" + this.waitingStudents)
+            this.result.forEach((student) => {
+                const summary = this.summaryList.find((s) => s.stuId === student.theId);
+                if (summary && summary.per !== null) {
+                    student.score = summary.per;
+                    this.finishedStudents.push(student);
+                } else {
+                    this.waitingStudents.push(student);
+                }
+            })
+            if (this.waitingStudents.length == 0) {
+                this.startOverview();
+            }
         },
         startReview() {
             this.isReviewing = true;
@@ -203,7 +222,7 @@ export default {
                 const h = this.$createElement;
                 this.$notify({
                     title: '评审完成',
-                    message: h('i', { style: 'color: teal' }, '确认无误后，点击下方确认提交按钮。')
+                    // message: h('i', { style: 'color: teal' }, '确认无误后，点击下方确认提交按钮。')
                 });
 
             }
@@ -241,11 +260,23 @@ export default {
         submitScore() {
             this.currentStudent.score = this.currentScore;
             this.finishedStudents.push(this.currentStudent);
-            this.currentStudent = null;
+
             this.waitingStudents.splice(this.currentIndex, 1);
-            console.log(this.waitingStudents);
-            console.log(this.finishedStudents);
+            this.final = [{
+                "gpa": null,
+                "per": this.currentStudent.score,
+                "pra": null,
+                "sci": null,
+                "ser": null,
+                "stuId": this.currentStudent.theId,
+                "stuName": this.currentStudent.name,
+                "stuNum": this.currentStudent.id,
+                "vol": null
+            }]
+            this.currentStudent = null;
             this.showNextStudent();
+            this.sumbitFinal();
+
         },
         cancelReview() {
             this.currentStudent = null;
@@ -260,20 +291,14 @@ export default {
         },
         sumbitFinal() {
             console.log("finished:" + this.finishedStudents)
-            this.final.map((item) => {
-                console.log("item.stuId = " + item.stuId)
-                console.log("finished find:" + this.finishedStudents.find(finished => finished.theId == item.stuId))
-                item.per = this.finishedStudents.find(finished => finished.theId == item.stuId).score;
-                item.status = null
-            })
+            // this.final.map((item) => {
+            //     console.log("item.stuId = " + item.stuId)
+            //     console.log("finished find:" + this.finishedStudents.find(finished => finished.theId == item.stuId))
+            //     item.per = this.finishedStudents.find(finished => finished.theId == item.stuId).score;
+            // })
             console.log("final:" + this.final);
             this.dialog2Visible = false;
-            axios.post("http://localhost:18080/api/summary/import", this.final, {
-                headers: {
-                    'Content-Type': 'application/json;'
-                }
-            }
-            )
+            judge.importScore(this.final)
                 .then(res => {
                     console.log(res);
                     if (res.data.code == 200) {

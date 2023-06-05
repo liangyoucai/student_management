@@ -63,9 +63,9 @@
 <script>
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-import summary from '@/api/studentManager/summary'
 import qs from 'qs';
 import parseTime from "@/utils/timeformat"
+import summary from '@/api/studentManager/summary';
 
 export default {
   data() {

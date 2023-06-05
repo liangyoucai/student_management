@@ -82,6 +82,7 @@
 import axios from 'axios';
 import user from '@/api/auth/user';
 import student from '@/api/student/student'
+
 export default {
     name: 'PersonalSummaryForm',
     data() {
@@ -102,6 +103,15 @@ export default {
             username: '',
             num: '',
         };
+    },
+
+    mounted() {
+        // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
+        user.getInfo(this.role).then((res) => {
+            this.username = res.data.username;
+            this.num = res.data.num
+            console.log(res.data)
+        });
     },
     // mounted() {
     //     // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
