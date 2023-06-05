@@ -22,6 +22,7 @@
 
 <script>
 import axios from 'axios';
+import student from '@/api/student/student'
 import user from '@/api/auth/user';
 export default {
     name: 'PersonalSummaryForm',
@@ -47,13 +48,13 @@ export default {
             num: ''
         };
     },
-    mounted() {
-        // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
-        user.getInfo(this.role).then((res) => {
-            this.username = res.data.username;
-            this.num = res.data.num
-        });
-    },
+    // mounted() {
+    //     // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
+    //     user.getInfo(this.role).then((res) => {
+    //         this.username = res.data.username;
+    //         this.num = res.data.num
+    //     });
+    // },
     methods: {
 
         submitForm() {
@@ -64,21 +65,16 @@ export default {
                         "score": null,
                         "self": this.form.selfEvaluation,
                         "society": this.form.practiceSummary,
-                        "stuId": 1,
-                        "stuName": this.username,
-                        "stuNum": this.num
+                        // "stuId": 1,
+                        // "stuName": this.username,
+                        // "stuNum": this.num
                     }]
 
                     console.log(data)
-                    axios.post("http://localhost:18080/api/personal/import", data, {
-                        headers: {
-                            'Content-Type': 'application/json;'
-                        }
-                    }
-                    )
+                    student.import('personal', data)
                         .then(res => {
                             console.log(res);
-                            if (res.data.code == 200) {
+                            if (res.code == 200) {
                                 this.$message.success("提交成功")
                             }
                         });
