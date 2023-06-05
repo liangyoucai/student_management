@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { getAccessToken } from '@/utils/token';
 import { Message } from 'element-ui';
+import { removeToken } from '@/utils/token';
+import router from '@/router/index.js';
+
 const service = axios.create({
   baseURL: 'http://localhost:18080/',
   timeout: 5000000,
@@ -32,6 +35,11 @@ service.interceptors.response.use(
         message: `Error: ${response.data.msg}`,
         duration: 3000,
       });
+      if (response.data.msg.indexOf('重新登录') != -1) {
+        // 清除token
+        removeToken();
+        router.push({ path: '/login' });
+      }
     }
     // 对响应数据做点什么
     return response.data;

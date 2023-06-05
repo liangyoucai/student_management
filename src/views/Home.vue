@@ -42,14 +42,15 @@ export default {
           this.rolename = "老师"
         }
       }
-      else {
-        // Message.error({
-        //   message: `Error ${res.code}: ${res.msg}`,
-        //   duration: 3000,
-        // });
-        // 清除token
-        removeToken()
-      }
+      // else {
+      //   // Message.error({
+      //   //   message: `Error ${res.code}: ${res.msg}`,
+      //   //   duration: 3000,
+      //   // });
+      //   // 清除token
+      //   removeToken()
+
+      // }
     });
   },
   methods: {

@@ -14,12 +14,13 @@ const routes = [
   {
     path: '/',
     component: Layout, // 修改为 Layout 组件
-    // children: [
-    // {
-    //   path: 'home',
-    //   component: () => import('../views/Home.vue'),
-    //   name: 'home',
-    // },
+    children: [
+      {
+        path: 'home',
+        component: () => import('../views/Home.vue'),
+        name: 'home',
+      },
+    ],
     // {
     //   path: 'judge/personal-summary',
     //   name: 'JudgePersonalSummary',
