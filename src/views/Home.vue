@@ -16,7 +16,8 @@
   
 <script>
 import user from "@/api/auth/user";
-
+import { Message } from 'element-ui';
+import { removeToken } from '@/utils/token'
 export default {
   name: "SuccessPage",
   data() {
@@ -31,16 +32,28 @@ export default {
     this.getNowTime();
     // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
     user.getInfo(this.role).then((res) => {
-      this.name = res.data.name;
-      this.role = res.data.role;
-      if (this.role) {
-        this.rolename = "同学"
-      } else {
-        this.rolename = "老师"
+      console.log(res)
+      if (res.code == 200) {
+        this.name = res.data.name;
+        this.role = res.data.role;
+        if (this.role) {
+          this.rolename = "同学"
+        } else {
+          this.rolename = "老师"
+        }
+      }
+      else {
+        // Message.error({
+        //   message: `Error ${res.code}: ${res.msg}`,
+        //   duration: 3000,
+        // });
+        // 清除token
+        removeToken()
       }
     });
   },
   methods: {
+
     // 获取时间
     getNowTime() {
       let speed = 1000
@@ -52,7 +65,7 @@ export default {
     },
     timeNumber() {
       let today = new Date()
-      let date = today.getFullYear() + '年' + this.twoDigits(today.getMonth() + 1) + '月' + this.twoDigits(today.getDate() ) + '日 '
+      let date = today.getFullYear() + '年' + this.twoDigits(today.getMonth() + 1) + '月' + this.twoDigits(today.getDate()) + '日 '
       let time = this.twoDigits(today.getHours()) + ':' + this.twoDigits(today.getMinutes()) + ':' + this.twoDigits(today.getSeconds())
       return date + '  ' + time
     },
@@ -68,14 +81,18 @@ export default {
 .menu {
   padding-top: 0px;
   margin: auto;
-  float: left;
+  /* float: left; */
   width: 100%;
+  min-height: 100vh;
 }
 
+el-main {
+  height: 0;
+}
 
 .success-page {
-  height: 100%;
-  width: 100%;
+  /* height: 100%;
+  width: 100%; */
 }
 
 .content {

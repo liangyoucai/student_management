@@ -245,7 +245,7 @@ export default {
               manager: item.director,
               organization: item.constitution,
               content: item.content,
-             // level: item.level,
+              // level: item.level,
               time: item.time,
               achievement: item.result,
             }],
