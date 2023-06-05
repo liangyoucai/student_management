@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {getAccessToken} from '@/utils/token'
+import { getAccessToken } from '@/utils/token';
 import { Message } from 'element-ui';
 const service = axios.create({
   baseURL: 'http://localhost:18080/',
@@ -8,17 +8,16 @@ const service = axios.create({
 
 // 添加请求拦截器
 service.interceptors.request.use(
-    // 函数
-  config => {
+  // 函数
+  (config) => {
     // 在请求发送之前对请求数据进行处理
     // 携带token
-    if (getAccessToken() ) {
-      config.headers['Authorization'] = 'Bearer ' + getAccessToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    if (getAccessToken()) {
+      config.headers['Authorization'] = 'Bearer ' + getAccessToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     return config;
-    
   },
-  error => {
+  (error) => {
     // 对请求错误做些什么
     console.log(error);
     return Promise.reject(error);
@@ -28,30 +27,41 @@ service.interceptors.request.use(
 // 添加响应拦截器
 service.interceptors.response.use(
   (response) => {
+    if (response.data.code !== 200) {
+      Message.error({
+        message: `Error: ${response.data.msg}`,
+        duration: 3000,
+      });
+    }
     // 对响应数据做点什么
     return response.data;
   },
   (error) => {
-    // 对响应错误做点什么 
+    // 对响应错误做点什么
     if (error.response) {
       // 服务器返回了错误状态码
+      console.log('in request: ' + error);
       Message.error({
-        message: `Error ${error.response.status}: ${error.response.data.message || error.message}`,
+        message: `Error ${error.response.status}: ${
+          error.response.data.message || error.message
+        }`,
         duration: 3000,
       });
     } else {
       // 其他错误，如网络错误等
-      let message = error.message
+      console.log(error);
+
+      let message = error.message;
       if (!message) {
-        message = '系统发生未知错误'
-      }else if (message === 'Network Error') {
-        message = '后端接口连接异常'
+        message = '系统发生未知错误';
+      } else if (message === 'Network Error') {
+        message = '后端接口连接异常';
       } else if (message.includes('timeout')) {
-        message = '系统接口请求超时'
+        message = '系统接口请求超时';
       } else if (message.includes('Request failed with status code')) {
-        message = '系统接口' + message.substring(message.length - 3) + '异常'
+        message = '系统接口' + message.substring(message.length - 3) + '异常';
       }
-      Message.error({ 
+      Message.error({
         message: `Error: ${message}`,
         duration: 3000,
       });
@@ -61,6 +71,5 @@ service.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 
 export default service;

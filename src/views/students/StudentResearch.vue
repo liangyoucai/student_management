@@ -81,6 +81,7 @@
 <script>
 import axios from 'axios';
 import user from '@/api/auth/user';
+import student from '@/api/student/student'
 
 export default {
     name: 'PersonalSummaryForm',
@@ -111,6 +112,14 @@ export default {
             console.log(res.data)
         });
     },
+    // mounted() {
+    //     // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
+    //     // user.getInfo(this.role).then((res) => {
+    //     //     this.name = res.data.name;
+    //     //     this.num = res.data.num;
+    //     //     this.id = res.data.id;
+    // },
+
     methods: {
         submitForm() {
             this.$refs.form.validate((valid) => {
@@ -125,31 +134,26 @@ export default {
                         });
                         const start = dateStringArray[0];
                         const end = dateStringArray[dateStringArray.length - 1];
-                        const dateRangeString = start + ' ~ ' + end;
+                        const dateRangeString = start + '-' + end;
                         data.push({
                             "constitution": item.organization,
                             "director": item.manager,
                             "level": this.levels.indexOf(item.level),
                             "result": item.achievements,
-                            "score": null,
-                            "status": 1,
-                            "stuId": 1,
-                            "stuName": this.username,
-                            "stuNum": this.num,
+                            // "stuId": 1,
+                            // "stuName": '张三',
+                            // "stuNum": 2200022001,
+                            // "createUserId": 0,
+                            // "updateUserId": 0,
                             "time": dateRangeString,
                             "title": item.name
                         })
                     }
                     console.log(data)
-                    axios.post("http://localhost:18080/api/science/import", data, {
-                        headers: {
-                            'Content-Type': 'application/json;'
-                        }
-                    }
-                    )
+                    student.import('science', data)
                         .then(res => {
                             console.log(res);
-                            if (res.data.code == 200) {
+                            if (res.code == 200) {
                                 this.$message.success("提交成功")
                             }
                         });
