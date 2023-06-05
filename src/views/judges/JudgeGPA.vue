@@ -80,6 +80,7 @@ import staff from '@/api/judge/grade'
 import RatingList from '@/components/RatingList.vue';
 import importFileDialog from '@/components/importFileDialog.vue'
 import axios from 'axios';
+import gradeApi from '@/api/judge/grade';
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 
@@ -172,10 +173,11 @@ export default {
       this.dialogVisible = true; // 显示对话框
     },
     saveForm() {
+      console.log({stuNum: this.form.stuNum, score: this.form.score});
       // 构造请求体数据
       console.log();
       // 发送更新学生记录的请求到服务器
-      axios.post(`http://localhost:18080/api/grade/${this.form.stuNum}/update-score?score=${this.form.score}`)
+      gradeApi.updateScore({ stuNum: this.form.stuNum, score: this.form.score })
         .then(response => {
           // 请求成功处理
           console.log('打分更新成功', response);

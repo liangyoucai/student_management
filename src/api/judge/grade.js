@@ -17,10 +17,18 @@ export default {
     },
 
      /**
-   * 发送给学生GPA打分请求
+   * 发送GPA打分请求
    * @param {*} param 
    * @returns 
    */
-    
+     updateScore(param) {
+      const { stuNum, score } = param; // 提取 stuNum 和 score 属性
+      // 返回请求
+      return request({
+        url: `/api/grade/{stuNum}/update-score`,
+        method: 'post',
+        data: { stuNum, score } // 传递 stuNum 和 score 属性
+      });
+    }
       
 }
