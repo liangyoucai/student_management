@@ -57,7 +57,7 @@
 <script>
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-import staff from '@/api/studentManager/summary'
+import summary from '@/api/studentManager/summary'
 import qs from 'qs';
 import parseTime from "@/utils/timeformat"
 
@@ -99,7 +99,7 @@ export default {
   methods: {
 
     init(){
-      staff.getList(qs.stringify({flag:0})).then(res => {
+      summary.getList(qs.stringify({flag:0})).then(res => {
         // 如果保存成功，则更新表格数据
         if (res.code === 200) {
           this.tableData.length = 0;
