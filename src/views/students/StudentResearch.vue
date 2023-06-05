@@ -104,6 +104,7 @@ export default {
             num: '',
         };
     },
+
     mounted() {
         // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
         user.getInfo(this.role).then((res) => {
@@ -119,7 +120,6 @@ export default {
     //     //     this.num = res.data.num;
     //     //     this.id = res.data.id;
     // },
-
     methods: {
         submitForm() {
             this.$refs.form.validate((valid) => {
