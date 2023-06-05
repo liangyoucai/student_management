@@ -32,6 +32,8 @@
 <script>
 import { setToken } from '@/utils/token'
 import user from '@/api/auth/user'
+import menu from '@/api/menu';
+import Layout from '@/layout';
 export default {
   data() {
     // 角色身份必选
@@ -98,7 +100,32 @@ export default {
               console.log(res.data)
               // 登录成功
               setToken(res.data.token)
+              // 获取菜单列表数据，并动态生成路由
+              // menu
+              //   .getMenuList()
+              //   .then((res) => {
+              //     const menuList = res;
+              //     console.log(res);
+              //     menuList.forEach((menu) => {
+              //       const route = {
+              //         path: '/',
+              //         component: Layout,
+              //         children: [
+              //           {
+              //             path: menu.path,
+              //             name: menu.name,
+              //             component: () => import(`@/views/${menu.component}.vue`),
+              //           },
+              //         ],
+              //       };
 
+              //       router.addRoute(route);
+              //     });
+
+              //   })
+              //   .catch((error) => {
+              //     console.error(error);
+              //   });
               setTimeout(() => {
                 this.$router.push({ path: '/home' })
               }, 500);

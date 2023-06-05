@@ -27,7 +27,7 @@ service.interceptors.request.use(
 // 添加响应拦截器
 service.interceptors.response.use(
   (response) => {
-    if (response.data.code !== 200) {
+    if (response.data.code && response.data.code !== 200) {
       Message.error({
         message: `Error: ${response.data.msg}`,
         duration: 3000,
