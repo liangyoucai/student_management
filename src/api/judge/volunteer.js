@@ -7,7 +7,7 @@ export default {
    * @param {*} param 
    * @returns 
    */
- getList(param) {
+    getList(param) {
     //   返回请求 
       return request({
         url: '/api/volunteer/selectListAll',
@@ -15,4 +15,19 @@ export default {
         data: param
       })
     },
+
+     /**
+   * 发送志愿服务时长打分请求
+   * @param {*} param 
+   * @returns 
+   */
+     updateScore(param) {
+      const { stuNum, score } = param; // 提取 stuNum 和 score 属性
+      // 返回请求
+      return request({
+        url: `/api/volunteer/{stuNum}/update-score`,
+        method: 'post',
+        data: { stuNum, score } // 传递 stuNum 和 score 属性
+      });
+    }
 }
