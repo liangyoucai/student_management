@@ -82,7 +82,7 @@ export default {
             this.$message.success('上传成功');
             this.$emit('close-dialog');
           } else {
-            this.$message.error(res.msg);
+            // this.$message.error(res.msg);
             param.onError()
           }
           return;

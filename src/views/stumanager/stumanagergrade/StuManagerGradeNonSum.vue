@@ -2,7 +2,7 @@
   <div class="container">
 
     <div class="title">
-      <h1 class="title">学生评分汇总 - 未测评学生信息</h1>
+      <h1 class="title">学生评分汇总 - 未测评</h1>
 
     </div>
     <el-divider></el-divider>
