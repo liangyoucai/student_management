@@ -58,11 +58,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="20">
-            <el-form-item label="时长" :prop="'research.'+index+'.time'" :rules="{
-                            required: true, message: '该项不能为空', trigger: 'blur'
-                        }">
-              <el-input placeholder="请输入在岗服务时长" v-model="form.research[index].time"></el-input>
+            <el-form-item label="参与时间" :prop="'research.' + index + '.time'" :rules="{
+                            required: true, message: '该项不能为空', trigger: 'change'
+                        }" style="float: left">
+              <el-date-picker v-model="form.research[index].time" type="monthrange" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间">
+              </el-date-picker>
             </el-form-item>
+<!--            <el-form-item label="时长" :prop="'research.'+index+'.time'" :rules="{-->
+<!--                            required: true, message: '该项不能为空', trigger: 'blur'-->
+<!--                        }">-->
+<!--              <el-input placeholder="请输入在岗服务时长" v-model="form.research[index].time"></el-input>-->
+<!--            </el-form-item>-->
           </el-col>
         </el-row>
       </div>
@@ -114,7 +120,15 @@ export default {
         if (valid) {
           let data = []
           for (let item of this.form.research) {
-
+            let dateStringArray = []
+            item.time.forEach((date) => {
+              const year = date.getFullYear().toString();
+              const month = (date.getMonth() + 1).toString().padStart(2, '0');
+              dateStringArray.push(year + '.' + month); // 这里用 '.' 进行连接，也可以使用其他分隔符，如 '-'
+            });
+            const start = dateStringArray[0];
+            const end = dateStringArray[dateStringArray.length - 1];
+            const dateRangeString = start + '-' + end;
 
             data.push({
               "constitution": item.organization,
@@ -127,7 +141,7 @@ export default {
               // "stuNum": 2200022001,
               // "createUserId": 0,
               // "updateUserId": 0,
-              "time": item.time,
+              "time": dateRangeString,
               "title": item.name
             })
           }
