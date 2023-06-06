@@ -123,8 +123,8 @@ export default {
                 "ServiceWorks": "骨干服务岗位评审",
                 "JudgePersonalSummary": "个人学年总结评审",
                 "StuManagerExImport": "学生信息管理",
-                "StuManagerGradeSum": "未测评学生",
-                "StuManagerGradeNonSum": "已测评学生",
+                "StuManagerGradeSum": "已测评学生",
+                "StuManagerGradeNonSum": "未测评学生",
             },
             menuItems: [],
             // : [
