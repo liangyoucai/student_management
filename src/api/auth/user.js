@@ -2,6 +2,17 @@ import request from '@/utils/request'
 
 export default {
   /**
+   * 获取验证码
+   * @returns 
+   */
+  getCaptcha() {
+    return request({
+      url: 'auth/captcha',
+      method: 'get',
+      data:null
+    })
+  },
+  /**
    * 登录
    * @param {*} param 
    * @returns 
