@@ -2,6 +2,23 @@
     <div class="my-form">
         <h1 class="title">学生科研情况 - 在线填写</h1>
         <el-divider></el-divider>
+
+        <!-- 证明材料上传 -->
+        <el-row type="flex">
+            <el-row>
+                <el-col :span="24">
+                    <h4 style="float: left;">证明材料</h4>
+                </el-col>
+            </el-row>
+        </el-row>
+        <el-row>
+            <el-row>
+                <el-col :span="24">
+                    <stuImportPdfButton @click="openImportDialog"></stuImportPdfButton>
+                </el-col>
+            </el-row>
+        </el-row>
+
         <el-form :model="form" label-width="120px" ref="form">
             <div v-for="(project, index) in form.research" :key="project.key">
                 <el-row type="flex">
@@ -82,9 +99,11 @@
 import axios from 'axios';
 import user from '@/api/auth/user';
 import student from '@/api/student/student'
-
+import stuImportPdfButton from '@/components/stuImportPdfButton.vue';
 export default {
-    name: 'PersonalSummaryForm',
+    components: {
+        stuImportPdfButton
+    },
     data() {
         return {
             form: {
@@ -121,6 +140,9 @@ export default {
     //     //     this.id = res.data.id;
     // },
     methods: {
+        openImportDialog() {
+            this.$refs.ChildButton.openImportDialog();
+        },
         submitForm() {
             this.$refs.form.validate((valid) => {
                 if (valid) {

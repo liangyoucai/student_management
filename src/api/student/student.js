@@ -15,4 +15,16 @@ export default {
       },
     });
   },
+
+  /**
+   * 提交学生证明材料
+   */
+  importFile(data, importName) {
+    //   返回请求
+    return request({
+      url: `/api/${importName}/import`,
+      method: 'post',
+      data,
+    });
+  },
 };
