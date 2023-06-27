@@ -86,8 +86,6 @@ export default {
     this.enterLogin()
   },
   methods: {
-<<<<<<< HEAD
-=======
     //回车登录
     enterLogin() {
       document.onkeydown = e => {
@@ -102,7 +100,6 @@ export default {
     clearForm(formName) {
       this.$refs[formName].resetFields();
     },
->>>>>>> 80876b655e10362f5a3762989a8a746690657d1e
     open_warning() {
       this.$message({
         showClose: true,
