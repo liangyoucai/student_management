@@ -3,21 +3,7 @@
         <h1 class="title">学生科研情况 - 在线填写</h1>
         <el-divider></el-divider>
 
-        <!-- 证明材料上传 -->
-        <el-row type="flex">
-            <el-row>
-                <el-col :span="24">
-                    <h4 style="float: left;">证明材料</h4>
-                </el-col>
-            </el-row>
-        </el-row>
-        <el-row>
-            <el-row>
-                <el-col :span="24">
-                    <stuImportPdfButton @click="openImportDialog"></stuImportPdfButton>
-                </el-col>
-            </el-row>
-        </el-row>
+
 
         <el-form :model="form" label-width="120px" ref="form">
             <div v-for="(project, index) in form.research" :key="project.key">
@@ -85,6 +71,21 @@
                 }">
                     <el-input type="textarea" :rows="4" placeholder="请输入项目成果" v-model="form.research[index].achievements"></el-input>
                 </el-form-item>
+                <!-- 证明材料上传 -->
+                <el-row type="flex">
+                    <el-row>
+                        <el-col :span="24">
+                            <h4 style="float: left;">{{ '参与的科研项目' + (index + 1) + '证明材料' }}</h4>
+                        </el-col>
+                    </el-row>
+                </el-row>
+                <el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <stuImportPdfButton @click="openImportDialog" subject="science"></stuImportPdfButton>
+                        </el-col>
+                    </el-row>
+                </el-row>
             </div>
             <el-form-item style="margin-top: 20px">
                 <el-button type="warning" @click="addProject">增加项目</el-button>

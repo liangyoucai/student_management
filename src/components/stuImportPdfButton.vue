@@ -6,7 +6,7 @@
     </div>
     <!-- 上传对话框 -->
     <div v-if="isImportFileDialogVisible">
-      <importFileDialog importName="pdf" importTitle="上传证明材料pdf文件" importTip="将所有证明材料放在一个pdf文件上传，且不超过10M" importType="pdf" @close-dialog="closeImportDialog">
+      <importFileDialog :subject=subject importName="pdf" importTitle="上传证明材料pdf文件" importTip="将所有证明材料放在一个pdf文件上传，且不超过10M" importType="pdf" @close-dialog="closeImportDialog">
       </importFileDialog>
     </div>
   </div>
@@ -16,6 +16,7 @@
 import importFileDialog from '@/components/importFileDialog.vue'
 
 export default {
+  props: ['subject'],
   components: {
     importFileDialog,
   },
