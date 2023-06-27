@@ -12,7 +12,7 @@
     </div>
     <!-- 上传对话框 -->
     <div v-if="isImportFileDialogVisible">
-      <importFileDialog importName="grade" importTitle="上传学生成绩文件" importTip="一次只能上传一个xls/xlsx文件，且不超过10M" @close-dialog="closeImportDialog">
+      <importFileDialog importName="grade" importTitle="上传学生成绩文件" importTip="一次只能上传一个xls/xlsx文件，且不超过10M" importType="excel" @close-dialog="closeImportDialog">
       </importFileDialog>
     </div>
     <div class="main">
@@ -59,15 +59,15 @@
           </el-form-item>
         </el-form>
         <div class="block">
-        <span class="demonstration">评分：{{ currentScore }}</span>
-        <rating-list :currentScore="currentScore" @score-selected="onScoreSelected"></rating-list>
+          <span class="demonstration">评分：{{ currentScore }}</span>
+          <rating-list :currentScore="currentScore" @score-selected="onScoreSelected"></rating-list>
         </div>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
           <el-button type="primary" @click="saveForm()">确定</el-button>
         </div>
       </el-dialog>
-      
+
 
     </div>
 
@@ -85,12 +85,12 @@ import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 
 export default {
-  emits: ['close-dialog','score-selected'],
+  emits: ['close-dialog', 'score-selected'],
   components: {
     importFileDialog,
     RatingList
   },
-  created(){
+  created() {
     this.$axios = axios;
     this.init();
   },
@@ -99,39 +99,39 @@ export default {
       currentScore: null,
       isRatingDialogVisible: false,
       tableData: [{
-      //   {
-      //     date: "2002-06-28",
-      //     ID: "2200022600",
-      //     name: "ABC",
-      //     class: "求知三苑",
-      //     GPA: "3.80",
-      //     state: 1
-      //   },
+        //   {
+        //     date: "2002-06-28",
+        //     ID: "2200022600",
+        //     name: "ABC",
+        //     class: "求知三苑",
+        //     GPA: "3.80",
+        //     state: 1
+        //   },
         stuNum: "",
         stuName: "",
         gpa: "",
-        score:""
+        score: ""
       }],
       dialogVisible: false,
       isImportFileDialogVisible: false,
       form: {
         stuNum: "",
         gpa: '',
-        score:""
+        score: ""
       },
       currentRow: null,
     };
   },
 
   methods: {
-    init(){
+    init() {
       let _this = this;
-      staff.getList(qs.stringify({flag:0})).then(res => {
+      staff.getList(qs.stringify({ flag: 0 })).then(res => {
         // 如果保存成功，则更新表格数据
         if (res.code === 200) {
           const formdata = res.data;
           this.tableData.length = 0;
-          for (var i = 0;i < formdata.gradelist.length; i++){
+          for (var i = 0; i < formdata.gradelist.length; i++) {
             this.tableData.push({
               stuNum: formdata.gradelist[i]["stuNum"],
               stuName: formdata.gradelist[i]["stuName"],
@@ -145,8 +145,8 @@ export default {
         } else {
           // this.$message.error("保存数据失败");
         }
-              });
-      
+      });
+
     },
     showRatingDialog() {
       this.isRatingDialogVisible = true;
@@ -173,7 +173,7 @@ export default {
       this.dialogVisible = true; // 显示对话框
     },
     saveForm() {
-      console.log({stuNum: this.form.stuNum, score: this.form.score});
+      console.log({ stuNum: this.form.stuNum, score: this.form.score });
       // 构造请求体数据
       console.log();
       // 发送更新学生记录的请求到服务器
@@ -186,7 +186,7 @@ export default {
           if (updatedStudent) {
             updatedStudent.score = this.form.score;
           }
-          
+
         })
         .catch(error => {
           // 请求失败处理
@@ -195,7 +195,7 @@ export default {
         });
       this.dialogVisible = false;
     },
-    
+
   },
 };
 </script>
@@ -224,7 +224,6 @@ body {
 .titleBtn {
   margin: 20px 0;
   margin-bottom: 50px;
-
 }
 
 .main {
