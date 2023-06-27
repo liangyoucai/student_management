@@ -22,7 +22,7 @@ import excel from '@/api/excel'
 import student from '@/api/student/student.js'
 
 export default {
-  props: ['importTitle', 'importUrl', 'importData', 'importTip', 'importName', 'importType'],
+  props: ['importTitle', 'importUrl', 'importData', 'importTip', 'importName', 'importType', 'subject'],
   data() {
     return {
       isVisible: true,
@@ -61,13 +61,30 @@ export default {
         pdf: ['application/pdf'],
         excel: ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
       }
+
+      const currentTime = new Date().toISOString();
+
+      file = new File(
+        [file],
+        `${currentTime}-${this.subject}.${file.name.split('.')[1]} `
+      )
+
+      for (let key in file) {
+        console.log(`属性名: ${key}, 属性值: ${file[key]} `);
+      }
+      // Object.defineProperty(file, 'name', {
+      //   writable: true, //设置属性为可写
+      // })
+
+      // file.name = file.name.split('.')[1] + this.subject;
+      // console.log(file.name);
       // const isType = file.type === allowedTypes[this.importType];
       // const isTypeComputer = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       // const fileType = isType || isTypeComputer
       const fileType = allowedTypes[this.importType];
       console.log(fileType)
       if (!fileType) {
-        this.$message.error(`上传文件应为${this.importType}类型！`)
+        this.$message.error(`上传文件应为${this.importType} 类型！`)
       }
       // 文件大小限制为10M
       const fileLimit = file.size / 1024 / 1024 < 10;
@@ -79,10 +96,12 @@ export default {
 
     // 自定义上传方法，param是默认参数，可以取得file文件信息，具体信息如下图
     uploadHttpRequest(param) {
-      console.log(this.importType)
+
       const formData = new FormData() //FormData对象，添加参数只能通过append('key', value)的形式添加
       formData.append('file', param.file) //添加文件对象
       formData.append('uploadType', this.rulesType)
+      formData.append('subject', this.subject)
+      console.log(formData);
       // 根据importType的不同（pdf或者excel），调用不同的接口
       if (this.importType == 'excel') {
         console.log(this.importName);
