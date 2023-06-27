@@ -37,6 +37,10 @@
     
     <!-- 表格 -->
     <div class="main">
+      <el-input v-model="searchContent" 
+      size="medium" 
+      placeholder="请输入姓名或学号" 
+      ></el-input>
       <el-table
         :data="pagedData"
         style="width: 100%"
@@ -61,7 +65,7 @@
       <!-- 分页 -->
       <el-pagination
         layout="prev, pager, next, jumper"
-        :total="tableData.length"
+        :total="checklist.length"
         :page-size="pageSize"
         :current-page.sync="currentPage"
       />
@@ -91,7 +95,17 @@ export default {
         major: '',
         email: '',
       }],
-
+      checklist:[{
+        updateTime:'',
+        num:'',
+        name:'',
+        sex:'',
+        year:'',
+        class: '',
+        major: '',
+        email: '',
+      }],//筛选值
+      searchContent:'',
       pageSize: 3, // 每页显示的数据条数
       currentPage: 1, // 当前页数
       isImportFileDialogVisible: false,
@@ -105,11 +119,15 @@ export default {
   computed: {
     // 计算分页后的数据
     pagedData() {
+      this.checklist = this.tableData.filter(data => !this.searchContent || 
+        data.name.toLowerCase().includes(
+        this.searchContent.toLowerCase()) ||
+        data.num.includes(this.searchContent) )
       // 每页显示的第一个和最后一个条目
       const start = (this.currentPage - 1) * this.pageSize;
       const end = this.currentPage * this.pageSize;
 
-      return this.tableData.slice(start, end);
+      return this.checklist.slice(start, end);
     },
   },
 

@@ -33,7 +33,12 @@
           </div>
         </el-form>
       </div>
-
+      <!-- 找回密码 -->
+      <el-dialog title="找回密码" :visible.sync="dialogFormVisible" width="40%">
+          <div >
+            请联系学工办找回密码！
+          </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -73,15 +78,11 @@ export default {
         captchaText: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
       },
       captchaimg:'data:image/jpg;base64,',
-
-
+      // 找回密码
+      dialogFormVisible: false,
     }
   },
   methods: {
-    // 清空表单
-    clearForm(formName) {
-      this.$refs[formName].resetFields();
-    },
     open_warning() {
       this.$message({
         showClose: true,
@@ -160,6 +161,7 @@ export default {
         }
       });
     },
+    // 刷新验证码
     refreshCode(){
       //更新验证码
       user.getCaptcha().then((res) => {
@@ -168,8 +170,7 @@ export default {
         this.captchaimg += res.data
       } 
     })
-    }
-
+    },
   },
   mounted() {
     user.getCaptcha().then((res) => {
@@ -227,5 +228,7 @@ export default {
     }
   }
 }
+
+
 </style>
 
