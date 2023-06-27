@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export default {
   /**
-   * 获取验证码
+   * 获取图片验证码
    * @returns 
    */
   getCaptcha() {
