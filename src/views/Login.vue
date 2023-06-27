@@ -82,7 +82,27 @@ export default {
       dialogFormVisible: false,
     }
   },
+  created() {
+    this.enterLogin()
+  },
   methods: {
+<<<<<<< HEAD
+=======
+    //回车登录
+    enterLogin() {
+      document.onkeydown = e => {
+        //13表示回车键，baseURI是当前页面的地址
+        if (e.keyCode === 13 && e.target.baseURI.indexOf('login') != -1) {
+          //回车后执行搜索方法
+          this.do_login('loginForm')
+        }
+      }
+    },
+    // 清空表单
+    clearForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+>>>>>>> 80876b655e10362f5a3762989a8a746690657d1e
     open_warning() {
       this.$message({
         showClose: true,
