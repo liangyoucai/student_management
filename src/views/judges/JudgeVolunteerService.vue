@@ -3,7 +3,7 @@
 
     <div class="title">
       <h1 class="title">志愿服务时长 - 导入/在线评审</h1>
-      
+
     </div>
     <el-divider></el-divider>
     <!-- 导入按钮 -->
@@ -12,15 +12,15 @@
     </div>
     <!-- 上传对话框 -->
     <div v-if="isImportFileDialogVisible">
-      <importFileDialog importName="volunteer" importTitle="上传学生志愿服务时长文件" importTip="一次只能上传一个xls/xlsx文件，且不超过10M" @close-dialog="closeImportDialog">
+      <importFileDialog importName="volunteer" importTitle="上传学生志愿服务时长文件" importTip="一次只能上传一个xls/xlsx文件，且不超过10M" importType="excel" @close-dialog="closeImportDialog">
       </importFileDialog>
     </div>
-    
+
     <div class="main">
       <el-table :data="tableData" style="width: 100%" id="mainTable" max-height="500">
-        <el-table-column prop="no" label="序号" width="80"> 
+        <el-table-column prop="no" label="序号" width="80">
           <template slot-scope="scope">
-            {{ scope.$index + 1}}
+            {{ scope.$index + 1 }}
           </template>
         </el-table-column>
         <!-- <el-table-column prop="date" label="更新日期" width="140"> </el-table-column> -->
@@ -51,7 +51,7 @@
         <el-table-column prop="score" label="评分" width="120">
         </el-table-column>
       </el-table>
-      
+
       <el-dialog :visible.sync="dialogVisible">
         <el-form :model="form" ref="form" label-width="100px">
           <el-form-item label="志愿服务时长">
@@ -59,8 +59,8 @@
           </el-form-item>
         </el-form>
         <div class="block">
-        <span class="demonstration">评分：{{ currentScore }}</span>
-        <rating-list :currentScore="currentScore" @score-selected="onScoreSelected"></rating-list>
+          <span class="demonstration">评分：{{ currentScore }}</span>
+          <rating-list :currentScore="currentScore" @score-selected="onScoreSelected"></rating-list>
         </div>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
@@ -83,12 +83,12 @@ import volunteerApi from '@/api/judge/volunteer';
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 export default {
-  emits: ['close-dialog','score-selected'],
+  emits: ['close-dialog', 'score-selected'],
   components: {
     importFileDialog,
     RatingList
   },
-  created(){
+  created() {
     this.$axios = axios;
     this.init();
   },
@@ -106,28 +106,28 @@ export default {
         stuNum: "",
         stuName: "",
         time: "",
-        score:""
+        score: ""
       }],
       dialogVisible: false,
       isImportFileDialogVisible: false,
       form: {
         stuNum: "",
         time: '',
-        score:""
+        score: ""
       },
       currentRow: null,
     };
   },
-  
+
   methods: {
-    init(){
+    init() {
       let _this = this;
-      staff.getList(qs.stringify({flag:0})).then(res => {
+      staff.getList(qs.stringify({ flag: 0 })).then(res => {
         // 如果保存成功，则更新表格数据
         if (res.code === 200) {
           const formdata = res.data;
           this.tableData.length = 0;
-          for (var i = 0;i < formdata.volunteerlist.length; i++){
+          for (var i = 0; i < formdata.volunteerlist.length; i++) {
             this.tableData.push({
               stuNum: formdata.volunteerlist[i]["stuNum"],
               stuName: formdata.volunteerlist[i]["stuName"],
@@ -141,8 +141,8 @@ export default {
         } else {
           // this.$message.error("保存数据失败");
         }
-              });
-      
+      });
+
     },
     showRatingDialog() {
       this.isRatingDialogVisible = true;
@@ -194,35 +194,39 @@ export default {
 </script>
 
 <style scoped>
-   html, body {
-    height: 100%;
-    width: 100%;
-    margin: 0 auto;
-  }
-  .container {
-    margin: 10px auto;
-    max-width: 900px;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
-  }
-  .el-divider--horizontal {
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.container {
+  margin: 10px auto;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
+}
+
+.el-divider--horizontal {
   margin-top: 3px;
 }
-  .title {
-    font-size: 28px;
-    text-align: center;
-    
-  }
-  
-  .titleBtn {
-    margin: 20px 0;
-    margin-bottom: 50px;
-  }
-  .main {
-    margin: 0 auto;
-  }
-</style>
+
+.title {
+  font-size: 28px;
+  text-align: center;
+
+}
+
+.titleBtn {
+  margin: 20px 0;
+  margin-bottom: 50px;
+}
+
+.main {
+  margin: 0 auto;
+}</style>
   
 

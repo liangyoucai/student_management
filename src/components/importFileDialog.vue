@@ -19,8 +19,10 @@
 
 <script>
 import excel from '@/api/excel'
+import student from '@/api/student/student.js'
+
 export default {
-  props: ['importTitle', 'importUrl', 'importData', 'importTip', 'importName'],
+  props: ['importTitle', 'importUrl', 'importData', 'importTip', 'importName', 'importType', 'subject'],
   data() {
     return {
       isVisible: true,
@@ -53,12 +55,36 @@ export default {
       this.$refs.upload.clearFiles();
     },
     beforeUpload(file) {
-      //文件类型
-      const isType = file.type === 'application/vnd.ms-excel'
-      const isTypeComputer = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      const fileType = isType || isTypeComputer
+      // 文件类型
+      // 可上传的文件类型
+      const allowedTypes = {
+        pdf: ['application/pdf'],
+        excel: ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+      }
+
+      const currentTime = new Date().toISOString();
+
+      file = new File(
+        [file],
+        `${currentTime}-${this.subject}.${file.name.split('.')[1]} `
+      )
+
+      for (let key in file) {
+        console.log(`属性名: ${key}, 属性值: ${file[key]} `);
+      }
+      // Object.defineProperty(file, 'name', {
+      //   writable: true, //设置属性为可写
+      // })
+
+      // file.name = file.name.split('.')[1] + this.subject;
+      // console.log(file.name);
+      // const isType = file.type === allowedTypes[this.importType];
+      // const isTypeComputer = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      // const fileType = isType || isTypeComputer
+      const fileType = allowedTypes[this.importType];
+      console.log(fileType)
       if (!fileType) {
-        this.$message.error('上传文件只能是xls/xlsx格式！')
+        this.$message.error(`上传文件应为${this.importType} 类型！`)
       }
       // 文件大小限制为10M
       const fileLimit = file.size / 1024 / 1024 < 10;
@@ -74,24 +100,50 @@ export default {
       const formData = new FormData() //FormData对象，添加参数只能通过append('key', value)的形式添加
       formData.append('file', param.file) //添加文件对象
       formData.append('uploadType', this.rulesType)
-      excel.import(formData, this.importName)
-        .then(res => {
-          // console.log(res)
-          if (res.code === 200) {
-            param.onSuccess()  // 上传成功的文件显示绿色的对勾
-            this.$message.success('上传成功');
-            this.$emit('close-dialog');
-          } else {
-            // this.$message.error(res.msg);
-            param.onError()
-          }
-          return;
-        })
-        .catch(err => {
-          this.$message.error('文件上传失败!');
-          console.log('文件上传失败', err)
-          param.onError() //上传失败的文件会从文件列表中删除
-        })
+      formData.append('subject', this.subject)
+      console.log(formData);
+      // 根据importType的不同（pdf或者excel），调用不同的接口
+      if (this.importType == 'excel') {
+        console.log(this.importName);
+        excel.import(formData, this.importName)
+          .then(res => {
+            // console.log(res)
+            if (res.code === 200) {
+              param.onSuccess()  // 上传成功的文件显示绿色的对勾
+              this.$message.success('上传成功');
+              this.$emit('close-dialog');
+            } else {
+              // this.$message.error(res.msg);
+              param.onError()
+            }
+            return;
+          })
+          .catch(err => {
+            this.$message.error('文件上传失败!');
+            console.log('文件上传失败', err)
+            param.onError() //上传失败的文件会从文件列表中删除
+          })
+      } else if (this.importType == 'pdf') {
+        console.log(this.importName);
+
+        student.importFile(formData, this.importName)
+          .then(res => {
+            if (res.code === 200) {
+              param.onSuccess()  // 上传成功的文件显示绿色的对勾
+              this.$message.success('上传成功');
+              this.$emit('close-dialog');
+            } else {
+              param.onError()
+            }
+            return;
+          })
+          .catch(err => {
+            this.$message.error('文件上传失败!');
+            console.log('文件上传失败', err)
+            param.onError() //上传失败的文件会从文件列表中删除
+          })
+      }
+
     }
   },
 };
