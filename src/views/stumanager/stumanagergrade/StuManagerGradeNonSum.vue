@@ -13,6 +13,10 @@
     </div>
 
     <div class="main">
+      <el-input v-model="searchContent" 
+      size="medium" 
+      placeholder="请输入姓名或学号" 
+      ></el-input>
       <el-table :data="pagedData" style="width: 100%" id="mainTable" max-height="500">
         <el-table-column prop="no" label="序号" width="50">
           <template slot-scope="scope">
@@ -43,10 +47,10 @@
 
       <!-- 分页 -->
       <el-pagination
-              layout="prev, pager, next, jumper"
-              :total="tableData.length"
-              :page-size="pageSize"
-              :current-page.sync="currentPage"
+        layout="prev, pager, next, jumper"
+        :total="checklist.length"
+        :page-size="pageSize"
+        :current-page.sync="currentPage"
       />
 
 
@@ -76,7 +80,19 @@ export default {
         per: "",
         totalpoints:""
       }],
-
+      checklist: [{
+        updateTime: "",
+        num: "",
+        name: "",
+        gpa: "",
+        vol: "",
+        sci: "",
+        pra: "",
+        ser: "",
+        per: "",
+        totalpoints:""
+      }],//筛选值
+      searchContent:'',
       pageSize: 3, // 每页显示的数据条数
       currentPage: 1, // 当前页数
 
@@ -89,14 +105,34 @@ export default {
   computed: {
     // 计算分页后的数据
     pagedData() {
+      this.checklist = this.tableData.filter(data => !this.searchContent || 
+        data.name.toLowerCase().includes(
+        this.searchContent.toLowerCase()) ||
+        data.num.includes(this.searchContent) )
+      // 每页显示的第一个和最后一个条目
       const start = (this.currentPage - 1) * this.pageSize;
       const end = this.currentPage * this.pageSize;
 
-      return this.tableData.slice(start, end);
+      return this.checklist.slice(start, end);
     },
   },
 
   methods: {
+    selectTable(e){
+      let oldArr=JSON.parse(JSON.stringify(this.tableData))
+      let arr;
+      if(e.trim()){
+        arr=oldArr.filter((item)=>{
+          return Object.keys(item).some((key)=>{
+                //key属于全值匹配，如果有针对性的key可以相对替换
+            return String(item[key]).toLowerCase().match(e.trim())
+          })
+        })
+      }else{
+        arr=this.tableData;
+      }
+      this.checklist=arr;
+    },
 
     init(){
       summary.getList(qs.stringify({flag:0})).then(res => {
