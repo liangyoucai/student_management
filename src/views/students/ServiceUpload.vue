@@ -75,7 +75,7 @@
         <el-row type="flex">
           <el-row>
             <el-col :span="24">
-              <h4 style="float: left;">{{ '参与的科研项目' + (index + 1) + '证明材料' }}</h4>
+              <h4 style="float: left;">{{ '参与的骨干服务项目' + (index + 1) + '证明材料' }}</h4>
             </el-col>
           </el-row>
         </el-row>
