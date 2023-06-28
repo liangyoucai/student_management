@@ -7,36 +7,19 @@
 
     <!-- 导入导出按钮 -->
     <div class="titleBtn">
-      <el-button
-        type="warning"
-        icon="el-icon-folder-add"
-        size="small"
-        style="margin: 0 20px"
-        @click="openImportDialog"
-        >导入</el-button
-      >
-      <el-button
-        @click="exportClick"
-        type="primary"
-        size="small"
-        icon="el-icon-folder-opened"
-        >导出</el-button
-      >
+      <el-button type="warning" icon="el-icon-folder-add" size="small" style="margin: 0 20px" @click="openImportDialog">导入</el-button>
+      <el-button @click="exportClick" type="primary" size="small" icon="el-icon-folder-opened">导出</el-button>
     </div>
 
     <!-- 上传对话框 -->
     <div v-if="isImportFileDialogVisible">
-      <importFileDialog
-        importName="stu"
-        importTitle="上传学生信息文件"
-        importTip="一次只能上传一个xls/xlsx文件，且不超过10M"
-        @close-dialog="closeImportDialog"
-      >
+      <importFileDialog importName="stu" importTitle="上传学生信息文件" importTip="一次只能上传一个xls/xlsx文件，且不超过10M" importType="excel" @close-dialog="closeImportDialog">
       </importFileDialog>
     </div>
-    
+
     <!-- 表格 -->
     <div class="main">
+
       <el-input v-model="searchContent" 
       size="medium" 
       placeholder="请输入姓名或学号" 
@@ -47,6 +30,7 @@
         id="mainTable"
         max-height="500"
       >
+
         <el-table-column prop="no" label="序号" width="50">
           <template slot-scope="scope">
             {{ scope.$index + 1 }}
@@ -69,6 +53,7 @@
         :page-size="pageSize"
         :current-page.sync="currentPage"
       />
+
     </div>
   </div>
 </template>
@@ -86,11 +71,11 @@ export default {
   data() {
     return {
       tableData: [{
-        updateTime:'',
-        num:'',
-        name:'',
-        sex:'',
-        year:'',
+        updateTime: '',
+        num: '',
+        name: '',
+        sex: '',
+        year: '',
         class: '',
         major: '',
         email: '',
@@ -142,29 +127,29 @@ export default {
     //获取当前数据库内的学生信息
     init() {
       student.getList().then((res) => {
-          // 如果保存成功，则更新表格数据
-          // console.log(res)
-          if (res.code === 200) {
-            const rawdata = res.data;
-            this.tableData.length = 0;
-            for (var i = 0; i < rawdata.length; i++) {
-              let sheetData = {
-                date: parseTime.dateFormat(rawdata[i]["updateTime"]),
-                num: rawdata[i]["num"],
-                name: rawdata[i]["name"],
-                sex: rawdata[i]["sex"] === 0 ? '女' : '男',
-                year: rawdata[i]["yearName"],
-                class: rawdata[i]["className"],
-                major: rawdata[i]["majorName"],
-                email: rawdata[i]["email"],
-              };
+        // 如果保存成功，则更新表格数据
+        // console.log(res)
+        if (res.code === 200) {
+          const rawdata = res.data;
+          this.tableData.length = 0;
+          for (var i = 0; i < rawdata.length; i++) {
+            let sheetData = {
+              date: parseTime.dateFormat(rawdata[i]["updateTime"]),
+              num: rawdata[i]["num"],
+              name: rawdata[i]["name"],
+              sex: rawdata[i]["sex"] === 0 ? '女' : '男',
+              year: rawdata[i]["yearName"],
+              class: rawdata[i]["className"],
+              major: rawdata[i]["majorName"],
+              email: rawdata[i]["email"],
+            };
 
-              this.tableData.push(sheetData);
-            }
-          } else {
-            console.log(error);
+            this.tableData.push(sheetData);
           }
-        })
+        } else {
+          console.log(error);
+        }
+      })
         .catch(function (error) {
           console.log(error);
         });
@@ -237,6 +222,7 @@ body {
   height: 100%;
   width: 100%;
 }
+
 .container {
   margin: 10px auto;
   max-width: 900px;
@@ -244,14 +230,17 @@ body {
   flex-direction: column;
   height: 100vh;
 }
+
 .title {
   font-size: 28px;
   text-align: center;
 }
+
 .titleBtn {
   margin: 20px 0;
   margin-bottom: 50px;
 }
+
 .main {
   flex: 1;
   width: 100%;
