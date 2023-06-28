@@ -76,6 +76,22 @@
 
         </el-row>
 
+        <!-- 证明材料上传 -->
+        <el-row type="flex">
+          <el-row>
+            <el-col :span="24">
+              <h4 style="float: left;">{{ '参与的社会实践项目' + (index + 1) + '证明材料' }}</h4>
+            </el-col>
+          </el-row>
+        </el-row>
+        <el-row>
+          <el-row>
+            <el-col :span="24">
+              <stuImportPdfButton @click="openImportDialog" subject="practice"></stuImportPdfButton>
+            </el-col>
+          </el-row>
+        </el-row>
+
       </div>
       <el-form-item style="margin-top: 20px">
         <el-button type="warning" @click="addProject">增加社会实践项目</el-button>
@@ -90,8 +106,11 @@
 import axios from 'axios';
 import user from '@/api/auth/user';
 import student from '@/api/student/student'
+import stuImportPdfButton from "@/components/stuImportPdfButton.vue";
 export default {
-  name: 'PersonalSummaryForm',
+  components: {
+    stuImportPdfButton
+  },
   data() {
     return {
       form: {
@@ -100,18 +119,39 @@ export default {
             name: '',
             manager: '',
             organization: '',
-           // level: '',
-            content:'',
+            content: '',
+            // level: '',
             time: '',
             achievements: ''
           }
         ]
       },
-     // levels: ['校级', '市级', '省级', '国家级'],
+      // levels: ['校级', '市级', '省级', '国家级'],
       username: '',
       num: '',
     };
   },
+  // name: 'PersonalSummaryForm',
+  // data() {
+  //   return {
+  //     form: {
+  //       research: [
+  //         {
+  //           name: '',
+  //           manager: '',
+  //           organization: '',
+  //          // level: '',
+  //           content:'',
+  //           time: '',
+  //           achievements: ''
+  //         }
+  //       ]
+  //     },
+  //    // levels: ['校级', '市级', '省级', '国家级'],
+  //     username: '',
+  //     num: '',
+  //   };
+  // },
   // mounted() {
   //     // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
   //     // user.getInfo(this.role).then((res) => {
@@ -119,7 +159,18 @@ export default {
   //     //     this.num = res.data.num;
   //     //     this.id = res.data.id;
   // },
+  mounted() {
+    // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
+    user.getInfo(this.role).then((res) => {
+      this.username = res.data.username;
+      this.num = res.data.num
+      console.log(res.data)
+    });
+  },
   methods: {
+    openImportDialog() {
+      this.$refs.ChildButton.openImportDialog();
+    },
     submitForm() {
       this.$refs.form.validate((valid) => {
         if (valid) {
