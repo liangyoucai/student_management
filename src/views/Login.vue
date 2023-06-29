@@ -166,10 +166,7 @@ export default {
                 type: 'success'
               })
               localStorage.setItem('initial', res.data.initial)
-            // else {
-            //   this.msg = res.msg
-            //   this.open_err()
-            // }
+              localStorage.setItem('manager', res.data.initial)
 
           }}).finally(_ => {
             this.loading = false
