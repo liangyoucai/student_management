@@ -1,7 +1,18 @@
 import request from '@/utils/request'
 
 export default {
-
+  resetPassword(param) {
+    return request({
+      url: 'user/profile/reset-password',
+      method: 'post',
+      data: param
+    })
+  },
+  /**
+   * 修改密码
+   * @param {} param 
+   * @returns 
+   */
   changePassword(param) {
     return request({
       url: 'user/profile/change-password',

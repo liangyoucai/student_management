@@ -173,6 +173,7 @@ export default {
 
           }}).finally(_ => {
             this.loading = false
+            this.refreshCode();
           })
         }
       });

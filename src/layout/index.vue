@@ -89,6 +89,7 @@
                     <img src="./img/logo01.png" alt="logo" height="80px">
                     <img src="./img/name.png" alt="caption" height="80px">
                     <!-- <div class="time">{{ nowTime }}</div> -->
+                    <el-button v-show="isResetPasswdDialogVisible" style="float: right;" size="medium" round @click="openResetPasswdDialog" > 重置密码 </el-button>
                     <el-button style="float: right;" icon="el-icon-s-tools" circle @click="openChangePasswdDialog" :disabled="isDisabled"></el-button>
                     <!-- <el-button  type="primary" icon="el-icon-setting" >修改密码</el-button> -->
                     <!-- 上传对话框 -->
@@ -122,6 +123,7 @@ export default {
         return {
             nowTime: '',
             isChangePasswdDialogVisible: false,
+            isResetPasswdDialogVisible: false,
             nameMap: {
                 "StudentPersonalSummary": "个人学年总结",
                 "StudentResearch": "科研情况",
@@ -199,7 +201,7 @@ export default {
                 this.isDisabled = true;
             }
         },
-
+        
         openChangePasswdDialog() {
             this.isChangePasswdDialogVisible = true;
             console.log(this.isChangePasswdDialogVisible)
