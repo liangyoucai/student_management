@@ -247,6 +247,9 @@ export default {
         logout() {
             this.$confirm('确定注销并退出系统吗？', '提示').then(() => {
                 removeToken()
+                //删除浏览器缓存
+                localStorage.removeItem("initial");
+                localStorage.removeItem("manager");
                 this.$router.push({ path: '/login' })
             }).catch(() => { });
         },
