@@ -38,6 +38,8 @@ service.interceptors.response.use(
       if (response.data.msg.indexOf('重新登录') != -1) {
         // 清除token
         removeToken();
+        //自动刷新页面
+        window.location.reload();
         router.push({ path: '/login' });
       }
     }
@@ -49,12 +51,12 @@ service.interceptors.response.use(
     if (error.response) {
       // 服务器返回了错误状态码
       console.log('in request: ' + error);
-      Message.error({
-        message: `Error ${error.response.status}: ${
-          error.response.data.message || error.message
-        }`,
-        duration: 3000,
-      });
+      // Message.error({
+      //   message: `Error ${error.response.status}: ${
+      //     error.response.data.message || error.message
+      //   }`,
+      //   duration: 3000,
+      // });
     } else {
       // 其他错误，如网络错误等
       console.log(error);

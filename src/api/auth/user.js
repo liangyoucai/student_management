@@ -1,6 +1,14 @@
 import request from '@/utils/request'
 
 export default {
+
+  changePassword(param) {
+    return request({
+      url: 'user/profile/change-password',
+      method: 'post',
+      data: param
+    })
+  },
   /**
    * 获取图片验证码
    * @returns 
