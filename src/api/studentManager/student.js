@@ -15,4 +15,11 @@ export default {
         data: param
       })
     },
+    deleteInfo(param){
+      return request({
+        url: '/api/stu/deleteInfo',
+        method: 'post',
+        data: param
+      })
+    }
 }

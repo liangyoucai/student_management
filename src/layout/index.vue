@@ -88,7 +88,21 @@
                 <div class="logo">
                     <img src="./img/logo01.png" alt="logo" height="80px">
                     <img src="./img/name.png" alt="caption" height="80px">
-                    <div class="time">{{ nowTime }}</div>
+                    <!-- <div class="time">{{ nowTime }}</div> -->
+                    <el-button style="float: right;margin-right: 0px;" icon="el-icon-s-tools" circle @click="openChangePasswdDialog" :disabled="isDisabled"></el-button>
+                    <el-button v-show="isResetButtonShow" style="float: right; margin-right: 30px;" size="medium" round @click="openResetPasswdDialog" > 重置密码 </el-button>
+                    <!-- <el-button  type="primary" icon="el-icon-setting" >修改密码</el-button> -->
+                    <!-- 上传对话框 -->
+                    <div v-if="isChangePasswdDialogVisible">
+                    <ChangePasswdDialog 
+                        @close-dialog="closeChangePasswdDialog">
+                    </ChangePasswdDialog>
+                    </div>
+                    <div v-if="isResetPasswdDialogVisible">
+                    <ResetPasswdDialog 
+                        @close-dialog="closeResetPasswdDialog">
+                    </ResetPasswdDialog>
+                    </div>
                     <h1>学生综合测评系统</h1>
 
                 </div>
@@ -103,11 +117,20 @@
 <script>
 import { removeToken } from '@/utils/token'
 import menu from '@/api/menu'
+import ChangePasswdDialog from "@/components/ChangePasswdDialog.vue";
+import ResetPasswdDialog from '@/components/ResetPasswdDialog.vue';
 export default {
     name: "SuccessPage",
+    components: {
+        ChangePasswdDialog,
+        ResetPasswdDialog
+    },
     data() {
         return {
             nowTime: '',
+            isChangePasswdDialogVisible: false,
+            isResetPasswdDialogVisible: false,
+            isResetButtonShow:false,
             nameMap: {
                 "StudentPersonalSummary": "个人学年总结",
                 "StudentResearch": "科研情况",
@@ -126,6 +149,7 @@ export default {
                 "StuManagerGradeSum": "已测评学生",
                 "StuManagerGradeNonSum": "未测评学生",
             },
+            isDisabled: false,
             menuItems: [],
             // : [
             //     {
@@ -170,9 +194,43 @@ export default {
     mounted() {
         this.getNowTime();
         this.getMenu();
+        this.disableButton();
+        this.showResetButton();
+        // 首次登录强制修改密码
+        if (localStorage.getItem("initial") == "true") {
+            this.openChangePasswdDialog();
+        }
 
     },
     methods: {
+        //如果localstorage中initial为false，则el-button禁用
+        disableButton() {
+            if (localStorage.getItem("initial") == "false") {
+                this.isDisabled = true;
+            }
+        },
+        showResetButton() {
+            if (localStorage.getItem("manager") == "true") {
+                this.isResetButtonShow = true;
+            }
+        },
+        
+        openChangePasswdDialog() {
+            this.isChangePasswdDialogVisible = true;
+            console.log(this.isChangePasswdDialogVisible)
+        },
+        closeChangePasswdDialog() {
+            this.isChangePasswdDialogVisible = false;
+            console.log(this.isChangePasswdDialogVisible)
+        },
+        openResetPasswdDialog() {
+            this.isResetPasswdDialogVisible = true;
+            console.log(this.isResetPasswdDialogVisible)
+        },
+        closeResetPasswdDialog() {
+            this.isResetPasswdDialogVisible = false;
+            console.log(this.isResetPasswdDialogVisible)
+        },
         getMenu() {
             menu.getMenuList().then((res) => {
                 console.log(res)
@@ -189,6 +247,9 @@ export default {
         logout() {
             this.$confirm('确定注销并退出系统吗？', '提示').then(() => {
                 removeToken()
+                //删除浏览器缓存
+                localStorage.removeItem("initial");
+                localStorage.removeItem("manager");
                 this.$router.push({ path: '/login' })
             }).catch(() => { });
         },

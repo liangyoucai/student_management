@@ -16,6 +16,15 @@
           <el-form-item prop="password">
             <el-input type="password" v-model="loginForm.password" placeholder="请输入密码"></el-input>
           </el-form-item>
+          <el-form-item prop="captchaText">
+            <el-input v-model="loginForm.captchaText" placeholder="请输入验证码"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <div class="identifybox">
+                <img :src="captchaimg" alt="获取验证码失败">
+              <el-button style="margin-left: 30px;" @click="refreshCode" type='text' class="textbtn">看不清，换一张</el-button>
+            </div>
+        </el-form-item>
           <el-form-item>
             <el-button style="margin-left: -10px;" type="primary" @click="do_login('loginForm')" :loading="loading">登录</el-button>
           </el-form-item>
@@ -24,7 +33,12 @@
           </div>
         </el-form>
       </div>
-
+      <!-- 找回密码 -->
+      <el-dialog title="找回密码" :visible.sync="dialogFormVisible" width="40%">
+          <div >
+            请联系学工办找回密码！
+          </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -56,12 +70,16 @@ export default {
       loginForm: {
         username: '',
         password: '',
+        captchaText:''
       },
       rules: {
         username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        captchaText: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
       },
-
+      captchaimg:'data:image/jpg;base64,',
+      // 找回密码
+      dialogFormVisible: false,
     }
   },
   created() {
@@ -147,20 +165,33 @@ export default {
                 message: '登录成功',
                 type: 'success'
               })
+              localStorage.setItem('initial', res.data.initial)
+              localStorage.setItem('manager', res.data.initial)
 
-            }
-            // else {
-            //   this.msg = res.msg
-            //   this.open_err()
-            // }
-
-          }).finally(_ => {
+          }}).finally(_ => {
             this.loading = false
+            this.refreshCode();
           })
         }
       });
     },
-
+    // 刷新验证码
+    refreshCode(){
+      //更新验证码
+      user.getCaptcha().then((res) => {
+      if (res.code == 200) {
+        this.captchaimg = 'data:image/jpg;base64,'
+        this.captchaimg += res.data
+      } 
+    })
+    },
+  },
+  mounted() {
+    user.getCaptcha().then((res) => {
+      if (res.code == 200) {
+        this.captchaimg += res.data
+      } 
+    })
   }
 }
 
@@ -182,13 +213,13 @@ export default {
   align-items: center;
 
   .login-box {
-    width: 400px;
-    height: 400px;
+    width: 450px;
+    height: 550px;
     border-radius: 5px;
     box-shadow: 0px 0px 10px #ccc;
 
     .login-logo {
-      margin-top: 20px;
+      margin-top: 10px;
       height: 100px;
       display: flex;
       justify-content: center;
@@ -211,5 +242,7 @@ export default {
     }
   }
 }
+
+
 </style>
 
