@@ -179,19 +179,25 @@ export default {
       // 发送更新学生记录的请求到服务器
       gradeApi.updateScore({ stuNum: this.form.stuNum, score: this.form.score })
         .then(response => {
-          // 请求成功处理
-          console.log('打分更新成功', response);
-          // 更新页面上对应学生的分数
-          const updatedStudent = this.tableData.find(student => student.stuNum === this.form.stuNum);
-          if (updatedStudent) {
-            updatedStudent.score = this.form.score;
-          }
-
+          // // 请求成功处理
+          // console.log('打分更新成功', response);
+          // // 更新页面上对应学生的分数
+          // const updatedStudent = this.tableData.find(student => student.stuNum === this.form.stuNum);
+          // if (updatedStudent) {
+          //   updatedStudent.score = this.form.score;
+          // }
+          if (response.code === 200) {
+                this.$message({
+                  message: '打分成功！',
+                  type: 'success'
+                });
+                //自动刷新页面
+                window.location.reload();
+              } 
         })
         .catch(error => {
           // 请求失败处理
-          console.error('打分更新失败', error);
-          // 可以根据需要执行其他操作
+          console.error('更新失败', error);
         });
       this.dialogVisible = false;
     },
