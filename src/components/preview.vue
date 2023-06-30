@@ -1,6 +1,6 @@
 <template>
   <div class="preview-pdf">
-    <el-button size="small" @click="togglePreview">{{ showPreview ? '隐藏预览' : '点击预览' }}</el-button>
+    <el-button size="small" @click="togglePreview">{{ showPreview ? '隐藏预览证明材料' : '点击预览证明材料' }}</el-button>
     <div v-if="showPreview" id="pdf">
       <iframe :src="pdfURL" height="900px;" width="800px"></iframe>
     </div>
@@ -8,21 +8,21 @@
 </template>
 
 <script>
-import student from '@/api/student/student';
+import judge from '@/api/judge/judge';
 
 export default {
-  props: ['subject'],
+  props: ['subject', 'stuNum'],
   name: 'App',
   data() {
     return {
-      pdfURL: '#',
+      pdfURL: '',
       showPreview: false, // 初始状态下不显示预览
     };
   },
   methods: {
     togglePreview() {
       if (this.showPreview == false) {
-        student.previewFile(this.subject).then(res => {
+        judge.previewFile(this.subject, this.stuNum).then(res => {
           //res为接口所返回的文件流
           var blob = new Blob([res], {
             type: "application/pdf;chartset=UTF-8"
@@ -49,6 +49,7 @@ export default {
 <style scoped>
 .preview-pdf {
   margin-top: 20px;
-  float: left;
+  margin-bottom: 10px;
+  /* float: left; */
 }
 </style>

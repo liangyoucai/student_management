@@ -34,7 +34,7 @@ export default {
     return request({
       url: `/api/pdf/student/preview`,
       method: 'post',
-      data: subject.toString(), // 对URLSearchParams对象进行编码
+      data: subject,
       responseType: 'arraybuffer',
     });
   },
