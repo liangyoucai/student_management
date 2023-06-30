@@ -15,6 +15,11 @@ export default {
         data: param
       })
     },
+    /**
+     * 删除学生信息
+     * @param {*} param 
+     * @returns 
+     */
     deleteInfo(param){
       return request({
         url: '/api/stu/deleteInfo',

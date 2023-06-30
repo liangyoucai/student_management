@@ -210,6 +210,7 @@ export default {
     closeImportDialog() {
       this.isImportFileDialogVisible = false;
     },
+    //删除所选学生信息
     handleDelete() {
       console.log(this.selected);
       this.$confirm("此操作将删除所选学生信息, 是否继续?", "提示", {
@@ -222,17 +223,25 @@ export default {
           student.deleteInfo(this.selected).then((res) => {
             if (res.code === 200) {
               this.init();
+              this.$message({
+                type: "success",
+                message: "删除成功!",
+              });
             } else {
               console.log(error);
+              this.$message({
+                type: "error",
+                message: "删除失败!",
+              });
             }
-          })
-            .catch(function (error) {
+          }).catch(function (error) {
               console.log(error);
+              this.$message({
+                type: "error",
+                message: "删除失败!",
+              });
             });
-          this.$message({
-            type: "success",
-            message: "删除成功!",
-          });
+          
         })
         .catch(() => {
           this.$message({
