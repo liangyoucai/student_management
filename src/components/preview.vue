@@ -1,5 +1,5 @@
 <template>
-  <div class="preview-pdf">
+  <div class="preview-pdf" :style="{ float: stuNum !== undefined ? 'middle' : 'left' }">
     <el-button size="small" @click="togglePreview">{{ showPreview ? '隐藏预览证明材料' : '点击预览证明材料' }}</el-button>
     <div v-if="showPreview" id="pdf">
       <iframe :src="pdfURL" height="900px;" width="800px"></iframe>
@@ -9,10 +9,10 @@
 
 <script>
 import judge from '@/api/judge/judge';
+import student from '@/api/student/student';
 
 export default {
   props: ['subject', 'stuNum'],
-  name: 'App',
   data() {
     return {
       pdfURL: '',
@@ -22,13 +22,24 @@ export default {
   methods: {
     togglePreview() {
       if (this.showPreview == false) {
-        judge.previewFile(this.subject, this.stuNum).then(res => {
-          //res为接口所返回的文件流
-          var blob = new Blob([res], {
-            type: "application/pdf;chartset=UTF-8"
-          });
-          this.pdfURL = window.URL.createObjectURL(blob);
-        })
+        if (this.stuNum) {
+          judge.previewFile(this.subject, this.stuNum).then(res => {
+            //res为接口所返回的文件流
+            var blob = new Blob([res], {
+              type: "application/pdf;chartset=UTF-8"
+            });
+            this.pdfURL = window.URL.createObjectURL(blob);
+          })
+        } else {
+          student.previewFile(this.subject).then(res => {
+            //res为接口所返回的文件流
+            var blob = new Blob([res], {
+              type: "application/pdf;chartset=UTF-8"
+            });
+            this.pdfURL = window.URL.createObjectURL(blob);
+          })
+        }
+
       }
       this.showPreview = !this.showPreview; // 切换showPreview的值，控制预览的显示/隐藏
     }
