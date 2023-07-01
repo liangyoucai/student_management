@@ -15,8 +15,16 @@
       <importFileDialog importName="volunteer" importTitle="上传学生志愿服务时长文件" importTip="一次只能上传一个xls/xlsx文件，且不超过10M" importType="excel" @close-dialog="closeImportDialog">
       </importFileDialog>
     </div>
-
+    
     <div class="main">
+      <el-input
+      v-model="searchText"
+      placeholder="请输入学号或学生姓名"
+      style="width: 250px; margin-bottom: 10px;"
+        >
+      <el-button slot="append" icon="el-icon-search" @click="searchData"></el-button>
+      </el-input>
+
       <el-table :data="tableData" style="width: 100%" id="mainTable" max-height="500">
         <el-table-column prop="no" label="序号" width="80">
           <template slot-scope="scope">
@@ -26,29 +34,20 @@
         <!-- <el-table-column prop="date" label="更新日期" width="140"> </el-table-column> -->
         <el-table-column prop="stuNum" label="学号" width="140">
         </el-table-column>
-        <el-table-column prop="stuName" label="姓名" width="120">
+        <el-table-column prop="stuName" label="姓名" width="100">
         </el-table-column>
         <el-table-column prop="time" label="志愿服务时长" width="120">
         </el-table-column>
-        <!-- <el-table-column prop="state" label="状态" width="120">
-          <template slot-scope="scope">
-            <template v-if="scope.row.state === 0">
-              未确认
-            </template>
-            <template v-else-if="scope.row.state === 1">
-              已确认
-            </template>
-            <template v-else-if="scope.row.state === 2">
-              有误
-            </template>
-          </template>
-        </el-table-column> -->
-        <el-table-column prop="do" label="操作" width="120">
+        <el-table-column prop="createTime" label="创建时间" width="160">
+        </el-table-column>
+        <el-table-column prop="updateTime" label="更新时间" width="160">
+        </el-table-column>
+        <el-table-column prop="do" label="操作" width="100">
           <template slot-scope="scope">
             <el-button type="primary" @click="showDialog(scope.row)">评分</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="score" label="评分" width="120">
+        <el-table-column prop="score" label="评分" width="100">
         </el-table-column>
       </el-table>
 
@@ -100,7 +99,9 @@ export default {
         stuNum: "",
         stuName: "",
         time: "",
-        score: ""
+        score: "",
+        createTime: "",
+        updateTime: ""
       }],
       dialogVisible: false,
       isImportFileDialogVisible: false,
@@ -110,9 +111,32 @@ export default {
         score: ""
       },
       currentRow: null,
+      searchText: '',
+      originalData: [], // 存储初始数据的属性
+      filteredTableData: [], // 存储过滤后的数据
     };
   },
-
+  computed: {
+    filteredTableData() {
+      const keyword = this.searchText.trim().toLowerCase();
+      if (keyword === "") {
+        return this.originalData.slice(); // 搜索栏为空，返回原始数据
+      } else {
+        return this.originalData.filter(
+          (item) =>
+            item.stuNum.toLowerCase().includes(keyword) ||
+            item.stuName.toLowerCase().includes(keyword)
+        );
+      }
+    }
+  },
+  watch: {
+    searchText(newText) {
+      if (newText.trim() === "" && !this.userInteracted) {
+        this.tableData = this.originalData.slice(); // 搜索栏为空且用户没有进行任何操作，显示原始数据
+      }
+    }
+  },
   methods: {
     init() {
       let _this = this;
@@ -127,8 +151,11 @@ export default {
               stuName: formdata.volunteerlist[i]["stuName"],
               time: formdata.volunteerlist[i]["time"],
               score: formdata.volunteerlist[i]["score"],
+              createTime: formdata.volunteerlist[i]["createTime"],
+              updateTime: formdata.volunteerlist[i]["updateTime"],
             });
           }
+          this.originalData = this.tableData.slice(); // 将初始数据赋值给originalData
           // 在赋值之后，再次对每一行数据添加buttonText属性
           // _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
 
@@ -184,6 +211,16 @@ export default {
           // 可以根据需要执行其他操作
         });
       this.dialogVisible = false;
+    },
+    searchData() {
+      // 根据搜索关键词过滤表格数据
+      const keyword = this.searchText.trim().toLowerCase();
+      const filteredData = this.originalData.filter(
+        (item) =>
+          item.stuNum.toLowerCase().includes(keyword) ||
+          item.stuName.toLowerCase().includes(keyword)
+      );
+      this.tableData = filteredData;
     },
   },
 };
