@@ -12,9 +12,6 @@ const permission = {
       state.addRoutes = routes;
       state.routes = constantRoutes.concat(routes);
     },
-    RESET_ROUTES: (state, routes) => {
-      state.routes = routes;
-    },
   },
   actions: {
     // 生成路由
@@ -43,13 +40,6 @@ const permission = {
           commit('SET_ROUTES', rewriteRoutes);
           resolve(rewriteRoutes);
         });
-      });
-    },
-    // 删除路由
-    DeleteRoutes({ commit }) {
-      return new Promise((resolve) => {
-        commit('RESET_ROUTES', []);
-        resolve();
       });
     },
   },
