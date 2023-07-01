@@ -24,8 +24,13 @@ router.beforeEach((to, from, next) => {
   } else {
     // 没有token
     // 清除store
-    if (sessionStorage.getItem('store')) {
-      sessionStorage.removeItem('store');
+    // if (sessionStorage.getItem('store')) {
+    //   sessionStorage.removeItem('store');
+    // }
+
+    if (store.getters.permission_routes.length !== 0) {
+      console.log('delete');
+      store.dispatch('DeleteRoutes');
     }
     if (to.path === '/login' || to.path === '/beforelogin') {
       // 直接进入
