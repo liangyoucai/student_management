@@ -113,6 +113,17 @@ export const constantRoutes = [
     name: 'login',
     component: () => import('../views/Login.vue'),
   },
+  {
+    path: '/',
+    component: Layout,
+    children: [
+      {
+        path: '/404',
+        component: () => import('../views/404.vue'),
+        hidden: true,
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({
