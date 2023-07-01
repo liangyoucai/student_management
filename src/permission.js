@@ -5,43 +5,29 @@ import router from './router';
 import { getAccessToken } from '@/utils/token';
 import menu from '@/api/menu';
 import Layout from '@/layout';
-function getMenuListAfterLogin() {
-  // 获取菜单列表数据，并动态生成路由
-  menu
-    .getMenuList()
-    .then((res) => {
-      const menuList = res;
-      menuList.forEach((menu) => {
-        const route = {
-          path: '/',
-          component: Layout,
-          children: [
-            {
-              path: menu.path,
-              name: menu.name,
-              component: () => import(`@/views/${menu.component}.vue`),
-            },
-          ],
-        };
-
-        router.addRoute(route);
-      });
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
+import store from './store';
 
 router.beforeEach((to, from, next) => {
   if (getAccessToken()) {
-    getMenuListAfterLogin();
-
+    if (store.getters.permission_routes.length === 0) {
+      console.log('生成路由');
+      store.dispatch('GenerateRoutes').then((accessRoutes) => {
+        // console.log(accessRoutes);
+        router.addRoutes(accessRoutes);
+      });
+    }
+    console.log('length = ' + store.getters.permission_routes.length);
     if (to.path === '/beforelogin' || to.path === '/' || to.path === '/login') {
       next({ path: '/home' });
     }
     next();
   } else {
     // 没有token
+    // 删除路由
+    if (store.getters.permission_routes.length !== 0) {
+      console.log('删除路由');
+      store.dispatch('DeleteRoutes');
+    }
     if (to.path === '/login' || to.path === '/beforelogin') {
       // 直接进入
       next();

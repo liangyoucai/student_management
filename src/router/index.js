@@ -10,7 +10,7 @@ VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch((err) => err);
 };
 
-const routes = [
+export const constantRoutes = [
   {
     path: '/',
     component: Layout, // 修改为 Layout 组件
@@ -118,7 +118,7 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes,
+  routes: constantRoutes,
 });
 
 export default router;
