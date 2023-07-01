@@ -97,12 +97,6 @@ export default {
       currentScore: null,
       isRatingDialogVisible: false,
       tableData: [{
-        // {
-        //   date: "2002-06-28",
-        //   stuNum: "2200022600",
-        //   stuName: "ABC",
-        //   time: "80",
-        // },
         stuNum: "",
         stuName: "",
         time: "",
@@ -175,12 +169,14 @@ export default {
       volunteerApi.updateScore({ stuNum: this.form.stuNum, score: this.form.score })
         .then(response => {
           // 请求成功处理
-          console.log('打分更新成功', response);
-          // 更新页面上对应学生的分数
-          const updatedStudent = this.tableData.find(student => student.stuNum === this.form.stuNum);
-          if (updatedStudent) {
-            updatedStudent.score = this.form.score;
-          }
+          if (response.code === 200) {
+                this.$message({
+                  message: '打分更新成功！',
+                  type: 'success'
+                });
+                //自动刷新页面
+                window.location.reload();
+              } 
         })
         .catch(error => {
           // 请求失败处理
