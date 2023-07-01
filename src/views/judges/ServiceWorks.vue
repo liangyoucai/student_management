@@ -89,6 +89,13 @@
           </template>
         </el-form>
 
+
+        <el-row>
+          <el-col :span="24">
+            <preview subject="service" :stuNum="currentStudent.id"></preview>
+          </el-col>
+        </el-row>
+
         <el-divider></el-divider>
         <div class="block">
           <span class="demonstration">评分：{{ currentScore }}</span>
@@ -121,7 +128,7 @@
     </overview-table>
 
     <!-- 确认提交按钮与弹出提示 -->
-    <el-button v-if="isOverviewing" type="primary" class="submitSocre-btn" @click="submitAllScores">确认提交</el-button>
+    <!-- <el-button v-if="isOverviewing" type="primary" class="submitSocre-btn" @click="submitAllScores">确认提交</el-button>
     <el-dialog title="提示" :visible.sync="dialog1Visible" width="30%">
       <span>还有{{ waitingStudents.length }}名学生未评分，请评分后再提交！</span>
       <span slot="footer" class="dialog-footer">
@@ -135,22 +142,24 @@
                 <el-button @click="dialog2Visible = false">取 消</el-button>
                 <el-button type="primary" @click="sumbitFinal()">确 定</el-button>
             </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 import judge from '@/api/judge/judge';
 import OverviewTable from '@/components/OverviewTable.vue';
 import ScoreTable from '@/components/ScoreTable.vue'
 import RatingList from '@/components/RatingList.vue';
-import axios from "axios";
+import preview from '@/components/preview.vue';
 export default {
   emits: ['score-selected', 'review-from-overview'],
   components: {
     OverviewTable,
     ScoreTable,
-    RatingList
+    RatingList,
+    preview
   },
 
   data() {
@@ -205,10 +214,10 @@ export default {
       // 获得service表所有数据
       //
       judge.getSheet('service')
-          .then(res => {
-            this.rawData = res.data
-            this.clean(this.rawData);
-          })
+        .then(res => {
+          this.rawData = res.data
+          this.clean(this.rawData);
+        })
     },
     clean(rawData) {
       rawData.map((item) => {
@@ -368,12 +377,12 @@ export default {
       this.dialog2Visible = false;
       //
       judge.importScore(this.final)
-          .then(res => {
-            console.log(res);
-            if (res.data.code == 200) {
-              this.$message.success("提交成功")
-            }
-          });
+        .then(res => {
+          console.log(res);
+          if (res.data.code == 200) {
+            this.$message.success("提交成功")
+          }
+        });
     }
   }
 };
