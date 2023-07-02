@@ -23,7 +23,7 @@
 
     <div class="main">
       <el-table :data="pagedData" style="width: 100%" id="mainTable" max-height="auto">
-        <el-table-column prop="no" label="序号" width="80">
+        <el-table-column prop="no" label="序号" width="50">
           <template slot-scope="scope">
             {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
           </template>
@@ -44,9 +44,12 @@
             {{ formatTimestamp(scope.row.updateTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="do" label="操作" width="100">
+        <el-table-column prop="do" label="操作" width="170">
           <template slot-scope="scope">
-            <el-button type="primary" @click="showDialog(scope.row)">评分</el-button>
+            <div class="action-buttons">
+              <el-button type="primary" @click="showDialog(scope.row)">评分</el-button>
+              <el-button type="danger" @click="showDeleteConfirmation(scope.row)">删除</el-button>
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="score" label="评分" width="100">
@@ -252,6 +255,32 @@ export default {
       );
       this.tableData = filteredData;
     },
+    showDeleteConfirmation(row) {
+      this.$confirm('确定删除该项吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          gradeApi.deleteGrade({ stuNum: row.stuNum }).then(response => {
+          console.log(row.stuNum);
+          if (response.code === 200) {
+            this.$message({
+              message: '删除成功！',
+              type: 'success'
+            });
+            //自动刷新页面
+            window.location.reload();
+          }
+        })
+        })
+        
+        .catch(error => {
+          // 请求失败处理
+          console.error('删除失败', error);
+        });
+    }
+
   },
 };
 </script>
@@ -266,7 +295,7 @@ body {
 
 .container {
   margin: 10px auto;
-  max-width: 900px;
+  max-width: 1100px;
   display: flex;
   flex-direction: column;
   height: auto;
@@ -295,10 +324,14 @@ body {
   display: flex;
   /* justify-content: center;
    */
-  margin-left: 400px;
+  margin-left: 520px;
 }
 
 .main {
   margin: 0 auto;
 }
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
 </style>
