@@ -8,7 +8,6 @@
 
       <div class="main">
         <el-table :data="tableData" style="width: 100%" id="mainTable" max-height="500">
-          <!-- <el-table-column prop="date" label="更新日期" width="140"> </el-table-column> -->
           <el-table-column prop="stuNum" label="学号" width="140"></el-table-column>
           <el-table-column prop="stuName" label="姓名" width="120"></el-table-column>
           <el-table-column prop="gpa" label="GPA" width="120"></el-table-column>
@@ -19,19 +18,12 @@
   </template>
   
   <script>
-  import axios from 'axios';
-  import user from '@/api/auth/user'
   import gradeApi from '@/api/student/grade';
   export default {
     data() {
       return {
         tableData: [
           {
-            // date: "2002-06-28",
-            // ID: "2200022758",
-            // name: "ZYY",
-            // class: "求知三苑",
-            // GPA: "4.00",
             stuNum: "",
             stuName: "",
             gpa: "",
@@ -40,17 +32,10 @@
       };
     },
     mounted() {
-      const token = localStorage.getItem('ACCESS_TOKEN');
-      const headers = {
-        Authorization: `"Bearer" + ${token}`, // 在请求头中添加Token
-      };
-      gradeApi.getList(headers)
+      gradeApi.getList()
         .then(response => {
           // 请求成功处理
           console.log(response.data); // 处理返回的数据
-          //this.stuNum = response.data.stuNum;
-          //this.stuName = response.data.stuName;
-          //this.gpa = response.data.gpa;
           this.tableData = [response.data];
         })
         .catch(error => {

@@ -3,12 +3,17 @@
 
     <div class="title">
       <h1 class="title">志愿服务时长 - 导入/在线评审</h1>
-
     </div>
     <el-divider></el-divider>
-    <!-- 导入按钮 -->
-    <div class="titleBtn">
-      <el-button type="warning" icon="el-icon-folder-add" size="small" style="margin: 0 80px" @click="openImportDialog">导入</el-button>
+    
+    <div class="titleBtnSearch">
+      <div class="importButton">
+        <el-button type="warning" icon="el-icon-folder-add" size="small" @click="openImportDialog">导入</el-button>
+      </div>
+      <div class="searchContainer">
+        <el-input v-model="searchText" placeholder="输入学号或姓名搜索" style="width: 250px;" @keydown.native="handleKeyDown"></el-input>
+        <el-button slot="append" icon="el-icon-search" @click="searchData"></el-button>
+      </div>
     </div>
     <!-- 上传对话框 -->
     <div v-if="isImportFileDialogVisible">
@@ -17,21 +22,12 @@
     </div>
     
     <div class="main">
-      <el-input
-      v-model="searchText"
-      placeholder="请输入学号或学生姓名"
-      style="width: 250px; margin-bottom: 10px;"
-        >
-      <el-button slot="append" icon="el-icon-search" @click="searchData"></el-button>
-      </el-input>
-
-      <el-table :data="tableData" style="width: 100%" id="mainTable" max-height="500">
+      <el-table :data="pagedData" style="width: 100%" id="mainTable" max-height="auto">
         <el-table-column prop="no" label="序号" width="80">
           <template slot-scope="scope">
-            {{ scope.$index + 1 }}
+            {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
           </template>
         </el-table-column>
-        <!-- <el-table-column prop="date" label="更新日期" width="140"> </el-table-column> -->
         <el-table-column prop="stuNum" label="学号" width="140">
         </el-table-column>
         <el-table-column prop="stuName" label="姓名" width="100">
@@ -39,8 +35,14 @@
         <el-table-column prop="time" label="志愿服务时长" width="120">
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" width="160">
+          <template slot-scope="scope">
+            {{ formatTimestamp(scope.row.createTime) }}
+          </template>
         </el-table-column>
         <el-table-column prop="updateTime" label="更新时间" width="160">
+          <template slot-scope="scope">
+            {{ formatTimestamp(scope.row.updateTime) }}
+          </template>
         </el-table-column>
         <el-table-column prop="do" label="操作" width="100">
           <template slot-scope="scope">
@@ -50,6 +52,14 @@
         <el-table-column prop="score" label="评分" width="100">
         </el-table-column>
       </el-table>
+
+      <!-- 分页 -->
+      <el-pagination
+        layout="prev, pager, next, jumper"
+        :total="tableData.length"
+        :page-size="pageSize"
+        :current-page.sync="currentPage"
+      />
 
       <el-dialog :visible.sync="dialogVisible">
         <el-form :model="form" ref="form" label-width="100px">
@@ -79,8 +89,7 @@ import RatingList from '@/components/RatingList.vue';
 import importFileDialog from '@/components/importFileDialog.vue'
 import axios from 'axios';
 import volunteerApi from '@/api/judge/volunteer';
-import FileSaver from "file-saver";
-import * as XLSX from "xlsx";
+
 export default {
   emits: ['close-dialog', 'score-selected'],
   components: {
@@ -114,6 +123,8 @@ export default {
       searchText: '',
       originalData: [], // 存储初始数据的属性
       filteredTableData: [], // 存储过滤后的数据
+      pageSize: 10, // 每页显示的数据条数
+      currentPage: 1, // 当前页数
     };
   },
   computed: {
@@ -128,7 +139,18 @@ export default {
             item.stuName.toLowerCase().includes(keyword)
         );
       }
-    }
+    },
+    pagedData() {
+      this.checklist = this.tableData.filter(data => !this.searchContent || 
+        data.name.toLowerCase().includes(
+        this.searchContent.toLowerCase()) ||
+        data.num.includes(this.searchContent) )
+      // 每页显示的第一个和最后一个条目
+      const start = (this.currentPage - 1) * this.pageSize;
+      const end = this.currentPage * this.pageSize;
+
+      return this.checklist.slice(start, end);
+    },
   },
   watch: {
     searchText(newText) {
@@ -156,14 +178,21 @@ export default {
             });
           }
           this.originalData = this.tableData.slice(); // 将初始数据赋值给originalData
-          // 在赋值之后，再次对每一行数据添加buttonText属性
-          // _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
-
         } else {
-          // this.$message.error("保存数据失败");
+          this.$message.error("数据获取失败");
         }
       });
+    },
+    formatTimestamp(timestamp) {
+      const date = new Date(timestamp);
+      const year = date.getFullYear();
+      const month = ("0" + (date.getMonth() + 1)).slice(-2);
+      const day = ("0" + date.getDate()).slice(-2);
+      const hour = ("0" + date.getHours()).slice(-2);
+      const minute = ("0" + date.getMinutes()).slice(-2);
+      const second = ("0" + date.getSeconds()).slice(-2);
 
+      return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
     },
     showRatingDialog() {
       this.isRatingDialogVisible = true;
@@ -190,12 +219,9 @@ export default {
       this.dialogVisible = true; // 显示对话框
     },
     saveForm() {
-      // 构造请求体数据
       console.log();
-      // 发送更新学生记录的请求到服务器
       volunteerApi.updateScore({ stuNum: this.form.stuNum, score: this.form.score })
         .then(response => {
-          // 请求成功处理
           if (response.code === 200) {
                 this.$message({
                   message: '打分更新成功！',
@@ -208,9 +234,13 @@ export default {
         .catch(error => {
           // 请求失败处理
           console.error('打分更新失败', error);
-          // 可以根据需要执行其他操作
         });
       this.dialogVisible = false;
+    },
+    handleKeyDown(event) {
+      if (event.keyCode === 13 || event.key === 'Enter') {
+        this.searchData();
+      }
     },
     searchData() {
       // 根据搜索关键词过滤表格数据
@@ -239,27 +269,38 @@ body {
   max-width: 900px;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
-}
-
-.el-divider--horizontal {
-  margin-top: 3px;
+  height: auto;
+  overflow: hidden;
 }
 
 .title {
   font-size: 28px;
   text-align: center;
-
 }
 
-.titleBtn {
-  margin: 20px 0;
-  margin-bottom: 50px;
+.titleBtnSearch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+
+.searchContainer {
+  display: flex;
+  margin-right: 10px;
+}
+
+.importButton {
+  display: flex;
+  /* justify-content: center;
+   */
+  margin-left: 400px;
 }
 
 .main {
   margin: 0 auto;
-}</style>
+}
+</style>
   
 
