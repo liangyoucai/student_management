@@ -143,6 +143,7 @@ export default {
   },
   data() {
     return {
+      showSubmittedData: false,
       form: {
         research: [
           {
