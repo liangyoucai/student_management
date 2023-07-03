@@ -1,8 +1,7 @@
 <template>
   <div class="my-form">
-    <h1 class="title">学生骨干服务情况 - 在线填写</h1>
+    <h1 class="title">学生社会实践情况 - 在线填写</h1>
     <el-divider></el-divider>
-
 
     <el-row type="flex">
       <el-row>
@@ -18,6 +17,8 @@
     </el-row>
     <!-- 已提交内容总览表 -->
     <submitted-data-table v-if="showSubmittedData" :submittedData="submittedData.slice().sort((a, b) => a.id - b.id)">
+
+
 
       <el-table-column label="岗位名称" prop="title"></el-table-column>
       <el-table-column label="岗位负责人" prop="director"></el-table-column>
@@ -37,7 +38,7 @@
     <el-row type="flex" justify="center">
       <el-col :span="8" style="display: flex; justify-content: center;">
         <div>
-          <stuImportPdfButton @click="openImportDialog" subject="service"></stuImportPdfButton>
+          <stuImportPdfButton @click="openImportDialog" subject="practice"></stuImportPdfButton>
         </div>
       </el-col>
     </el-row>
@@ -45,18 +46,17 @@
     <el-row type="flex" justify="center">
       <el-col :span="8" style="display: flex; justify-content: center;">
         <div>
-          <preview subject="service"></preview>
+          <preview subject="practice"></preview>
         </div>
       </el-col>
     </el-row>
-
 
 
     <el-form :model="form" label-width="120px" ref="form" >
       <div v-for="(project, index) in form.research" :key="project.key">
         <el-row type="flex">
           <el-col :span="22">
-            <h4 style="float: left;">{{ '参与的服务项目' + (index + 1) }}</h4>
+            <h4 style="float: left;">{{ '参与的社会实践项目' + (index + 1) }} </h4>
           </el-col>
           <!-- 删除按钮 -->
           <el-col :span="2" style="display:flex;justify-content:flex-end;align-items:center;">
@@ -68,34 +68,37 @@
             <el-form-item label="名称" :prop="'research.'+index+'.name'" :rules="{
                             required: true, message: '该项不能为空', trigger: 'blur'
                         }">
-              <el-input placeholder="请输入服务岗位名称" v-model="form.research[index].name"></el-input>
+              <el-input placeholder="请输入社会实践名称" v-model="form.research[index].name" >
+              </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="20">
-            <el-form-item label="岗位负责人" :prop="'research.'+index+'.manager'" :rules="{
+            <el-form-item label="负责人" :prop="'research.'+index+'.manager'" :rules="{
                             required: true, message: '该项不能为空', trigger: 'blur'
                         }">
-              <el-input placeholder="请输入服务岗位负责人" v-model="form.research[index].manager"></el-input>
+              <el-input placeholder="请输入社会实践负责人" v-model="form.research[index].manager">
+              </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="20">
-            <el-form-item label="岗位负责单位" :prop="'research.'+index+'.organization'" :rules="{
+            <el-form-item label="负责单位" :prop="'research.'+index+'.organization'" :rules="{
                             required: true, message: '该项不能为空', trigger: 'blur'
                         }">
-              <el-input placeholder="请输入服务岗位负责单位" v-model="form.research[index].organization"></el-input>
+              <el-input placeholder="请输入社会实践负责单位" v-model="form.research[index].organization">
+              </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="20">
-            <el-form-item label="岗位职责" :prop="'research.'+index+'.content'" :rules="{
+            <el-form-item label="内容" ::prop="'research.'+index+'.content'" :rules="{
                             required: true, message: '该项不能为空', trigger: 'blur'
                         }">
-              <el-input placeholder="请输入岗位职责" v-model="form.research[index].content"></el-input>
+              <el-input placeholder="请输入社会实践内容" v-model="form.research[index].content"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -104,7 +107,7 @@
             <el-form-item label="成果" :prop="'research.'+index+'.achievements'" :rules="{
                             required: true, message: '该项不能为空', trigger: 'blur'
                         }">
-              <el-input placeholder="请输入在岗期间成果" v-model="form.research[index].achievements"></el-input>
+              <el-input placeholder="请输入社会实践成果" v-model="form.research[index].achievements"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="20">
@@ -114,13 +117,13 @@
               <el-date-picker v-model="form.research[index].time" type="monthrange" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间">
               </el-date-picker>
             </el-form-item>
-
           </el-col>
+
         </el-row>
 
       </div>
       <el-form-item style="margin-top: 20px">
-        <el-button type="warning" @click="addProject">增加服务项目</el-button>
+        <el-button type="warning" @click="addProject">增加社会实践项目</el-button>
         <el-button type="primary" @click="submitForm">提交</el-button>
         <el-button @click="clearForm">重置</el-button>
       </el-form-item>
@@ -165,7 +168,7 @@ export default {
       this.username = res.data.username;
       this.num = res.data.num
       console.log(res.data)
-      student.reviewMyList('service', this.num).then(res => {
+      student.reviewMyList('practice', this.num).then(res => {
         this.submittedData = res.data;
       })
     });
@@ -210,7 +213,7 @@ export default {
             })
           }
           console.log(data)
-          student.import('service', data)
+          student.import('practice', data)
               .then(res => {
                 console.log(res);
                 if (res.code == 200) {
@@ -251,6 +254,8 @@ export default {
   },
 };
 </script>
+
+
 
 <style scoped>
 .title {
