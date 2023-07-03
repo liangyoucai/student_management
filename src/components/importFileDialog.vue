@@ -9,8 +9,8 @@
         </el-upload> -->
         <el-upload ref="upload" drag action="#" :http-request="uploadHttpRequest" :data="importData" :auto-upload="false" :multiple="false" :before-upload="beforeUpload" :on-change="handleChange">
           <i class="el-icon-upload"></i>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip">{{ importTip }}</div>
+          <div class="el-upload__text" >将文件拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip" slot="tip" ><p v-html="importTip"></p></div>
         </el-upload>
         <!-- </div> -->
       </el-form-item>

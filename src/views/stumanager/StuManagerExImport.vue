@@ -6,24 +6,28 @@
     <el-divider></el-divider>
 
     <!-- 导入导出按钮 -->
-    <div class="titleBtn">
-      <el-button type="warning" icon="el-icon-folder-add" size="small" style="margin: 0 20px" @click="openImportDialog">导入</el-button>
-      <el-button @click="exportClick" type="primary" size="small" icon="el-icon-folder-opened">导出</el-button>
-    </div>
+    
 
     <!-- 上传对话框 -->
     <div v-if="isImportFileDialogVisible">
-      <importFileDialog importName="stu" importTitle="上传学生信息文件" importTip="一次只能上传一个xls/xlsx文件，且不超过10M" importType="excel" @close-dialog="closeImportDialog">
+      <importFileDialog importName="stu" importTitle="上传学生信息文件" importTip="1.一次只能上传一个xls/xlsx文件，且不超过10M<br>2. 表头格式为：num||name||sex||year||class||major||email" importType="excel" @close-dialog="closeImportDialog">
       </importFileDialog>
     </div>
 
     <!-- 表格 -->
     <div class="main">
+      
+      <el-button 
+      style="float: left; margin-top: 10px; margin-bottom: 15px;"
+      type="warning" icon="el-icon-folder-add" size="small"  @click="openImportDialog">导入</el-button>
+      <el-button 
+      style="float: left; margin-top: 10px; margin-bottom: 15px;"
+      @click="exportClick" type="primary" size="small" icon="el-icon-folder-opened">导出</el-button>
       <el-button
           style="float: left; margin-top: 10px; margin-bottom: 15px;"
           size="small"
           type="danger"
-          @click="handleDelete()">删除所选</el-button>
+          @click="handleDelete()" icon="el-icon-delete">删除</el-button>
       <el-input 
       style="float: right; margin-left: 20px; margin-top: 10px; margin-bottom: 15px;width: 30%;"
       v-model="searchContent" 
@@ -52,13 +56,13 @@
           </template>
         </el-table-column>
         
-        <el-table-column prop="date" label="更新日期" width="100"></el-table-column>
-        <el-table-column prop="num" label="学号" width="100"> </el-table-column>
-        <el-table-column prop="name" label="姓名" width="80"> </el-table-column>
-        <el-table-column prop="sex" label="性别" width="80"> </el-table-column>
-        <el-table-column prop="year" label="年级" width="100"></el-table-column>
-        <el-table-column prop="class" label="学苑" width="120"></el-table-column>
-        <el-table-column prop="major" label="专业" width="120"></el-table-column>
+        <el-table-column prop="date" label="更新日期" width="100" sortable></el-table-column>
+        <el-table-column prop="num" label="学号" width="100" sortable> </el-table-column>
+        <el-table-column prop="name" label="姓名" width="80" sortable> </el-table-column>
+        <el-table-column prop="sex" label="性别" width="80" sortable> </el-table-column>
+        <el-table-column prop="year" label="年级" width="100" sortable></el-table-column>
+        <el-table-column prop="class" label="学苑" width="120" sortable></el-table-column>
+        <el-table-column prop="major" label="专业" width="120" sortable></el-table-column>
         <el-table-column prop="email" label="邮箱地址" width="120"></el-table-column>
       </el-table>
 
@@ -111,7 +115,7 @@ export default {
       pageSize: 3, // 每页显示的数据条数
       currentPage: 1, // 当前页数
       isImportFileDialogVisible: false,
-
+      deleteTable:[]
     };
   },
   mounted() {
@@ -136,6 +140,7 @@ export default {
   methods: {
     // 单选
     handleSelect(selection, row) {
+      this.deleteTable.push(row)
       // isExited判断selected是否已经存在当前项
       let isExited = false 
       this.selected.forEach(item => {
@@ -150,20 +155,27 @@ export default {
         // 反之，选中某项
         this.selected.push(row)
       }
+      
+
     },
     // 全选或全不选
     handleSelectionAll(selection) {
       if (selection.length === 0) {
         // 若是全不选，则循环删除selected数组中存在的项
-        this.pagedData().forEach(item => {
+        this.pagedData.forEach(item => {
           this.handleDelItem(item)
         })
+        this.deleteTable = []
       } else {
         // 全选，将selected和当前table数据合起来，注意去重！
         this.selected = this.unique(
-          this.selected.concat(this.pagedData())
+          this.selected.concat(this.pagedData)
         )
+        this.deleteTable = this.selected
       }
+    },
+    unique(arr) {
+      return Array.from(new Set(arr))
     },
     // 删除selected数组中某项数据
     handleDelItem(row){
@@ -173,10 +185,13 @@ export default {
           index = idx
         }
       })
+      
       if (index >= 0) {
         this.selected.splice(index, 1)
       }
-    },    // 当前页面切换触发回显
+
+    },    
+    // 当前页面切换触发回显
     handleCurrentChange() {
       this.echo()
     },
@@ -184,7 +199,7 @@ export default {
     // 回显
     echo() {
       let rows = []
-      this.pagedData().forEach(row => {
+      this.pagedData.forEach(row => {
         this.selected.forEach(item => {
           if (row.id === item.id) {
             rows.push(row)
@@ -204,34 +219,64 @@ export default {
         this.$refs.multipleTable.clearSelection();
       }
     },
+    cleanDeleteTable(){
+      let countMap = {};
+      // 计算每个元素出现的次数
+      this.deleteTable.forEach(item => {
+        let key = typeof item === 'object' ? JSON.stringify(item) : item;
+        if (countMap[key]) {
+          countMap[key]++;
+        } else {
+          countMap[key] = 1;
+        }
+        
+      });
+      // 根据元素出现的次数进行处理
+      let result = this.deleteTable.filter(item => {
+        let key = typeof item === 'object' ? JSON.stringify(item) : item;
+        if (countMap[key] % 2 === 0) {
+          // 如果元素出现偶数次，删除该元素
+          return false;
+        } else {
+          // 如果元素出现奇数次，保留该元素
+          return true;
+        }
+      });
+      return this.unique(result)
+    },
     openImportDialog() {
       this.isImportFileDialogVisible = true;
     },
     closeImportDialog() {
       this.isImportFileDialogVisible = false;
     },
+    //删除多选学生信息
     handleDelete() {
-      console.log(this.selected);
-      this.$confirm("此操作将删除所选学生信息, 是否继续?", "提示", {
+      let table = this.cleanDeleteTable()
+      console.log(table)
+      if (table.length === 0) {
+        this.$message({
+          type: "warning",
+          message: "请至少选择一条数据",
+        });
+        return;
+      }
+      this.$confirm("此操作将删除该学生的信息, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          //删除所选学生信息
-          student.deleteInfo(this.selected).then((res) => {
+          //删除学生
+          student.deleteInfo(table).then(res => {
+            // 如果保存成功，则更新表格数据
             if (res.code === 200) {
+              this.$message.success("删除成功");
               this.init();
             } else {
-              console.log(error);
+              console.log(error)
+              this.$message.error("删除失败");
             }
-          })
-            .catch(function (error) {
-              console.log(error);
-            });
-          this.$message({
-            type: "success",
-            message: "删除成功!",
           });
         })
         .catch(() => {
@@ -239,6 +284,11 @@ export default {
             type: "info",
             message: "已取消删除",
           });
+        }).finally(() => {
+          //清空删除数组
+          this.deleteTable = []
+          //取消选择当前的项目
+          this.toggleSelection()
         });
     },
 
