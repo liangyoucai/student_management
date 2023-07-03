@@ -24,6 +24,7 @@
 
         <!-- 评审卡片 -->
         <div v-if="isReviewing && !isOverviewing">
+
             <div class="review-card">
                 <el-form label-width="120px">
                     <el-row>
@@ -38,9 +39,7 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
-
                     <template v-for="(project, index) in waitingStudents[currentIndex].research">
-
                         <div v-if="index >= 0">
                             <h4>参与的科研项目{{ index + 1 }}</h4>
                         </div>
@@ -80,7 +79,11 @@
                         </el-form-item>
                     </template>
                 </el-form>
-
+                <el-row>
+                    <el-col :span="24">
+                        <preview subject="science" :stuNum="currentStudent.id"></preview>
+                    </el-col>
+                </el-row>
                 <el-divider></el-divider>
                 <div class="block">
                     <span class="demonstration">评分：{{ currentScore }}</span>
@@ -137,12 +140,14 @@ import judge from '@/api/judge/judge';
 import OverviewTable from '@/components/OverviewTable.vue';
 import ScoreTable from '@/components/ScoreTable.vue'
 import RatingList from '@/components/RatingList.vue';
+import preview from '@/components/preview.vue';
 export default {
     emits: ['score-selected', 'review-from-overview'],
     components: {
         OverviewTable,
         ScoreTable,
-        RatingList
+        RatingList,
+        preview
     },
 
     data() {

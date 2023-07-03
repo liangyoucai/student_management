@@ -2,6 +2,56 @@
   <div class="my-form">
     <h1 class="title">学生骨干服务情况 - 在线填写</h1>
     <el-divider></el-divider>
+
+
+    <el-row type="flex">
+      <el-row>
+        <el-col :span="24">
+          <h4 style="float: left;">已提交内容</h4>
+        </el-col>
+      </el-row>
+    </el-row>
+    <el-row>
+      <el-col>
+        <el-button style="float: left;" @click="toggleSubmittedData" type="text">{{ showSubmittedData ? "收起" : "展开" }}</el-button>
+      </el-col>
+    </el-row>
+    <!-- 已提交内容总览表 -->
+    <submitted-data-table v-if="showSubmittedData" :submittedData="submittedData.slice().sort((a, b) => a.id - b.id)">
+
+      <el-table-column label="项目名称" prop="title"></el-table-column>
+      <el-table-column label="负责人" prop="director"></el-table-column>
+      <el-table-column label="组织机构" prop="constitution"></el-table-column>
+      <el-table-column label="项目内容" prop="conten"></el-table-column>
+      <el-table-column label="参与时间" prop="time"></el-table-column>
+      <el-table-column label="项目成果" prop="result"></el-table-column>
+
+    </submitted-data-table>
+
+    <el-row type="flex" justify="center">
+      <el-col :span="24">
+        <h4 style="text-align: center;">证明材料（请将所有证明材料放在一个pdf文件上传）</h4>
+      </el-col>
+    </el-row>
+
+    <el-row type="flex" justify="center">
+      <el-col :span="8" style="display: flex; justify-content: center;">
+        <div>
+          <stuImportPdfButton @click="openImportDialog" subject="service"></stuImportPdfButton>
+        </div>
+      </el-col>
+    </el-row>
+
+    <el-row type="flex" justify="center">
+      <el-col :span="8" style="display: flex; justify-content: center;">
+        <div>
+          <preview subject="service"></preview>
+        </div>
+      </el-col>
+    </el-row>
+
+
+
     <el-form :model="form" label-width="120px" ref="form" >
       <div v-for="(project, index) in form.research" :key="project.key">
         <el-row type="flex">
@@ -64,13 +114,10 @@
               <el-date-picker v-model="form.research[index].time" type="monthrange" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间">
               </el-date-picker>
             </el-form-item>
-<!--            <el-form-item label="时长" :prop="'research.'+index+'.time'" :rules="{-->
-<!--                            required: true, message: '该项不能为空', trigger: 'blur'-->
-<!--                        }">-->
-<!--              <el-input placeholder="请输入在岗服务时长" v-model="form.research[index].time"></el-input>-->
-<!--            </el-form-item>-->
+
           </el-col>
         </el-row>
+
       </div>
       <el-form-item style="margin-top: 20px">
         <el-button type="warning" @click="addProject">增加服务项目</el-button>
@@ -82,11 +129,18 @@
 </template>
 
 <script>
-import axios from "axios";
-import user from "@/api/auth/user";
-import student from '@/api/student/student'
+import axios from 'axios';
+import user from '@/api/auth/user';
+import student from '@/api/student/student';
+import preview from '@/components/preview.vue'
+import stuImportPdfButton from '@/components/stuImportPdfButton.vue';
+import submittedDataTable from '@/components/SubmittedDataTable.vue'
 export default {
-  name: 'PersonalSummaryForm',
+  components: {
+    stuImportPdfButton,
+    preview,
+    submittedDataTable
+  },
   data() {
     return {
       form: {
@@ -96,25 +150,42 @@ export default {
             manager: '',
             organization: '',
             content:'',
-            // level: '',
             time: '',
             achievements: ''
           }
         ]
       },
-      // levels: ['校级', '市级', '省级', '国家级'],
       username: '',
       num: '',
+      submittedData: []
     };
   },
+  mounted() {
+    user.getInfo(this.role).then((res) => {
+      this.username = res.data.username;
+      this.num = res.data.num
+      console.log(res.data)
+      student.reviewMyList('service', this.num).then(res => {
+        this.submittedData = res.data;
+      })
+    });
+
+  },
   // mounted() {
-  //     // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
-  //     // user.getInfo(this.role).then((res) => {
-  //     //     this.name = res.data.name;
-  //     //     this.num = res.data.num;
-  //     //     this.id = res.data.id;
+  //   // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
+  //   user.getInfo(this.role).then((res) => {
+  //     this.username = res.data.username;
+  //     this.num = res.data.num
+  //     console.log(res.data)
+  //   });
   // },
   methods: {
+    toggleSubmittedData() {
+      this.showSubmittedData = !this.showSubmittedData;
+    },
+    openImportDialog() {
+      this.$refs.ChildButton.openImportDialog();
+    },
     submitForm() {
       this.$refs.form.validate((valid) => {
         if (valid) {
@@ -129,18 +200,11 @@ export default {
             const start = dateStringArray[0];
             const end = dateStringArray[dateStringArray.length - 1];
             const dateRangeString = start + '-' + end;
-
             data.push({
               "constitution": item.organization,
               "director": item.manager,
-              // "level": this.levels.indexOf(item.level),
               "content":item.content,
               "result": item.achievements,
-              // "stuId": 1,
-              // "stuName": '张三',
-              // "stuNum": 2200022001,
-              // "createUserId": 0,
-              // "updateUserId": 0,
               "time": dateRangeString,
               "title": item.name
             })
@@ -169,8 +233,7 @@ export default {
         name: '',
         manager: '',
         organization: '',
-        // level: '',
-        content:'',
+        content: '',
         time: '',
         achievements: '',
         key: Date.now()
@@ -187,106 +250,6 @@ export default {
     }
   },
 };
-
-// export default {
-//   name: 'PersonalSummaryForm',
-//   data() {
-//     return {
-//       form: {
-//         research: [
-//           {
-//             name: '',
-//             manager: '',
-//             organization: '',
-//             content:'',
-//             //level: '',
-//             time: '',
-//             achievements: ''
-//           }
-//         ]
-//       },
-//      // levels: ['校级', '市级', '省级', '国家级'],
-//       username: '',
-//       num: '',
-//     };
-//   },
-//   mounted() {
-//     // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
-//     user.getInfo(this.role).then((res) => {
-//       this.username = res.data.username;
-//       this.num = res.data.num
-//       console.log(res.data)
-//     });
-//   },
-//   methods: {
-//     submitForm() {
-//       this.$refs.form.validate((valid) => {
-//         if (valid) {
-//           let data = []
-//           for (let item of this.form.research) {
-//
-//             data.push({
-//               "constitution": item.organization,
-//               "director": item.manager,
-//              // "level": this.levels.indexOf(item.level),
-//               "content":item.content,
-//               "result": item.achievements,
-//               "score": null,
-//               "status": 1,
-//               "stuId": 1,
-//               "stuName": this.username,
-//               "stuNum": this.num,
-//               "time": item.time,
-//               "title": item.name
-//             })
-//           }
-//           console.log(data)
-//           axios.post("http://localhost:18080/api/service/import", data, {
-//                 headers: {
-//                   'Content-Type': 'application/json;'
-//                 }
-//               }
-//           )
-//               .then(res => {
-//                 console.log(res);
-//                 if (res.data.code == 200) {
-//                   this.$message.success("提交成功")
-//                 }
-//               });
-//         } else {
-//           // 表单校验不通过
-//           this.$message.error('表单填写不完整或有误，请检查');
-//           return false;
-//         }
-//       });
-//     },
-//
-//     clearForm() {
-//       this.$refs.form.resetFields();
-//     },
-//     addProject() {
-//       this.form.research.push({
-//         name: '',
-//         manager: '',
-//         organization: '',
-//        // level: '',
-//         content:'',
-//         time: '',
-//         achievements: '',
-//         key: Date.now()
-//       });
-//       console.log(this.form);
-//     },
-//     removeProject(project) {
-//       var index = this.form.research.indexOf(project)
-//       if (index !== -1) {
-//         this.form.research.splice(index, 1)
-//       }
-//       console.log(this.form);
-//
-//     }
-//   },
-// };
 </script>
 
 <style scoped>

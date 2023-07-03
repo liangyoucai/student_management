@@ -6,51 +6,63 @@
     </div>
     <el-divider></el-divider>
 
-    <!-- 导入按钮 -->
-    <div class="titleBtn">
-      <el-button type="warning" icon="el-icon-folder-add" size="small" style="margin: 0 80px" @click="openImportDialog">导入</el-button>
+    <div class="titleBtnSearch">
+      <div class="importButton">
+        <el-button type="warning" icon="el-icon-folder-add" size="small" @click="openImportDialog">导入</el-button>
+      </div>
+      <div class="searchContainer">
+        <el-input v-model="searchText" placeholder="输入学号或姓名搜索" style="width: 250px;" @keydown.native="handleKeyDown"></el-input>
+        <el-button slot="append" icon="el-icon-search" @click="searchData"></el-button>
+      </div>
     </div>
     <!-- 上传对话框 -->
     <div v-if="isImportFileDialogVisible">
       <importFileDialog importName="grade" importTitle="上传学生成绩文件" importTip="一次只能上传一个xls/xlsx文件，且不超过10M" importType="excel" @close-dialog="closeImportDialog">
       </importFileDialog>
     </div>
-    <div class="main">
-      <el-table :data="tableData" style="width: 100%" id="mainTable" max-height="500">
-        <el-table-column prop="no" label="序号" width="80">
-          <template slot-scope="scope">
-            {{ scope.$index + 1 }}
-          </template>
 
+    <div class="main">
+      <el-table :data="pagedData" style="width: 100%" id="mainTable" max-height="auto">
+        <el-table-column prop="no" label="序号" width="50">
+          <template slot-scope="scope">
+            {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
+          </template>
         </el-table-column>
-        <!-- <el-table-column prop="date" label="更新日期" width="140"> </el-table-column> -->
         <el-table-column prop="stuNum" label="学号" width="140">
         </el-table-column>
-        <el-table-column prop="stuName" label="姓名" width="120">
+        <el-table-column prop="stuName" label="姓名" width="100">
         </el-table-column>
-        <el-table-column prop="gpa" label="GPA" width="120">
+        <el-table-column prop="gpa" label="GPA" width="100">
         </el-table-column>
-        <!-- <el-table-column prop="state" label="状态" width="120">
+        <el-table-column prop="createTime" label="创建时间" width="160">
           <template slot-scope="scope">
-            <template v-if="scope.row.state === 0">
-              未确认
-            </template>
-            <template v-else-if="scope.row.state === 1">
-              已确认
-            </template>
-            <template v-else-if="scope.row.state === 2">
-              有误
-            </template>
-          </template>
-        </el-table-column> -->
-        <el-table-column prop="do" label="操作" width="120">
-          <template slot-scope="scope">
-            <el-button type="primary" @click="showDialog(scope.row)">评分</el-button>
+            {{ formatTimestamp(scope.row.createTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="score" label="评分" width="120">
+        <el-table-column prop="updateTime" label="更新时间" width="160">
+          <template slot-scope="scope">
+            {{ formatTimestamp(scope.row.updateTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="do" label="操作" width="170">
+          <template slot-scope="scope">
+            <div class="action-buttons">
+              <el-button type="primary" @click="showDialog(scope.row)">评分</el-button>
+              <el-button type="danger" @click="showDeleteConfirmation(scope.row)">删除</el-button>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="score" label="评分" width="100">
         </el-table-column>
       </el-table>
+
+      <!-- 分页 -->
+      <el-pagination
+        layout="prev, pager, next, jumper"
+        :total="tableData.length"
+        :page-size="pageSize"
+        :current-page.sync="currentPage"
+      />
 
       <el-dialog :visible.sync="dialogVisible">
         <el-form :model="form" ref="form" label-width="100px">
@@ -68,7 +80,6 @@
         </div>
       </el-dialog>
 
-
     </div>
 
   </div>
@@ -81,8 +92,6 @@ import RatingList from '@/components/RatingList.vue';
 import importFileDialog from '@/components/importFileDialog.vue'
 import axios from 'axios';
 import gradeApi from '@/api/judge/grade';
-import FileSaver from "file-saver";
-import * as XLSX from "xlsx";
 
 export default {
   emits: ['close-dialog', 'score-selected'],
@@ -99,18 +108,12 @@ export default {
       currentScore: null,
       isRatingDialogVisible: false,
       tableData: [{
-        //   {
-        //     date: "2002-06-28",
-        //     ID: "2200022600",
-        //     name: "ABC",
-        //     class: "求知三苑",
-        //     GPA: "3.80",
-        //     state: 1
-        //   },
         stuNum: "",
         stuName: "",
         gpa: "",
-        score: ""
+        score: "",
+        createTime: "",
+        updateTime: ""
       }],
       dialogVisible: false,
       isImportFileDialogVisible: false,
@@ -120,9 +123,45 @@ export default {
         score: ""
       },
       currentRow: null,
+      searchText: '',
+      originalData: [], // 存储初始数据的属性
+      filteredTableData: [], // 存储过滤后的数据
+      pageSize: 10, // 每页显示的数据条数
+      currentPage: 1, // 当前页数
     };
   },
+  computed: {
+    filteredTableData() {
+      const keyword = this.searchText.trim().toLowerCase();
+      if (keyword === "") {
+        return this.originalData.slice(); // 搜索栏为空，返回原始数据
+      } else {
+        return this.originalData.filter(
+          (item) =>
+            item.stuNum.toLowerCase().includes(keyword) ||
+            item.stuName.toLowerCase().includes(keyword)
+        );
+      }
+    },
+    pagedData() {
+      this.checklist = this.tableData.filter(data => !this.searchContent || 
+        data.name.toLowerCase().includes(
+        this.searchContent.toLowerCase()) ||
+        data.num.includes(this.searchContent) )
+      // 每页显示的第一个和最后一个条目
+      const start = (this.currentPage - 1) * this.pageSize;
+      const end = this.currentPage * this.pageSize;
 
+      return this.checklist.slice(start, end);
+    },
+  },
+  watch: {
+    searchText(newText) {
+      if (newText.trim() === "" && !this.userInteracted) {
+        this.tableData = this.originalData.slice(); // 搜索栏为空且用户没有进行任何操作，显示原始数据
+      }
+    }
+  },
   methods: {
     init() {
       let _this = this;
@@ -137,16 +176,26 @@ export default {
               stuName: formdata.gradelist[i]["stuName"],
               gpa: formdata.gradelist[i]["gpa"],
               score: formdata.gradelist[i]["score"],
+              createTime: formdata.gradelist[i]["createTime"],
+              updateTime: formdata.gradelist[i]["updateTime"],
             });
           }
-          // 在赋值之后，再次对每一行数据添加buttonText属性
-          // _this.tableData = _this.tableData.map(row => ({ ...row, buttonText: _this.defaultButtonText }));
-
+          this.originalData = this.tableData.slice(); // 将初始数据赋值给originalData
         } else {
-          // this.$message.error("保存数据失败");
+          this.$message.error("数据获取失败");
         }
       });
+    },
+    formatTimestamp(timestamp) {
+      const date = new Date(timestamp);
+      const year = date.getFullYear();
+      const month = ("0" + (date.getMonth() + 1)).slice(-2);
+      const day = ("0" + date.getDate()).slice(-2);
+      const hour = ("0" + date.getHours()).slice(-2);
+      const minute = ("0" + date.getMinutes()).slice(-2);
+      const second = ("0" + date.getSeconds()).slice(-2);
 
+      return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
     },
     showRatingDialog() {
       this.isRatingDialogVisible = true;
@@ -174,27 +223,63 @@ export default {
     },
     saveForm() {
       console.log({ stuNum: this.form.stuNum, score: this.form.score });
-      // 构造请求体数据
-      console.log();
-      // 发送更新学生记录的请求到服务器
-      gradeApi.updateScore({ stuNum: this.form.stuNum, score: this.form.score })
+      gradeApi.updateScore({ stuNum: this.form.stuNum, score: this.form.score})
         .then(response => {
-          // 请求成功处理
-          console.log('打分更新成功', response);
-          // 更新页面上对应学生的分数
-          const updatedStudent = this.tableData.find(student => student.stuNum === this.form.stuNum);
-          if (updatedStudent) {
-            updatedStudent.score = this.form.score;
-          }
-
+          if (response.code === 200) {
+                this.$message({
+                  message: '打分更新成功！',
+                  type: 'success'
+                });
+                //自动刷新页面
+                window.location.reload();
+              } 
         })
         .catch(error => {
           // 请求失败处理
           console.error('打分更新失败', error);
-          // 可以根据需要执行其他操作
         });
       this.dialogVisible = false;
     },
+    handleKeyDown(event) {
+      if (event.keyCode === 13 || event.key === 'Enter') {
+        this.searchData();
+      }
+    },
+    searchData() {
+      // 根据搜索关键词过滤表格数据
+      const keyword = this.searchText.trim().toLowerCase();
+      const filteredData = this.originalData.filter(
+        (item) =>
+          item.stuNum.toLowerCase().includes(keyword) ||
+          item.stuName.toLowerCase().includes(keyword)
+      );
+      this.tableData = filteredData;
+    },
+    showDeleteConfirmation(row) {
+      this.$confirm('确定删除该项吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          gradeApi.deleteGrade({ stuNum: row.stuNum }).then(response => {
+          console.log(row.stuNum);
+          if (response.code === 200) {
+            this.$message({
+              message: '删除成功！',
+              type: 'success'
+            });
+            //自动刷新页面
+            window.location.reload();
+          }
+        })
+        })
+        
+        .catch(error => {
+          // 请求失败处理
+          console.error('删除失败', error);
+        });
+    }
 
   },
 };
@@ -210,10 +295,11 @@ body {
 
 .container {
   margin: 10px auto;
-  max-width: 900px;
+  max-width: 1100px;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: auto;
+  overflow: hidden;
 }
 
 .title {
@@ -221,15 +307,31 @@ body {
   text-align: center;
 }
 
-.titleBtn {
-  margin: 20px 0;
-  margin-bottom: 50px;
+.titleBtnSearch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+
+.searchContainer {
+  display: flex;
+  margin-right: 10px;
+}
+
+.importButton {
+  display: flex;
+  /* justify-content: center;
+   */
+  margin-left: 520px;
 }
 
 .main {
   margin: 0 auto;
 }
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
 </style>
-    
-  
-  
