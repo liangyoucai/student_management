@@ -38,4 +38,14 @@ export default {
       responseType: 'arraybuffer',
     });
   },
+
+  reviewMyList(subject, num) {
+    return request({
+      url: `/api/${subject}/getMyList`,
+      method: 'get',
+      params: {
+        num: num,
+      },
+    });
+  },
 };

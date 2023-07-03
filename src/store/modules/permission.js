@@ -13,6 +13,7 @@ const permission = {
       state.routes = constantRoutes.concat(routes);
     },
     RESET_ROUTES: (state, routes) => {
+      state.addRoutes = routes;
       state.routes = routes;
     },
   },
