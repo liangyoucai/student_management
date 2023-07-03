@@ -2,7 +2,9 @@
     <div>
         <div class="side-bar">
             <el-menu class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+                <!-- 循环遍历菜单项-->
                 <template v-for="(menu, index) in menuItems">
+                    <!-- 设置每一个菜单项的 key 属性和 index 属性，以及点击菜单项时跳转的路由 -->
                     <el-menu-item :key="menu.name" :index="menu.path" @click="$router.push(menu.path)">
                         <i class="el-icon-location"></i>
                         <span slot="title">{{ nameMap[menu.name] }}</span>
@@ -90,18 +92,16 @@
                     <img src="./img/name.png" alt="caption" height="80px">
                     <!-- <div class="time">{{ nowTime }}</div> -->
                     <el-button style="float: right;margin-right: 0px;" icon="el-icon-s-tools" circle @click="openChangePasswdDialog" :disabled="isDisabled"></el-button>
-                    <el-button v-show="isResetButtonShow" style="float: right; margin-right: 30px;" size="medium" round @click="openResetPasswdDialog" > 重置密码 </el-button>
+                    <el-button v-show="isResetButtonShow" style="float: right; margin-right: 30px;" size="medium" round @click="openResetPasswdDialog"> 重置密码 </el-button>
                     <!-- <el-button  type="primary" icon="el-icon-setting" >修改密码</el-button> -->
                     <!-- 上传对话框 -->
                     <div v-if="isChangePasswdDialogVisible">
-                    <ChangePasswdDialog 
-                        @close-dialog="closeChangePasswdDialog">
-                    </ChangePasswdDialog>
+                        <ChangePasswdDialog @close-dialog="closeChangePasswdDialog">
+                        </ChangePasswdDialog>
                     </div>
                     <div v-if="isResetPasswdDialogVisible">
-                    <ResetPasswdDialog 
-                        @close-dialog="closeResetPasswdDialog">
-                    </ResetPasswdDialog>
+                        <ResetPasswdDialog @close-dialog="closeResetPasswdDialog">
+                        </ResetPasswdDialog>
                     </div>
                     <h1>学生综合测评系统</h1>
 
@@ -130,7 +130,7 @@ export default {
             nowTime: '',
             isChangePasswdDialogVisible: false,
             isResetPasswdDialogVisible: false,
-            isResetButtonShow:false,
+            isResetButtonShow: false,
             nameMap: {
                 "StudentPersonalSummary": "个人学年总结",
                 "StudentResearch": "科研情况",
@@ -214,7 +214,7 @@ export default {
                 this.isResetButtonShow = true;
             }
         },
-        
+
         openChangePasswdDialog() {
             this.isChangePasswdDialogVisible = true;
             console.log(this.isChangePasswdDialogVisible)
@@ -233,13 +233,12 @@ export default {
         },
         getMenu() {
             menu.getMenuList().then((res) => {
-                console.log(res)
                 this.menuItems = res;
                 // 找到 name 为 "home" 的项的下标
                 const index = this.menuItems.findIndex(item => item.name === "home");
                 // 如果找到了，将该项从原位置删除并插入数组的第一个位置
                 if (index !== -1) {
-                    const item = this.menuItems.splice(index, 1)[0]; // splice() 返回的是一个数组，需要用 [0] 取出元素
+                    const item = this.menuItems.splice(index, 1)[0];
                     this.menuItems.splice(0, 0, item);
                 }
             })

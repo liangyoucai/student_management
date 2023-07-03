@@ -2,6 +2,27 @@
     <div class="my-form">
         <h1 class="title">学生个人学年总结 - 在线填写</h1>
         <el-divider style="margin-bottom: 0;"></el-divider>
+        <el-row type="flex">
+            <el-row>
+                <el-col :span="24">
+                    <h4 style="float: left;">已提交内容</h4>
+                </el-col>
+            </el-row>
+        </el-row>
+        <el-row>
+            <el-col>
+                <el-button style="float: left;" @click="toggleSubmittedData" type="text">{{ showSubmittedData ? "收起" : "展开" }}</el-button>
+            </el-col>
+        </el-row>
+        <!-- 已提交内容总览表 -->
+        <submitted-data-table v-if="showSubmittedData" :submittedData="submittedData.slice().sort((a, b) => a.id - b.id)">
+
+            <el-table-column label="学习情况总结" prop="school"></el-table-column>
+            <el-table-column label="社会实践总结" prop="society"></el-table-column>
+            <el-table-column label="自我评价" prop="self"></el-table-column>
+
+        </submitted-data-table>
+        <el-divider style="margin-bottom: 10px;"></el-divider>
         <el-form :model="form" label-width="120px" ref="form" :rules="rules">
             <el-form-item label="学习情况总结" prop="studySummary">
                 <el-input type="textarea" :rows="4" placeholder="请输入学习情况总结" v-model="form.studySummary"></el-input>
@@ -24,10 +45,15 @@
 import axios from 'axios';
 import student from '@/api/student/student'
 import user from '@/api/auth/user';
+import SubmittedDataTable from '@/components/SubmittedDataTable.vue';
 export default {
+    components: {
+        SubmittedDataTable
+    },
     name: 'PersonalSummaryForm',
     data() {
         return {
+            showSubmittedData: false,
             form: {
                 studySummary: '',
                 practiceSummary: '',
@@ -45,18 +71,24 @@ export default {
                 ],
             },
             username: '',
-            num: ''
+            num: '',
+            submittedData: []
         };
     },
-    // mounted() {
-    //     // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
-    //     user.getInfo(this.role).then((res) => {
-    //         this.username = res.data.username;
-    //         this.num = res.data.num
-    //     });
-    // },
+    mounted() {
+        // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
+        user.getInfo(this.role).then((res) => {
+            this.username = res.data.username;
+            this.num = res.data.num
+            student.reviewMyList('personal', this.num).then(res => {
+                this.submittedData = res.data;
+            })
+        });
+    },
     methods: {
-
+        toggleSubmittedData() {
+            this.showSubmittedData = !this.showSubmittedData;
+        },
         submitForm() {
             this.$refs.form.validate((valid) => {
                 if (valid) {
