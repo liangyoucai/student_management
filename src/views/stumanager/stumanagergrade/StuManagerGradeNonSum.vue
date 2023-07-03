@@ -15,7 +15,7 @@
           style="float: left; margin-top: 10px; margin-bottom: 15px;"
           size="small"
           type="danger"
-          @click="handleDelete()">删除所选</el-button>
+          @click="handleDelete()" icon="el-icon-delete">打回</el-button>
 
       <el-input 
       style="float: right; margin-left: 20px; margin-top: 10px; margin-bottom: 15px;width: 30%;"
@@ -44,24 +44,24 @@
             {{ pageSize * (currentPage - 1) + scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column prop="updateTime" label="更新日期" width="110"> </el-table-column>
-        <el-table-column prop="num" label="学号" width="100">
+        <el-table-column prop="updateTime" label="更新日期" width="110" sortable> </el-table-column>
+        <el-table-column prop="num" label="学号" width="100" sortable>
         </el-table-column>
-        <el-table-column prop="name" label="姓名" width="90">
+        <el-table-column prop="name" label="姓名" width="90" sortable>
         </el-table-column>
-        <el-table-column prop="gpa" label="GPA" width="70">
+        <el-table-column prop="gpa" label="GPA" width="80" sortable>
         </el-table-column>
-        <el-table-column prop="vol" label="志愿" width="80">
+        <el-table-column prop="vol" label="志愿" width="80" sortable>
         </el-table-column>
-        <el-table-column prop="sci" label="科研" width="80">
+        <el-table-column prop="sci" label="科研" width="80" sortable>
         </el-table-column>
-        <el-table-column prop="pra" label="实践" width="80">
+        <el-table-column prop="pra" label="实践" width="80" sortable>
         </el-table-column>
-        <el-table-column prop="ser" label="学生骨干" width="80">
+        <el-table-column prop="ser" label="学生骨干" width="100" sortable>
         </el-table-column>
-        <el-table-column prop="per" label="个人总结" width="80">
+        <el-table-column prop="per" label="个人总结" width="100" sortable>
         </el-table-column>
-        <el-table-column prop="totalpoints" label="测评总分" width="80">
+        <el-table-column prop="totalpoints" label="测评总分" width="80" sortable>
         </el-table-column>
 
       </el-table>
@@ -234,7 +234,7 @@ export default {
         });
         return;
       }
-      this.$confirm("此操作将永久删除该学生的成绩, 是否继续?", "提示", {
+      this.$confirm("此操作将打回该学生的成绩, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

@@ -10,7 +10,7 @@
 
     <!-- 上传对话框 -->
     <div v-if="isImportFileDialogVisible">
-      <importFileDialog importName="stu" importTitle="上传学生信息文件" importTip="一次只能上传一个xls/xlsx文件，且不超过10M" importType="excel" @close-dialog="closeImportDialog">
+      <importFileDialog importName="stu" importTitle="上传学生信息文件" importTip="1.一次只能上传一个xls/xlsx文件，且不超过10M<br>2. 表头格式为：num||name||sex||year||class||major||email" importType="excel" @close-dialog="closeImportDialog">
       </importFileDialog>
     </div>
 
@@ -22,12 +22,12 @@
       type="warning" icon="el-icon-folder-add" size="small"  @click="openImportDialog">导入</el-button>
       <el-button 
       style="float: left; margin-top: 10px; margin-bottom: 15px;"
-      @click="exportClick" type="primary" size="small" icon="el-icon-folder-opened">全部导出</el-button>
+      @click="exportClick" type="primary" size="small" icon="el-icon-folder-opened">导出</el-button>
       <el-button
           style="float: left; margin-top: 10px; margin-bottom: 15px;"
           size="small"
           type="danger"
-          @click="handleDelete()">删除所选</el-button>
+          @click="handleDelete()" icon="el-icon-delete">删除</el-button>
       <el-input 
       style="float: right; margin-left: 20px; margin-top: 10px; margin-bottom: 15px;width: 30%;"
       v-model="searchContent" 
@@ -56,13 +56,13 @@
           </template>
         </el-table-column>
         
-        <el-table-column prop="date" label="更新日期" width="100"></el-table-column>
-        <el-table-column prop="num" label="学号" width="100"> </el-table-column>
-        <el-table-column prop="name" label="姓名" width="80"> </el-table-column>
-        <el-table-column prop="sex" label="性别" width="80"> </el-table-column>
-        <el-table-column prop="year" label="年级" width="100"></el-table-column>
-        <el-table-column prop="class" label="学苑" width="120"></el-table-column>
-        <el-table-column prop="major" label="专业" width="120"></el-table-column>
+        <el-table-column prop="date" label="更新日期" width="100" sortable></el-table-column>
+        <el-table-column prop="num" label="学号" width="100" sortable> </el-table-column>
+        <el-table-column prop="name" label="姓名" width="80" sortable> </el-table-column>
+        <el-table-column prop="sex" label="性别" width="80" sortable> </el-table-column>
+        <el-table-column prop="year" label="年级" width="100" sortable></el-table-column>
+        <el-table-column prop="class" label="学苑" width="120" sortable></el-table-column>
+        <el-table-column prop="major" label="专业" width="120" sortable></el-table-column>
         <el-table-column prop="email" label="邮箱地址" width="120"></el-table-column>
       </el-table>
 
