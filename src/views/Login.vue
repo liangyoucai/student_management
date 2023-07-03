@@ -165,15 +165,12 @@ export default {
                 message: '登录成功',
                 type: 'success'
               })
+              localStorage.setItem('initial', res.data.initial)
+              localStorage.setItem('manager', res.data.initial)
 
-            }
-            // else {
-            //   this.msg = res.msg
-            //   this.open_err()
-            // }
-
-          }).finally(_ => {
+          }}).finally(_ => {
             this.loading = false
+            this.refreshCode();
           })
         }
       });

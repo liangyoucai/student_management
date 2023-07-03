@@ -19,7 +19,6 @@
 
     <!-- 表格 -->
     <div class="main">
-
       <el-input v-model="searchContent" 
       size="medium" 
       placeholder="请输入姓名或学号" 
@@ -30,7 +29,6 @@
         id="mainTable"
         max-height="500"
       >
-
         <el-table-column prop="no" label="序号" width="50">
           <template slot-scope="scope">
             {{ scope.$index + 1 }}
@@ -53,7 +51,6 @@
         :page-size="pageSize"
         :current-page.sync="currentPage"
       />
-
     </div>
   </div>
 </template>
