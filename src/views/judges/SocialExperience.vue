@@ -95,6 +95,13 @@
           </template>
         </el-form>
 
+        <el-row>
+          <el-col :span="24">
+            <preview subject="practice" :stuNum="currentStudent.id"></preview>
+          </el-col>
+        </el-row>
+
+
         <el-divider></el-divider>
         <div class="block">
           <span class="demonstration">评分：{{ currentScore }}</span>
@@ -146,18 +153,19 @@
 </template>
 
 <script>
+import axios from 'axios';
 import judge from '@/api/judge/judge';
 import OverviewTable from '@/components/OverviewTable.vue';
 import ScoreTable from '@/components/ScoreTable.vue'
 import RatingList from '@/components/RatingList.vue';
-import axios from "axios";
-
+import preview from '@/components/preview.vue';
 export default {
   emits: ['score-selected', 'review-from-overview'],
   components: {
     OverviewTable,
     ScoreTable,
-    RatingList
+    RatingList,
+    preview
   },
 
   data() {
