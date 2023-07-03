@@ -10,9 +10,7 @@ import store from './store';
 router.beforeEach((to, from, next) => {
   if (getAccessToken()) {
     if (store.getters.permission_routes.length === 0) {
-      console.log('生成路由');
       store.dispatch('GenerateRoutes').then((accessRoutes) => {
-        // console.log(accessRoutes);
         router.addRoutes(accessRoutes);
       });
     }

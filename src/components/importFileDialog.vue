@@ -7,19 +7,9 @@
           <el-button slot="trigger" size="small" type="primary" @click="handleUpload">选取文件</el-button>
           <div slot="tip" class="el-upload__tip">{{ importTip }}</div>
         </el-upload> -->
-        <el-upload
-          ref="upload"
-          drag
-          action="#"
-          :http-request="uploadHttpRequest" 
-          :data="importData" 
-          :auto-upload="false" 
-          :multiple="false" 
-          :before-upload="beforeUpload" 
-          :on-change="handleChange"
-          >
+        <el-upload ref="upload" drag action="#" :http-request="uploadHttpRequest" :data="importData" :auto-upload="false" :multiple="false" :before-upload="beforeUpload" :on-change="handleChange">
           <i class="el-icon-upload"></i>
-          <div class="el-upload__text" >将文件拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
           <div class="el-upload__tip" slot="tip">{{ importTip }}</div>
         </el-upload>
         <!-- </div> -->
@@ -112,24 +102,19 @@ export default {
 
     // 自定义上传方法，param是默认参数，可以取得file文件信息，具体信息如下图
     uploadHttpRequest(param) {
-
       const formData = new FormData() //FormData对象，添加参数只能通过append('key', value)的形式添加
       formData.append('file', param.file) //添加文件对象
       formData.append('uploadType', this.rulesType)
       formData.append('subject', this.subject)
-      console.log(formData);
       // 根据importType的不同（pdf或者excel），调用不同的接口
       if (this.importType == 'excel') {
-        console.log(this.importName);
         excel.import(formData, this.importName)
           .then(res => {
-            // console.log(res)
             if (res.code === 200) {
               param.onSuccess()  // 上传成功的文件显示绿色的对勾
               this.$message.success('上传成功');
               this.$emit('close-dialog');
             } else {
-              // this.$message.error(res.msg);
               param.onError()
             }
             return;
