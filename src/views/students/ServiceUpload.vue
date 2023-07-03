@@ -3,6 +3,31 @@
     <h1 class="title">学生骨干服务情况 - 在线填写</h1>
     <el-divider></el-divider>
 
+
+    <el-row type="flex">
+      <el-row>
+        <el-col :span="24">
+          <h4 style="float: left;">已提交内容</h4>
+        </el-col>
+      </el-row>
+    </el-row>
+    <el-row>
+      <el-col>
+        <el-button style="float: left;" @click="toggleSubmittedData" type="text">{{ showSubmittedData ? "收起" : "展开" }}</el-button>
+      </el-col>
+    </el-row>
+    <!-- 已提交内容总览表 -->
+    <submitted-data-table v-if="showSubmittedData" :submittedData="submittedData.slice().sort((a, b) => a.id - b.id)">
+
+      <el-table-column label="项目名称" prop="title"></el-table-column>
+      <el-table-column label="负责人" prop="director"></el-table-column>
+      <el-table-column label="组织机构" prop="constitution"></el-table-column>
+      <el-table-column label="项目内容" prop="conten"></el-table-column>
+      <el-table-column label="参与时间" prop="time"></el-table-column>
+      <el-table-column label="项目成果" prop="result"></el-table-column>
+
+    </submitted-data-table>
+
     <el-row type="flex" justify="center">
       <el-col :span="24">
         <h4 style="text-align: center;">证明材料（请将所有证明材料放在一个pdf文件上传）</h4>
@@ -109,10 +134,12 @@ import user from '@/api/auth/user';
 import student from '@/api/student/student';
 import preview from '@/components/preview.vue'
 import stuImportPdfButton from '@/components/stuImportPdfButton.vue';
+import submittedDataTable from '@/components/SubmittedDataTable.vue'
 export default {
   components: {
     stuImportPdfButton,
-    preview
+    preview,
+    submittedDataTable
   },
   data() {
     return {
@@ -130,18 +157,32 @@ export default {
       },
       username: '',
       num: '',
+      submittedData: []
     };
   },
-
   mounted() {
-    // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
     user.getInfo(this.role).then((res) => {
       this.username = res.data.username;
       this.num = res.data.num
       console.log(res.data)
+      student.reviewMyList('service', this.num).then(res => {
+        this.submittedData = res.data;
+      })
     });
+
   },
+  // mounted() {
+  //   // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
+  //   user.getInfo(this.role).then((res) => {
+  //     this.username = res.data.username;
+  //     this.num = res.data.num
+  //     console.log(res.data)
+  //   });
+  // },
   methods: {
+    toggleSubmittedData() {
+      this.showSubmittedData = !this.showSubmittedData;
+    },
     openImportDialog() {
       this.$refs.ChildButton.openImportDialog();
     },
