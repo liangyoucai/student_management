@@ -22,7 +22,7 @@
     </div>
 
     <div class="main">
-      <el-table :data="pagedData" style="width: 100%" id="mainTable" max-height="auto">
+      <el-table :data="pagedData" :row-class-name="changeRowColor" style="width: 100%" id="mainTable" max-height="auto">
         <el-table-column prop="no" label="序号" width="50">
           <template slot-scope="scope">
             {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
@@ -113,7 +113,8 @@ export default {
         gpa: "",
         score: "",
         createTime: "",
-        updateTime: ""
+        updateTime: "",
+        isDel: ""
       }],
       dialogVisible: false,
       isImportFileDialogVisible: false,
@@ -178,7 +179,9 @@ export default {
               score: formdata.gradelist[i]["score"],
               createTime: formdata.gradelist[i]["createTime"],
               updateTime: formdata.gradelist[i]["updateTime"],
+              isDel: formdata.gradelist[i]["isDel"],
             });
+            console.log(formdata.gradelist[i]["isDel"]);
           }
           this.originalData = this.tableData.slice(); // 将初始数据赋值给originalData
         } else {
@@ -279,8 +282,14 @@ export default {
           // 请求失败处理
           console.error('删除失败', error);
         });
-    }
-
+    },
+    changeRowColor({ row }) {
+      console.log(row)
+      if (row.isDel === 1) {
+        console.log("found");
+        return 'rowstyle';
+      } 
+    },
   },
 };
 </script>
@@ -334,4 +343,8 @@ body {
     display: flex;
     justify-content: space-between;
   }
+.el-table .rowstyle {
+  background: pink;
+}
+
 </style>
