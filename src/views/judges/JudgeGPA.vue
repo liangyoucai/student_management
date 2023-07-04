@@ -47,7 +47,7 @@
         <el-table-column prop="do" label="操作" width="170">
           <template slot-scope="scope">
             <div class="action-buttons">
-              <el-button type="primary" @click="showDialog(scope.row)">评分</el-button>
+              <el-button type="primary" @click="showDialog(scope.row)" :disabled="scope.row.isDel === 1">评分</el-button>
               <el-button type="danger" @click="showDeleteConfirmation(scope.row)">删除</el-button>
             </div>
           </template>
@@ -181,7 +181,6 @@ export default {
               updateTime: formdata.gradelist[i]["updateTime"],
               isDel: formdata.gradelist[i]["isDel"],
             });
-            console.log(formdata.gradelist[i]["isDel"]);
           }
           this.originalData = this.tableData.slice(); // 将初始数据赋值给originalData
         } else {
@@ -225,7 +224,6 @@ export default {
       this.dialogVisible = true; // 显示对话框
     },
     saveForm() {
-      console.log({ stuNum: this.form.stuNum, score: this.form.score });
       gradeApi.updateScore({ stuNum: this.form.stuNum, score: this.form.score})
         .then(response => {
           if (response.code === 200) {
@@ -266,7 +264,6 @@ export default {
       })
         .then(() => {
           gradeApi.deleteGrade({ stuNumData: row.stuNum }).then(response => {
-          console.log("要删除的" + row.stuNum);
           if (response.code === 200) {
             this.$message({
               message: '删除成功！',
@@ -284,9 +281,7 @@ export default {
         });
     },
     changeRowColor({ row }) {
-      console.log(row)
       if (row.isDel === 1) {
-        console.log("found");
         return 'rowstyle';
       } 
     },
