@@ -265,8 +265,8 @@ export default {
         type: 'warning',
       })
         .then(() => {
-          gradeApi.deleteGrade({ stuNum: row.stuNum }).then(response => {
-          console.log(row.stuNum);
+          gradeApi.deleteGrade({ stuNumData: row.stuNum }).then(response => {
+          console.log("要删除的" + row.stuNum);
           if (response.code === 200) {
             this.$message({
               message: '删除成功！',
