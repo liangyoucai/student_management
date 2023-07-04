@@ -213,6 +213,8 @@ export default {
                             console.log(res);
                             if (res.code == 200) {
                                 this.$message.success("提交成功")
+                                //自动刷新页面
+                                window.location.reload();
                             }
                         });
                 } else {
