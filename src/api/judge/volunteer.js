@@ -29,4 +29,18 @@ export default {
       data: { stuNum, score }, // 传递 stuNum 和 score 属性
     });
   },
+
+  /**
+   * 发送删除请求
+   * @param 
+   * @returns
+   */
+  deleteVolunteer(stuNumData) {
+    // 返回请求
+    return request({
+      url: `/api/volunteer/deleteVolunteer`,
+      method: 'post',
+      data: stuNumData , 
+    });
+  },
 };
