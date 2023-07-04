@@ -35,12 +35,12 @@ export default {
    * @param 
    * @returns
    */
-  deleteGrade(stuNum) {
+  deleteGrade(stuNumData) {
     // 返回请求
     return request({
       url: `/api/grade/deleteGrade`,
       method: 'post',
-      data: stuNum , 
+      data: stuNumData , 
     });
   },
 };

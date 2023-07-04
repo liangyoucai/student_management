@@ -22,13 +22,13 @@
     </div>
 
     <div class="main">
-      <el-table :data="pagedData" style="width: 100%" id="mainTable" max-height="auto">
+      <el-table :data="sortedTableData" :row-class-name="changeRowColor" style="width: 100%" id="mainTable" max-height="auto">
         <el-table-column prop="no" label="序号" width="50">
           <template slot-scope="scope">
             {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column prop="stuNum" label="学号" width="140">
+        <el-table-column prop="stuNum" label="学号" width="140" sortable>
         </el-table-column>
         <el-table-column prop="stuName" label="姓名" width="100">
         </el-table-column>
@@ -47,7 +47,7 @@
         <el-table-column prop="do" label="操作" width="170">
           <template slot-scope="scope">
             <div class="action-buttons">
-              <el-button type="primary" @click="showDialog(scope.row)">评分</el-button>
+              <el-button type="primary" @click="showDialog(scope.row)" :disabled="scope.row.isDel === 1">评分</el-button>
               <el-button type="danger" @click="showDeleteConfirmation(scope.row)">删除</el-button>
             </div>
           </template>
@@ -102,6 +102,7 @@ export default {
   created() {
     this.$axios = axios;
     this.init();
+    this.sortData();
   },
   data() {
     return {
@@ -113,7 +114,8 @@ export default {
         gpa: "",
         score: "",
         createTime: "",
-        updateTime: ""
+        updateTime: "",
+        isDel: ""
       }],
       dialogVisible: false,
       isImportFileDialogVisible: false,
@@ -154,6 +156,16 @@ export default {
 
       return this.checklist.slice(start, end);
     },
+    sortedTableData() {
+      const sortedData = this.pagedData.slice(); // 复制分页数据，避免直接修改原数据
+      sortedData.sort((a, b) => {
+        // 按学号进行升序排序
+        if (a.stuNum < b.stuNum) return -1;
+        if (a.stuNum > b.stuNum) return 1;
+        return 0;
+      });
+      return sortedData;
+    }
   },
   watch: {
     searchText(newText) {
@@ -178,6 +190,7 @@ export default {
               score: formdata.gradelist[i]["score"],
               createTime: formdata.gradelist[i]["createTime"],
               updateTime: formdata.gradelist[i]["updateTime"],
+              isDel: formdata.gradelist[i]["isDel"],
             });
           }
           this.originalData = this.tableData.slice(); // 将初始数据赋值给originalData
@@ -222,7 +235,6 @@ export default {
       this.dialogVisible = true; // 显示对话框
     },
     saveForm() {
-      console.log({ stuNum: this.form.stuNum, score: this.form.score });
       gradeApi.updateScore({ stuNum: this.form.stuNum, score: this.form.score})
         .then(response => {
           if (response.code === 200) {
@@ -262,8 +274,7 @@ export default {
         type: 'warning',
       })
         .then(() => {
-          gradeApi.deleteGrade({ stuNum: row.stuNum }).then(response => {
-          console.log(row.stuNum);
+          gradeApi.deleteGrade({ stuNumData: row.stuNum }).then(response => {
           if (response.code === 200) {
             this.$message({
               message: '删除成功！',
@@ -279,13 +290,18 @@ export default {
           // 请求失败处理
           console.error('删除失败', error);
         });
-    }
-
+    },
+    changeRowColor({ row }) {
+      if (row.isDel === 1) {
+        return 'rowstyle';
+      } 
+    },
+  
   },
 };
 </script>
   
-<style scoped>
+<style>
 html,
 body {
   height: 100%;
@@ -334,4 +350,8 @@ body {
     display: flex;
     justify-content: space-between;
   }
+.el-table .rowstyle {
+  background: pink;
+}
+
 </style>
