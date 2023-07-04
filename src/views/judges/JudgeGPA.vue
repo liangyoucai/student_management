@@ -22,13 +22,13 @@
     </div>
 
     <div class="main">
-      <el-table :data="pagedData" :row-class-name="changeRowColor" style="width: 100%" id="mainTable" max-height="auto">
+      <el-table :data="sortedTableData" :row-class-name="changeRowColor" style="width: 100%" id="mainTable" max-height="auto">
         <el-table-column prop="no" label="序号" width="50">
           <template slot-scope="scope">
             {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column prop="stuNum" label="学号" width="140">
+        <el-table-column prop="stuNum" label="学号" width="140" sortable>
         </el-table-column>
         <el-table-column prop="stuName" label="姓名" width="100">
         </el-table-column>
@@ -102,6 +102,7 @@ export default {
   created() {
     this.$axios = axios;
     this.init();
+    this.sortData();
   },
   data() {
     return {
@@ -155,6 +156,16 @@ export default {
 
       return this.checklist.slice(start, end);
     },
+    sortedTableData() {
+      const sortedData = this.pagedData.slice(); // 复制分页数据，避免直接修改原数据
+      sortedData.sort((a, b) => {
+        // 按学号进行升序排序
+        if (a.stuNum < b.stuNum) return -1;
+        if (a.stuNum > b.stuNum) return 1;
+        return 0;
+      });
+      return sortedData;
+    }
   },
   watch: {
     searchText(newText) {
@@ -285,6 +296,7 @@ export default {
         return 'rowstyle';
       } 
     },
+  
   },
 };
 </script>
