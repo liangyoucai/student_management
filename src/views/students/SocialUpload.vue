@@ -18,8 +18,6 @@
     <!-- 已提交内容总览表 -->
     <submitted-data-table v-if="showSubmittedData" :submittedData="submittedData.slice().sort((a, b) => a.id - b.id)">
 
-
-
       <el-table-column label="岗位名称" prop="title"></el-table-column>
       <el-table-column label="岗位负责人" prop="director"></el-table-column>
       <el-table-column label="岗位负责机构" prop="constitution"></el-table-column>
@@ -146,23 +144,26 @@ export default {
   },
   data() {
     return {
+      showSubmittedData: false,
       form: {
         research: [
           {
             name: '',
             manager: '',
             organization: '',
-            content:'',
+            content: '',
             time: '',
             achievements: ''
           }
         ]
       },
+
       username: '',
       num: '',
       submittedData: []
     };
   },
+
   mounted() {
     user.getInfo(this.role).then((res) => {
       this.username = res.data.username;
@@ -174,14 +175,7 @@ export default {
     });
 
   },
-  // mounted() {
-  //   // 当页面被调用，立刻调用该方法，获得的username直接赋值给this对象
-  //   user.getInfo(this.role).then((res) => {
-  //     this.username = res.data.username;
-  //     this.num = res.data.num
-  //     console.log(res.data)
-  //   });
-  // },
+
   methods: {
     toggleSubmittedData() {
       this.showSubmittedData = !this.showSubmittedData;
@@ -206,7 +200,7 @@ export default {
             data.push({
               "constitution": item.organization,
               "director": item.manager,
-              "content":item.content,
+              "content": item.content,
               "result": item.achievements,
               "time": dateRangeString,
               "title": item.name
